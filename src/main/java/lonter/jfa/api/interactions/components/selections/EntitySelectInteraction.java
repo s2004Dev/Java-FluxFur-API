@@ -1,0 +1,40 @@
+/*
+ * Copyright 2015 Austin Keener, Michael Ritter, Florian Spieß, and the JFA contributors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package lonter.jfa.api.interactions.components.selections;
+
+import lonter.jfa.api.components.selections.EntitySelectMenu;
+import lonter.jfa.api.entities.IMentionable;
+import lonter.jfa.api.entities.Mentions;
+import lonter.jfa.api.events.interaction.component.EntitySelectInteractionEvent;
+
+import org.jetbrains.annotations.NotNull;
+
+/**
+ * Component Interaction for a {@link EntitySelectMenu}.
+ *
+ * @see EntitySelectInteractionEvent
+ */
+public interface EntitySelectInteraction extends SelectMenuInteraction<IMentionable, EntitySelectMenu> {
+    /**
+     * The resolved {@link Mentions} for this selection.
+     * <br>This supports {@link Mentions#getRoles() roles}, {@link Mentions#getUsers() users}, and {@link Mentions#getChannels() channels}.
+     *
+     * @return The mentions
+     */
+    @NotNull
+    Mentions getMentions();
+}

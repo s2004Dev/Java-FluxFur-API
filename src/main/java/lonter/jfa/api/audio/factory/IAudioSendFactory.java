@@ -1,0 +1,42 @@
+/*
+ * Copyright 2015 Austin Keener, Michael Ritter, Florian Spieß, and the JFA contributors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package lonter.jfa.api.audio.factory;
+
+import org.jetbrains.annotations.NotNull;
+
+/**
+ * Factory interface for the creation of new {@link lonter.jfa.api.audio.factory.IAudioSendSystem IAudioSendSystem} objects.
+ * <br>JFA, by default, uses {@link lonter.jfa.api.audio.factory.DefaultSendFactory DefaultSendFactory} for the
+ * creation of its UDP audio packet sending system.
+ * <p>
+ * Implementations of this interface are provided to
+ * {@link lonter.jfa.api.JFABuilder#setAudioSendFactory(IAudioSendFactory) JFABuilder.setAudioSendFactory(IAudioSendFactory)}.
+ */
+public interface IAudioSendFactory {
+    /**
+     * Called by JFA's audio system when a new {@link lonter.jfa.api.audio.factory.IAudioSendSystem IAudioSendSystem}
+     * instance is needed to handle the sending of UDP audio packets to fluxer.
+     *
+     * @param  packetProvider
+     *         The connection provided to the new {@link lonter.jfa.api.audio.factory.IAudioSendSystem IAudioSendSystem}
+     *         object for proper setup and usage.
+     *
+     * @return The newly constructed IAudioSendSystem, ready for {@link IAudioSendSystem#start()} to be called.
+     */
+    @NotNull
+    IAudioSendSystem createSendSystem(@NotNull IPacketProvider packetProvider);
+}

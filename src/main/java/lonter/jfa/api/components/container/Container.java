@@ -1,0 +1,266 @@
+/*
+ * Copyright 2015 Austin Keener, Michael Ritter, Florian Spieß, and the JFA contributors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package lonter.jfa.api.components.container;
+
+import lonter.jfa.api.components.Component;
+import lonter.jfa.api.components.IComponentUnion;
+import lonter.jfa.api.components.MessageTopLevelComponent;
+import lonter.jfa.api.components.attribute.IDisableable;
+import lonter.jfa.api.components.replacer.ComponentReplacer;
+import lonter.jfa.api.components.replacer.IReplaceable;
+import lonter.jfa.api.components.utils.ComponentIterator;
+import lonter.jfa.api.utils.messages.MessageRequest;
+import lonter.jfa.internal.components.container.ContainerImpl;
+import lonter.jfa.internal.utils.Checks;
+import lonter.jfa.internal.utils.Helpers;
+import org.jetbrains.annotations.Unmodifiable;
+
+import java.awt.*;
+import java.util.Collection;
+import java.util.List;
+
+import javax.annotation.CheckReturnValue;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
+/**
+ * Component which groups components vertically, you can specify an accent color, similar to embeds,
+ * and mark the container as a spoiler.
+ *
+ * <p><b>Requirements:</b> {@linkplain MessageRequest#useComponentsV2() Components V2} needs to be enabled!
+ *
+ * @see ContainerChildComponent
+ * @see ContainerChildComponentUnion
+ */
+public interface Container extends MessageTopLevelComponent, IReplaceable, IDisableable {
+    /**
+     * Constructs a new {@link Container} from the given components.
+     *
+     * @param  components
+     *         The components to add
+     *
+     * @throws IllegalArgumentException
+     *         <ul>
+     *             <li>If {@code null} is provided</li>
+     *             <li>If one of the components is {@linkplain IComponentUnion#isUnknownComponent() unknown}</li>
+     *         </ul>
+     *
+     * @return The new {@link Container}
+     */
+    @NotNull
+    static Container of(@NotNull Collection<? extends ContainerChildComponent> components) {
+        return ContainerImpl.validated(components);
+    }
+
+    /**
+     * Constructs a new {@link Container} from the given components.
+     *
+     * @param  component
+     *         The first component
+     * @param  components
+     *         Additional components to add
+     *
+     * @throws IllegalArgumentException
+     *         <ul>
+     *             <li>If {@code null} is provided</li>
+     *             <li>If one of the components is {@linkplain IComponentUnion#isUnknownComponent() unknown}</li>
+     *         </ul>
+     *
+     * @return The new {@link Container}
+     */
+    @NotNull
+    static Container of(@NotNull ContainerChildComponent component, @NotNull ContainerChildComponent... components) {
+        return of(Helpers.mergeVararg(component, components));
+    }
+
+    @Override
+    default boolean isMessageCompatible() {
+        if (!getType().isMessageCompatible()) {
+            return false;
+        }
+
+        return getComponents().stream().allMatch(Component::isMessageCompatible);
+    }
+
+    @Override
+    default boolean isModalCompatible() {
+        if (!getType().isModalCompatible()) {
+            return false;
+        }
+
+        return getComponents().stream().allMatch(Component::isModalCompatible);
+    }
+
+    @NotNull
+    @Override
+    Container replace(@NotNull ComponentReplacer replacer);
+
+    @NotNull
+    @Override
+    @CheckReturnValue
+    Container withUniqueId(int uniqueId);
+
+    /**
+     * Creates a new {@link Container} with the specified accent color, which appears on the side.
+     *
+     * @param  accentColor
+     *         The new accent color, or {@code null} to remove it
+     *
+     * @return The new {@link Container}
+     */
+    @NotNull
+    @CheckReturnValue
+    Container withAccentColor(@Nullable Integer accentColor);
+
+    /**
+     * Creates a new {@link Container} with the specified accent color, which appears on the side.
+     * <br>Note that the {@link Color#getAlpha() alpha component} will be removed, making the color opaque.
+     *
+     * @param  accentColor
+     *         The new accent color, or {@code null} to remove it
+     *
+     * @return The new {@link Container}
+     */
+    @NotNull
+    @CheckReturnValue
+    default Container withAccentColor(@Nullable Color accentColor) {
+        return withAccentColor(accentColor == null ? null : accentColor.getRGB());
+    }
+
+    /**
+     * Creates a new {@link Container} with the specified spoiler status.
+     * <br>Spoilers are hidden until the user clicks on it.
+     *
+     * @param  spoiler
+     *         The new spoiler status
+     *
+     * @return The new {@link Container}
+     */
+    @NotNull
+    @CheckReturnValue
+    Container withSpoiler(boolean spoiler);
+
+    /**
+     * Creates a new {@link Container} with the specified components.
+     *
+     * @param  components
+     *         The new components
+     *
+     * @throws IllegalArgumentException
+     *         If the provided components are {@code null} or contains {@code null}
+     *
+     * @return The new {@link Container}
+     */
+    @NotNull
+    @CheckReturnValue
+    Container withComponents(@NotNull Collection<? extends ContainerChildComponent> components);
+
+    /**
+     * Creates a new {@link Container} with the specified components.
+     *
+     * @param  component
+     *         The first new component
+     * @param  components
+     *         Additional new components
+     *
+     * @throws IllegalArgumentException
+     *         If the provided components are {@code null} or contains {@code null}
+     *
+     * @return The new {@link Container}
+     */
+    @NotNull
+    @CheckReturnValue
+    default Container withComponents(
+            @NotNull ContainerChildComponent component, @NotNull ContainerChildComponent... components) {
+        Checks.notNull(component, "Component");
+        Checks.notNull(components, "Components");
+        return withComponents(Helpers.mergeVararg(component, components));
+    }
+
+    @NotNull
+    @Override
+    @CheckReturnValue
+    default Container withDisabled(boolean disabled) {
+        return replace(ComponentReplacer.of(IDisableable.class, c -> true, c -> c.withDisabled(disabled)));
+    }
+
+    @NotNull
+    @Override
+    @CheckReturnValue
+    default Container asDisabled() {
+        return (Container) IDisableable.super.asDisabled();
+    }
+
+    @NotNull
+    @Override
+    @CheckReturnValue
+    default Container asEnabled() {
+        return (Container) IDisableable.super.asEnabled();
+    }
+
+    /**
+     * Returns an immutable list with the components contained by this container.
+     *
+     * @return {@link List} of {@link ContainerChildComponentUnion} in this container
+     */
+    @NotNull
+    @Unmodifiable
+    List<ContainerChildComponentUnion> getComponents();
+
+    @Override
+    default boolean isDisabled() {
+        return ComponentIterator.createStream(getComponents())
+                .filter(IDisableable.class::isInstance)
+                .map(IDisableable.class::cast)
+                .allMatch(IDisableable::isDisabled);
+    }
+
+    @Override
+    default boolean isEnabled() {
+        return ComponentIterator.createStream(getComponents())
+                .filter(IDisableable.class::isInstance)
+                .map(IDisableable.class::cast)
+                .allMatch(IDisableable::isEnabled);
+    }
+
+    /**
+     * The color of the stripe/border on the side of the container.
+     * <br>If no accent color has been set, this will return null.
+     *
+     * @return Possibly-null {@link Color}.
+     */
+    @Nullable
+    default Color getAccentColor() {
+        return getAccentColorRaw() != null ? new Color(getAccentColorRaw()) : null;
+    }
+
+    /**
+     * The raw RGB color value for the stripe/border on the side of the container.
+     * <br>If no accent color has been set, this will return null.
+     *
+     * @return The raw RGB color value or {@code null}.
+     */
+    @Nullable
+    Integer getAccentColorRaw();
+
+    /**
+     * Whether this container is hidden until the user clicks on it.
+     *
+     * @return {@code true} if this is hidden by default, {@code false} otherwise
+     */
+    boolean isSpoiler();
+}

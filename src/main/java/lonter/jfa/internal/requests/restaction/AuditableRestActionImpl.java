@@ -1,0 +1,124 @@
+/*
+ * Copyright 2015 Austin Keener, Michael Ritter, Florian Spieß, and the JFA contributors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package lonter.jfa.internal.requests.restaction;
+
+import lonter.jfa.api.JFA;
+import lonter.jfa.api.audit.ThreadLocalReason;
+import lonter.jfa.api.requests.Request;
+import lonter.jfa.api.requests.Response;
+import lonter.jfa.api.requests.Route;
+import lonter.jfa.api.requests.restaction.AuditableRestAction;
+import lonter.jfa.api.utils.data.DataObject;
+import lonter.jfa.internal.requests.RestActionImpl;
+import lonter.jfa.internal.utils.EncodingUtil;
+import okhttp3.RequestBody;
+import org.apache.commons.collections4.map.CaseInsensitiveMap;
+
+import java.util.concurrent.TimeUnit;
+import java.util.function.BiFunction;
+import java.util.function.BooleanSupplier;
+
+import javax.annotation.CheckReturnValue;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
+public class AuditableRestActionImpl<T> extends RestActionImpl<T> implements AuditableRestAction<T> {
+    protected String reason = null;
+
+    public AuditableRestActionImpl(JFA api, Route.CompiledRoute route) {
+        super(api, route);
+    }
+
+    public AuditableRestActionImpl(JFA api, Route.CompiledRoute route, RequestBody data) {
+        super(api, route, data);
+    }
+
+    public AuditableRestActionImpl(JFA api, Route.CompiledRoute route, DataObject data) {
+        super(api, route, data);
+    }
+
+    public AuditableRestActionImpl(JFA api, Route.CompiledRoute route, BiFunction<Response, Request<T>, T> handler) {
+        super(api, route, handler);
+    }
+
+    public AuditableRestActionImpl(
+            JFA api, Route.CompiledRoute route, DataObject data, BiFunction<Response, Request<T>, T> handler) {
+        super(api, route, data, handler);
+    }
+
+    public AuditableRestActionImpl(
+            JFA api, Route.CompiledRoute route, RequestBody data, BiFunction<Response, Request<T>, T> handler) {
+        super(api, route, data, handler);
+    }
+
+    @NotNull
+    @Override
+    public AuditableRestAction<T> setCheck(BooleanSupplier checks) {
+        return (AuditableRestAction<T>) super.setCheck(checks);
+    }
+
+    @NotNull
+    @Override
+    public AuditableRestAction<T> timeout(long timeout, @NotNull TimeUnit unit) {
+        return (AuditableRestAction<T>) super.timeout(timeout, unit);
+    }
+
+    @NotNull
+    @Override
+    public AuditableRestAction<T> deadline(long timestamp) {
+        return (AuditableRestAction<T>) super.deadline(timestamp);
+    }
+
+    @NotNull
+    @CheckReturnValue
+    public AuditableRestActionImpl<T> reason(@Nullable String reason) {
+        this.reason = reason;
+        return this;
+    }
+
+    @Override
+    protected CaseInsensitiveMap<String, String> finalizeHeaders() {
+        CaseInsensitiveMap<String, String> headers = super.finalizeHeaders();
+
+        if (reason == null || reason.isEmpty()) {
+            String localReason = ThreadLocalReason.getCurrent();
+            if (localReason == null || localReason.isEmpty()) {
+                return headers;
+            } else {
+                return generateHeaders(headers, localReason);
+            }
+        }
+
+        return generateHeaders(headers, reason);
+    }
+
+    @NotNull
+    private CaseInsensitiveMap<String, String> generateHeaders(
+            CaseInsensitiveMap<String, String> headers, String reason) {
+        if (headers == null) {
+            headers = new CaseInsensitiveMap<>();
+        }
+
+        headers.put("X-Audit-Log-Reason", uriEncode(reason));
+        return headers;
+    }
+
+    private String uriEncode(String input) {
+        String formEncode = EncodingUtil.encodeUTF8(input);
+        return formEncode.replace('+', ' ');
+    }
+}

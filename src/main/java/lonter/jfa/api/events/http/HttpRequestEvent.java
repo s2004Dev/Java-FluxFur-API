@@ -1,0 +1,139 @@
+/*
+ * Copyright 2015 Austin Keener, Michael Ritter, Florian Spieß, and the JFA contributors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package lonter.jfa.api.events.http;
+
+import lonter.jfa.api.events.Event;
+import lonter.jfa.api.requests.Request;
+import lonter.jfa.api.requests.Response;
+import lonter.jfa.api.requests.RestAction;
+import lonter.jfa.api.requests.Route.CompiledRoute;
+import lonter.jfa.api.utils.data.DataArray;
+import lonter.jfa.api.utils.data.DataObject;
+import okhttp3.Headers;
+import okhttp3.RequestBody;
+import okhttp3.ResponseBody;
+
+import java.util.Set;
+
+import javax.annotation.CheckReturnValue;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
+/**
+ * Indicates that a {@link lonter.jfa.api.requests.RestAction RestAction} has been executed.
+ *
+ * <p>Depending on the request and its result not all values have to be populated.
+ */
+public class HttpRequestEvent extends Event {
+    private final Request<?> request;
+    private final Response response;
+
+    public HttpRequestEvent(@NotNull Request<?> request, @NotNull Response response) {
+        super(request.getJFA());
+
+        this.request = request;
+        this.response = response;
+    }
+
+    @NotNull
+    public Request<?> getRequest() {
+        return this.request;
+    }
+
+    @Nullable
+    public RequestBody getRequestBody() {
+        return this.request.getBody();
+    }
+
+    @Nullable
+    public Object getRequestBodyRaw() {
+        return this.request.getRawBody();
+    }
+
+    @Nullable
+    public Headers getRequestHeaders() {
+        return this.response.getRawResponse() == null
+                ? null
+                : this.response.getRawResponse().request().headers();
+    }
+
+    @Nullable
+    public okhttp3.Request getRequestRaw() {
+        return this.response.getRawResponse() == null
+                ? null
+                : this.response.getRawResponse().request();
+    }
+
+    @Nullable
+    public Response getResponse() {
+        return this.response;
+    }
+
+    @Nullable
+    public ResponseBody getResponseBody() {
+        return this.response.getRawResponse() == null
+                ? null
+                : this.response.getRawResponse().body();
+    }
+
+    @Nullable
+    public DataArray getResponseBodyAsArray() {
+        return this.response.getArray();
+    }
+
+    @Nullable
+    public DataObject getResponseBodyAsObject() {
+        return this.response.getObject();
+    }
+
+    @Nullable
+    public String getResponseBodyAsString() {
+        return this.response.getString();
+    }
+
+    @Nullable
+    public Headers getResponseHeaders() {
+        return this.response.getRawResponse() == null
+                ? null
+                : this.response.getRawResponse().headers();
+    }
+
+    @Nullable
+    public okhttp3.Response getResponseRaw() {
+        return this.response.getRawResponse();
+    }
+
+    @NotNull
+    public Set<String> getCFRays() {
+        return this.response.getCFRays();
+    }
+
+    @NotNull
+    @CheckReturnValue
+    public RestAction<?> getRestAction() {
+        return this.request.getRestAction();
+    }
+
+    @NotNull
+    public CompiledRoute getRoute() {
+        return this.request.getRoute();
+    }
+
+    public boolean isRateLimit() {
+        return this.response.isRateLimit();
+    }
+}

@@ -1,0 +1,87 @@
+/*
+ * Copyright 2015 Austin Keener, Michael Ritter, Florian Spieß, and the JFA contributors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package lonter.jfa.internal.hooks;
+
+import lonter.jfa.api.events.GenericEvent;
+import lonter.jfa.api.hooks.IEventManager;
+import lonter.jfa.api.hooks.InterfacedEventManager;
+import lonter.jfa.internal.JFAImpl;
+
+import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.RejectedExecutionException;
+
+import org.jetbrains.annotations.NotNull;
+
+public class EventManagerProxy implements IEventManager {
+    private final ExecutorService executor;
+    private IEventManager subject;
+
+    public EventManagerProxy(IEventManager subject, ExecutorService executor) {
+        this.subject = subject;
+        this.executor = executor;
+    }
+
+    public void setSubject(IEventManager subject) {
+        this.subject = subject == null ? new InterfacedEventManager() : subject;
+    }
+
+    public IEventManager getSubject() {
+        return subject;
+    }
+
+    @Override
+    public void register(@NotNull Object listener) {
+        this.subject.register(listener);
+    }
+
+    @Override
+    public void unregister(@NotNull Object listener) {
+        this.subject.unregister(listener);
+    }
+
+    @Override
+    public void handle(@NotNull GenericEvent event) {
+        try {
+            if (executor != null && !executor.isShutdown()) {
+                executor.execute(() -> handleInternally(event));
+            } else {
+                handleInternally(event);
+            }
+        } catch (RejectedExecutionException ex) {
+            JFAImpl.LOG.warn("Event-Pool rejected event execution! Running on handling thread instead...");
+            handleInternally(event);
+        } catch (Exception ex) {
+            JFAImpl.LOG.error("Encountered exception trying to schedule event", ex);
+        }
+    }
+
+    private void handleInternally(@NotNull GenericEvent event) {
+        // don't allow mere exceptions to obstruct the socket handler
+        try {
+            subject.handle(event);
+        } catch (RuntimeException e) {
+            JFAImpl.LOG.error("The EventManager.handle() call had an uncaught exception", e);
+        }
+    }
+
+    @NotNull
+    @Override
+    public List<Object> getRegisteredListeners() {
+        return subject.getRegisteredListeners();
+    }
+}

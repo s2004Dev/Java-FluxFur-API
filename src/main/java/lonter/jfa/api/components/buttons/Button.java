@@ -1,0 +1,723 @@
+/*
+ * Copyright 2015 Austin Keener, Michael Ritter, Florian Spieß, and the JFA contributors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package lonter.jfa.api.components.buttons;
+
+import lonter.jfa.api.components.ActionComponent;
+import lonter.jfa.api.components.MessageTopLevelComponent;
+import lonter.jfa.api.components.actionrow.ActionRowChildComponent;
+import lonter.jfa.api.components.section.SectionAccessoryComponent;
+import lonter.jfa.api.entities.SkuSnowflake;
+import lonter.jfa.api.entities.emoji.Emoji;
+import lonter.jfa.api.entities.emoji.EmojiUnion;
+import lonter.jfa.api.events.interaction.component.ButtonInteractionEvent;
+import lonter.jfa.api.requests.restaction.interactions.ReplyCallbackAction;
+import lonter.jfa.internal.components.buttons.ButtonImpl;
+import lonter.jfa.internal.utils.Checks;
+
+import javax.annotation.CheckReturnValue;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
+/**
+ * Represents a Message Button.
+ *
+ * <p>Each button has either a {@code custom_id} or URL attached.
+ * The id has to be provided by the user and can be used to identify the button in the {@link ButtonInteractionEvent ButtonInteractionEvent}.
+ *
+ * <p><b>Example Usage</b><br>
+ * {@snippet lang="java":
+ * public class HelloBot extends ListenerAdapter {
+ *   public void onSlashCommandInteraction(SlashCommandInteractionEvent event) {
+ *       if (event.getName().equals("hello")) {
+ *           event.reply("Click the button to say hello")
+ *               .addComponents(
+ *                 ActionRow.of(
+ *                   Button.primary("hello", "Click Me"), // Button with only a label
+ *                   Button.success("emoji", Emoji.fromMarkdown("<:minn:245267426227388416>")))) // Button with only an emoji
+ *               .queue();
+ *       } else if (event.getName().equals("info")) {
+ *           event.reply("Click the buttons for more info")
+ *               .addComponents(
+ *                   ActionRow.of(
+ *                     // link buttons don't send events, they just open a link in the browser when clicked
+ *                     Button.link("https://github.com/fluxer-jfa/JFA", "GitHub")
+ *                       .withEmoji(Emoji.fromMarkdown("<:github:849286315580719104>")), // Link Button with label and emoji
+ *                     Button.link("https://docs.jfa.wiki/", "Javadocs"))) // Link Button with only a label
+ *               .queue();
+ *       }
+ *   }
+ *
+ *   public void onButtonInteraction(ButtonInteractionEvent event) {
+ *       if (event.getComponentId().equals("hello")) {
+ *           event.reply("Hello :)").queue();
+ *       }
+ *   }
+ * }
+ * }
+ *
+ * To see what each button looks like here is an example cheatsheet:
+ * <br>
+ * <img alt="ButtonExample" src="https://raw.githubusercontent.com/fluxer-jfa/JFA/52377f69d1f3bfba909c51a449ac6b258f606956/assets/wiki/interactions/ButtonExamples.png">
+ *
+ * @see ReplyCallbackAction#addComponents(MessageTopLevelComponent...)
+ */
+public interface Button extends ActionComponent, ActionRowChildComponent, SectionAccessoryComponent {
+    /**
+     * The maximum length a button label can have
+     */
+    int LABEL_MAX_LENGTH = 80;
+
+    /**
+     * The maximum length a button id can have
+     */
+    int ID_MAX_LENGTH = 100;
+
+    /**
+     * The maximum length a button url can have
+     */
+    int URL_MAX_LENGTH = 512;
+
+    /**
+     * The visible text on the button,
+     * or an empty string if this is a {@link ButtonStyle#PREMIUM PREMIUM}-style button.
+     *
+     * @return The button label
+     */
+    @NotNull
+    String getLabel();
+
+    /**
+     * The style of this button.
+     *
+     * @return {@link ButtonStyle}
+     */
+    @NotNull
+    ButtonStyle getStyle();
+
+    /**
+     * The target URL for this button, if it is a {@link ButtonStyle#LINK LINK}-Style Button.
+     *
+     * @return The target URL or null
+     */
+    @Nullable
+    String getUrl();
+
+    /**
+     * The target SKU for this button, if it is a {@link ButtonStyle#PREMIUM PREMIUM}-style Button.
+     *
+     * @return The target SKU or {@code null}
+     */
+    @Nullable
+    SkuSnowflake getSku();
+
+    /**
+     * The emoji attached to this button.
+     * <br>This can be either {@link Emoji.Type#UNICODE unicode} or {@link Emoji.Type#CUSTOM custom}.
+     *
+     * <p>You can use {@link #withEmoji(Emoji)} to create a button with an Emoji.
+     *
+     * @return {@link Emoji} for this button
+     */
+    @Nullable
+    EmojiUnion getEmoji();
+
+    @NotNull
+    @CheckReturnValue
+    default Button asDisabled() {
+        return (Button) ActionComponent.super.asDisabled();
+    }
+
+    @NotNull
+    @CheckReturnValue
+    default Button asEnabled() {
+        return (Button) ActionComponent.super.asEnabled();
+    }
+
+    @NotNull
+    @CheckReturnValue
+    default Button withDisabled(boolean disabled) {
+        return new ButtonImpl(
+                        getCustomId(), getUniqueId(), getLabel(), getStyle(), getUrl(), getSku(), disabled, getEmoji())
+                .checkValid();
+    }
+
+    /**
+     * Returns a copy of this button with the attached Emoji.
+     *
+     * @param  emoji
+     *         The emoji to use
+     *
+     * @throws IllegalArgumentException
+     *         If this is a {@link ButtonStyle#PREMIUM PREMIUM}-styled button
+     *
+     * @return New button with emoji
+     */
+    @NotNull
+    @CheckReturnValue
+    default Button withEmoji(@Nullable Emoji emoji) {
+        return new ButtonImpl(
+                        getCustomId(), getUniqueId(), getLabel(), getStyle(), getUrl(), getSku(), isDisabled(), emoji)
+                .checkValid();
+    }
+
+    /**
+     * Returns a copy of this button with the provided label.
+     *
+     * @param  label
+     *         The label to use
+     *
+     * @throws IllegalArgumentException
+     *         <ul>
+     *             <li>If this is a {@link ButtonStyle#PREMIUM PREMIUM}-styled button</li>
+     *             <li>If the provided {@code label} is null or empty.</li>
+     *             <li>If the character limit for {@code label}, defined by {@link #LABEL_MAX_LENGTH} as {@value #LABEL_MAX_LENGTH},
+     *             is exceeded.</li>
+     *         </ul>
+     *
+     * @return New button with the changed label
+     */
+    @NotNull
+    @CheckReturnValue
+    default Button withLabel(@NotNull String label) {
+        return new ButtonImpl(
+                        getCustomId(), getUniqueId(), label, getStyle(), getUrl(), getSku(), isDisabled(), getEmoji())
+                .checkValid();
+    }
+
+    /**
+     * Returns a copy of this button with the provided custom id.
+     *
+     * @param  customId
+     *         The custom id to use
+     *
+     * @throws IllegalArgumentException
+     *         <ul>
+     *             <li>If this is a {@link ButtonStyle#LINK LINK}-styled or {@link ButtonStyle#PREMIUM PREMIUM}-styled button</li>
+     *             <li>If the provided {@code customId} is null or empty.</li>
+     *             <li>If the character limit for {@code customId}, defined by {@link #ID_MAX_LENGTH} as {@value #ID_MAX_LENGTH},
+     *             is exceeded.</li>
+     *         </ul>
+     *
+     * @return New button with the changed custom id
+     */
+    @NotNull
+    @CheckReturnValue
+    default Button withCustomId(@NotNull String customId) {
+        return new ButtonImpl(
+                        customId, getUniqueId(), getLabel(), getStyle(), getUrl(), getSku(), isDisabled(), getEmoji())
+                .checkValid();
+    }
+
+    @NotNull
+    @Override
+    @CheckReturnValue
+    default Button withUniqueId(int uniqueId) {
+        // This is not done in checkValid()
+        // because the button gets constructed with an invalid unique ID on purpose
+        // (as Fluxer generates one if none was passed)
+        Checks.positive(uniqueId, "Unique ID");
+        return new ButtonImpl(
+                        getCustomId(), uniqueId, getLabel(), getStyle(), getUrl(), getSku(), isDisabled(), getEmoji())
+                .checkValid();
+    }
+
+    /**
+     * Returns a copy of this button with the provided url.
+     *
+     * @param  url
+     *         The url to use
+     *
+     * @throws IllegalArgumentException
+     *         <ul>
+     *             <li>If this is not a {@link ButtonStyle#LINK LINK}-styled button</li>
+     *             <li>If the provided {@code url} is null or empty.</li>
+     *             <li>If the character limit for {@code url}, defined by {@link #URL_MAX_LENGTH} as {@value #URL_MAX_LENGTH},
+     *             is exceeded.</li>
+     *         </ul>
+     *
+     * @return New button with the changed url
+     */
+    @NotNull
+    @CheckReturnValue
+    default Button withUrl(@NotNull String url) {
+        return new ButtonImpl(
+                        getCustomId(), getUniqueId(), getLabel(), getStyle(), url, getSku(), isDisabled(), getEmoji())
+                .checkValid();
+    }
+
+    /**
+     * Returns a copy of this button with the provided SKU.
+     *
+     * @param  sku
+     *         The SKU to use
+     *
+     * @throws IllegalArgumentException
+     *         If the provided {@code sku} is null, or if the button is not a {@link ButtonStyle#PREMIUM PREMIUM} button
+     *
+     * @return New button with the changed url
+     */
+    @NotNull
+    @CheckReturnValue
+    default Button withSku(@NotNull SkuSnowflake sku) {
+        return new ButtonImpl(
+                        getCustomId(), getUniqueId(), getLabel(), getStyle(), getUrl(), sku, isDisabled(), getEmoji())
+                .checkValid();
+    }
+
+    /**
+     * Returns a copy of this button with the provided style.
+     *
+     * <p>You cannot use this convert link buttons.
+     *
+     * @param  style
+     *         The style to use
+     *
+     * @throws IllegalArgumentException
+     *         <ul>
+     *             <li>If the provided {@code style} is null.</li>
+     *             <li>If the provided {@code style} tries to change whether this button is a {@link ButtonStyle#LINK LINK} or {@link ButtonStyle#PREMIUM PREMIUM} button.</li>
+     *         </ul>
+     *
+     * @return New button with the changed style
+     */
+    @NotNull
+    @CheckReturnValue
+    default Button withStyle(@NotNull ButtonStyle style) {
+        Checks.notNull(style, "Style");
+        Checks.check(style != ButtonStyle.UNKNOWN, "Cannot make button with unknown style!");
+        if (getStyle() == ButtonStyle.LINK && style != ButtonStyle.LINK) {
+            throw new IllegalArgumentException("You cannot change a link button to another style!");
+        }
+        if (getStyle() != ButtonStyle.LINK && style == ButtonStyle.LINK) {
+            throw new IllegalArgumentException("You cannot change a styled button to a link button!");
+        }
+        if (getStyle() == ButtonStyle.PREMIUM && style != ButtonStyle.PREMIUM) {
+            throw new IllegalArgumentException("You cannot change a premium button to another style!");
+        }
+        if (getStyle() != ButtonStyle.PREMIUM && style == ButtonStyle.PREMIUM) {
+            throw new IllegalArgumentException("You cannot change a styled button to a premium button!");
+        }
+        return new ButtonImpl(
+                        getCustomId(), getUniqueId(), getLabel(), style, getUrl(), getSku(), isDisabled(), getEmoji())
+                .checkValid();
+    }
+
+    /**
+     * Creates a button with {@link ButtonStyle#PRIMARY PRIMARY} Style.
+     * <br>The button is enabled and has no emoji attached by default.
+     * You can use {@link #asDisabled()} and {@link #withEmoji(Emoji)} to further configure it.
+     *
+     * @param  id
+     *         The custom button ID
+     * @param  label
+     *         The text to display on the button
+     *
+     * @throws IllegalArgumentException
+     *         <ul>
+     *             <li>If any provided argument is null or empty.</li>
+     *             <li>If the character limit for {@code id}, defined by {@link #ID_MAX_LENGTH} as {@value #ID_MAX_LENGTH},
+     *             is exceeded.</li>
+     *             <li>If the character limit for {@code label}, defined by {@link #LABEL_MAX_LENGTH} as {@value #LABEL_MAX_LENGTH},
+     *             is exceeded.</li>
+     *         </ul>
+     *
+     * @return The button instance
+     */
+    @NotNull
+    static Button primary(@NotNull String id, @NotNull String label) {
+        return new ButtonImpl(id, label, ButtonStyle.PRIMARY, false, null).checkValid();
+    }
+
+    /**
+     * Creates a button with {@link ButtonStyle#PRIMARY PRIMARY} Style.
+     * <br>The button is enabled and has no text label.
+     * To use labels you can use {@code primary(id, label).withEmoji(emoji)}
+     *
+     * <p>To disable the button you can use {@link #asDisabled()}.
+     *
+     * @param  id
+     *         The custom button ID
+     * @param  emoji
+     *         The emoji to use as the button label
+     *
+     * @throws IllegalArgumentException
+     *         <ul>
+     *             <li>If any provided argument is null or empty.</li>
+     *             <li>If the character limit for {@code id}, defined by {@link #ID_MAX_LENGTH} as {@value #ID_MAX_LENGTH},
+     *             is exceeded.</li>
+     *         </ul>
+     *
+     * @return The button instance
+     */
+    @NotNull
+    static Button primary(@NotNull String id, @NotNull Emoji emoji) {
+        return new ButtonImpl(id, null, ButtonStyle.PRIMARY, false, emoji).checkValid();
+    }
+
+    /**
+     * Creates a button with {@link ButtonStyle#SECONDARY SECONDARY} Style.
+     * <br>The button is enabled and has no emoji attached by default.
+     * You can use {@link #asDisabled()} and {@link #withEmoji(Emoji)} to further configure it.
+     *
+     * @param  id
+     *         The custom button ID
+     * @param  label
+     *         The text to display on the button
+     *
+     * @throws IllegalArgumentException
+     *         <ul>
+     *             <li>If any provided argument is null or empty.</li>
+     *             <li>If the character limit for {@code id}, defined by {@link #ID_MAX_LENGTH} as {@value #ID_MAX_LENGTH},
+     *             is exceeded.</li>
+     *             <li>If the character limit for {@code label}, defined by {@link #LABEL_MAX_LENGTH} as {@value #LABEL_MAX_LENGTH},
+     *             is exceeded.</li>
+     *         </ul>
+     *
+     * @return The button instance
+     */
+    @NotNull
+    static Button secondary(@NotNull String id, @NotNull String label) {
+        return new ButtonImpl(id, label, ButtonStyle.SECONDARY, false, null).checkValid();
+    }
+
+    /**
+     * Creates a button with {@link ButtonStyle#SECONDARY SECONDARY} Style.
+     * <br>The button is enabled and has no text label.
+     * To use labels you can use {@code secondary(id, label).withEmoji(emoji)}
+     *
+     * <p>To disable the button you can use {@link #asDisabled()}.
+     *
+     * @param  id
+     *         The custom button ID
+     * @param  emoji
+     *         The emoji to use as the button label
+     *
+     * @throws IllegalArgumentException
+     *         <ul>
+     *             <li>If any provided argument is null or empty.</li>
+     *             <li>If the character limit for {@code id}, defined by {@link #ID_MAX_LENGTH} as {@value #ID_MAX_LENGTH},
+     *             is exceeded.</li>
+     *         </ul>
+     *
+     * @return The button instance
+     */
+    @NotNull
+    static Button secondary(@NotNull String id, @NotNull Emoji emoji) {
+        return new ButtonImpl(id, null, ButtonStyle.SECONDARY, false, emoji).checkValid();
+    }
+
+    /**
+     * Creates a button with {@link ButtonStyle#SUCCESS SUCCESS} Style.
+     * <br>The button is enabled and has no emoji attached by default.
+     * You can use {@link #asDisabled()} and {@link #withEmoji(Emoji)} to further configure it.
+     *
+     * @param  id
+     *         The custom button ID
+     * @param  label
+     *         The text to display on the button
+     *
+     * @throws IllegalArgumentException
+     *         <ul>
+     *             <li>If any provided argument is null or empty.</li>
+     *             <li>If the character limit for {@code id}, defined by {@link #ID_MAX_LENGTH} as {@value #ID_MAX_LENGTH},
+     *             is exceeded.</li>
+     *             <li>If the character limit for {@code label}, defined by {@link #LABEL_MAX_LENGTH} as {@value #LABEL_MAX_LENGTH},
+     *             is exceeded.</li>
+     *         </ul>
+     *
+     * @return The button instance
+     */
+    @NotNull
+    static Button success(@NotNull String id, @NotNull String label) {
+        return new ButtonImpl(id, label, ButtonStyle.SUCCESS, false, null).checkValid();
+    }
+
+    /**
+     * Creates a button with {@link ButtonStyle#SUCCESS SUCCESS} Style.
+     * <br>The button is enabled and has no text label.
+     * To use labels you can use {@code success(id, label).withEmoji(emoji)}
+     *
+     * <p>To disable the button you can use {@link #asDisabled()}.
+     *
+     * @param  id
+     *         The custom button ID
+     * @param  emoji
+     *         The emoji to use as the button label
+     *
+     * @throws IllegalArgumentException
+     *         <ul>
+     *             <li>If any provided argument is null or empty.</li>
+     *             <li>If the character limit for {@code id}, defined by {@link #ID_MAX_LENGTH} as {@value #ID_MAX_LENGTH},
+     *             is exceeded.</li>
+     *         </ul>
+     *
+     * @return The button instance
+     */
+    @NotNull
+    static Button success(@NotNull String id, @NotNull Emoji emoji) {
+        return new ButtonImpl(id, null, ButtonStyle.SUCCESS, false, emoji).checkValid();
+    }
+
+    /**
+     * Creates a button with {@link ButtonStyle#DANGER DANGER} Style.
+     * <br>The button is enabled and has no emoji attached by default.
+     * You can use {@link #asDisabled()} and {@link #withEmoji(Emoji)} to further configure it.
+     *
+     * @param  id
+     *         The custom button ID
+     * @param  label
+     *         The text to display on the button
+     *
+     * @throws IllegalArgumentException
+     *         <ul>
+     *             <li>If any provided argument is null or empty.</li>
+     *             <li>If the character limit for {@code id}, defined by {@link #ID_MAX_LENGTH} as {@value #ID_MAX_LENGTH},
+     *             is exceeded.</li>
+     *             <li>If the character limit for {@code label}, defined by {@link #LABEL_MAX_LENGTH} as {@value #LABEL_MAX_LENGTH},
+     *             is exceeded.</li>
+     *         </ul>
+     *
+     * @return The button instance
+     */
+    @NotNull
+    static Button danger(@NotNull String id, @NotNull String label) {
+        return new ButtonImpl(id, label, ButtonStyle.DANGER, false, null).checkValid();
+    }
+
+    /**
+     * Creates a button with {@link ButtonStyle#DANGER DANGER} Style.
+     * <br>The button is enabled and has no text label.
+     * To use labels you can use {@code danger(id, label).withEmoji(emoji)}
+     *
+     * <p>To disable the button you can use {@link #asDisabled()}.
+     *
+     * @param  id
+     *         The custom button ID
+     * @param  emoji
+     *         The emoji to use as the button label
+     *
+     * @throws IllegalArgumentException
+     *         <ul>
+     *             <li>If any provided argument is null or empty.</li>
+     *             <li>If the character limit for {@code id}, defined by {@link #ID_MAX_LENGTH} as {@value #ID_MAX_LENGTH},
+     *             is exceeded.</li>
+     *         </ul>
+     *
+     * @return The button instance
+     */
+    @NotNull
+    static Button danger(@NotNull String id, @NotNull Emoji emoji) {
+        return new ButtonImpl(id, null, ButtonStyle.DANGER, false, emoji).checkValid();
+    }
+
+    /**
+     * Creates a button with {@link ButtonStyle#LINK LINK} Style.
+     * <br>The button is enabled and has no emoji attached by default.
+     * You can use {@link #asDisabled()} and {@link #withEmoji(Emoji)} to further configure it.
+     *
+     * <p>Note that link buttons never send a {@link ButtonInteractionEvent ButtonInteractionEvent}.
+     * These buttons only open a link for the user.
+     *
+     * @param  url
+     *         The target URL for this button
+     * @param  label
+     *         The text to display on the button
+     *
+     * @throws IllegalArgumentException
+     *         <ul>
+     *             <li>If any provided argument is null or empty.</li>
+     *             <li>If the character limit for {@code url}, defined by {@link #URL_MAX_LENGTH} as {@value #URL_MAX_LENGTH},
+     *             is exceeded.</li>
+     *             <li>If the character limit for {@code label}, defined by {@link #LABEL_MAX_LENGTH} as {@value #LABEL_MAX_LENGTH},
+     *             is exceeded.</li>
+     *         </ul>
+     *
+     * @return The button instance
+     */
+    @NotNull
+    static Button link(@NotNull String url, @NotNull String label) {
+        return new ButtonImpl(null, label, ButtonStyle.LINK, url, null, false, null).checkValid();
+    }
+
+    /**
+     * Creates a button with {@link ButtonStyle#LINK LINK} Style.
+     * <br>The button is enabled and has no text label.
+     * To use labels you can use {@code link(url, label).withEmoji(emoji)}
+     *
+     * <p>To disable the button you can use {@link #asDisabled()}.
+     *
+     * <p>Note that link buttons never send a {@link ButtonInteractionEvent ButtonInteractionEvent}.
+     * These buttons only open a link for the user.
+     *
+     * @param  url
+     *         The target URL for this button
+     * @param  emoji
+     *         The emoji to use as the button label
+     *
+     * @throws IllegalArgumentException
+     *         <ul>
+     *             <li>If any provided argument is null or empty.</li>
+     *             <li>If the character limit for {@code url}, defined by {@link #URL_MAX_LENGTH} as {@value #URL_MAX_LENGTH},
+     *             is exceeded.</li>
+     *         </ul>
+     *
+     * @return The button instance
+     */
+    @NotNull
+    static Button link(@NotNull String url, @NotNull Emoji emoji) {
+        return new ButtonImpl(null, null, ButtonStyle.LINK, url, null, false, emoji).checkValid();
+    }
+
+    /**
+     * Creates a button with {@link ButtonStyle#PREMIUM PREMIUM} Style.
+     * <br>The button is enabled by default, and cannot have emojis attached to it.
+     * You can use {@link #asDisabled()} to further configure it.
+     *
+     * <p>Note that premium buttons never send a {@link ButtonInteractionEvent ButtonInteractionEvent}.
+     * These buttons only open a modal about the SKU.
+     *
+     * @param  sku
+     *         The target SKU for this button
+     *
+     * @throws IllegalArgumentException
+     *         If the provided SKU is {@code null}
+     *
+     * @return The button instance
+     */
+    @NotNull
+    static Button premium(@NotNull SkuSnowflake sku) {
+        return new ButtonImpl(null, null, ButtonStyle.PREMIUM, null, sku, false, null).checkValid();
+    }
+
+    /**
+     * Create a button with the provided {@link ButtonStyle style}, URL or ID, and label.
+     * <br>The button is enabled and has no emoji attached by default.
+     * You can use {@link #asDisabled()} and {@link #withEmoji(Emoji)} to further configure it.
+     *
+     * <p>This does not support premium buttons, use {@link #of(ButtonStyle, String, String, Emoji)} instead.
+     *
+     * <p>See {@link #link(String, String)} or {@link #primary(String, String)} for more details.
+     *
+     * @param  style
+     *         The button style
+     * @param  idOrUrl
+     *         Either the ID or URL for this button
+     * @param  label
+     *         The text to display on the button
+     *
+     * @throws IllegalArgumentException
+     *         <ul>
+     *             <li>If any provided argument is null or empty.</li>
+     *             <li>If the requested style is {@link ButtonStyle#PREMIUM PREMIUM}.</li>
+     *             <li>If the id is longer than {@value #ID_MAX_LENGTH}, as defined by {@link #ID_MAX_LENGTH}.</li>
+     *             <li>If the url is longer than {@value #URL_MAX_LENGTH}, as defined by {@link #URL_MAX_LENGTH}.</li>
+     *             <li>If the character limit for {@code label}, defined by {@link #LABEL_MAX_LENGTH} as {@value #LABEL_MAX_LENGTH},
+     *             is exceeded.</li>
+     *         </ul>
+     *
+     * @return The button instance
+     */
+    @NotNull
+    static Button of(@NotNull ButtonStyle style, @NotNull String idOrUrl, @NotNull String label) {
+        Checks.check(style != ButtonStyle.PREMIUM, "Premium buttons don't support labels");
+        if (style == ButtonStyle.LINK) {
+            return link(idOrUrl, label);
+        }
+        return new ButtonImpl(idOrUrl, label, style, false, null).checkValid();
+    }
+
+    /**
+     * Create a button with the provided {@link ButtonStyle style}, URL or ID, and {@link Emoji}.
+     * <br>The button is enabled and has no text label.
+     * To use labels you can use {@code of(style, idOrUrl, label).withEmoji(emoji)}
+     *
+     * <p>This does not support premium buttons, use {@link #of(ButtonStyle, String, String, Emoji)} instead.
+     *
+     * <p>See {@link #link(String, Emoji)} or {@link #primary(String, Emoji)} for more details.
+     *
+     * @param  style
+     *         The button style
+     * @param  idOrUrl
+     *         Either the ID or URL for this button
+     * @param  emoji
+     *         The emoji to use as the button label
+     *
+     * @throws IllegalArgumentException
+     *         <ul>
+     *             <li>If any provided argument is null or empty.</li>
+     *             <li>If the requested style is {@link ButtonStyle#PREMIUM PREMIUM}.</li>
+     *             <li>If the id is longer than {@value #ID_MAX_LENGTH}, as defined by {@link #ID_MAX_LENGTH}.</li>
+     *             <li>If the url is longer than {@value #URL_MAX_LENGTH}, as defined by {@link #URL_MAX_LENGTH}.</li>
+     *         </ul>
+     *
+     * @return The button instance
+     */
+    @NotNull
+    static Button of(@NotNull ButtonStyle style, @NotNull String idOrUrl, @NotNull Emoji emoji) {
+        Checks.check(style != ButtonStyle.PREMIUM, "Premium buttons don't support emojis");
+        if (style == ButtonStyle.LINK) {
+            return link(idOrUrl, emoji);
+        }
+        return new ButtonImpl(idOrUrl, null, style, false, emoji).checkValid();
+    }
+
+    /**
+     * Create an enabled button with the provided {@link ButtonStyle style}, URL or ID, label and {@link Emoji}.
+     *
+     * <p>You can use {@link #asDisabled()} to disable it.
+     *
+     * <p>See {@link #link(String, String)}, {@link #premium(SkuSnowflake)}
+     * or {@link #primary(String, String)} for more details.
+     *
+     * @param  style
+     *         The button style
+     * @param  idOrUrlOrSku
+     *         Either the ID, URL, or SKU for this button
+     * @param  label
+     *         The text to display on the button
+     * @param  emoji
+     *         The emoji to use as the button label
+     *
+     * @throws IllegalArgumentException
+     *         If any of the following scenarios occurs:
+     *         <ul>
+     *             <li>The style is null</li>
+     *             <li>You provide a URL that is null, empty or longer than {@value #URL_MAX_LENGTH} characters, as defined by {@link #URL_MAX_LENGTH}
+     *             or you provide an ID that is null, empty or longer than {@value #ID_MAX_LENGTH} characters, as defined by {@link #ID_MAX_LENGTH}.</li>
+     *             <li>The {@code label} is non-null and longer than {@value #LABEL_MAX_LENGTH} characters, as defined by {@link #LABEL_MAX_LENGTH}.</li>
+     *             <li>The {@code label} is null/empty, and the {@code emoji} is also null.</li>
+     *             <li>A label or emoji was provided for a {@link ButtonStyle#PREMIUM PREMIUM}-style button</li>
+     *         </ul>
+     *
+     * @return The button instance
+     */
+    @NotNull
+    static Button of(
+            @NotNull ButtonStyle style, @NotNull String idOrUrlOrSku, @Nullable String label, @Nullable Emoji emoji) {
+        Checks.notNull(style, "ButtonStyle");
+
+        switch (style) {
+            case LINK:
+                return new ButtonImpl(null, label, style, idOrUrlOrSku, null, false, emoji).checkValid();
+            case PREMIUM:
+                return new ButtonImpl(null, label, style, null, SkuSnowflake.fromId(idOrUrlOrSku), false, emoji)
+                        .checkValid();
+            default:
+                return new ButtonImpl(idOrUrlOrSku, label, style, null, null, false, emoji).checkValid();
+        }
+    }
+}

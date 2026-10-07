@@ -1,0 +1,79 @@
+/*
+ * Copyright 2015 Austin Keener, Michael Ritter, Florian Spieß, and the JFA contributors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package lonter.jfa.internal.handle;
+
+import lonter.jfa.api.events.self.*;
+import lonter.jfa.api.utils.data.DataObject;
+import lonter.jfa.internal.JFAImpl;
+import lonter.jfa.internal.entities.SelfUserImpl;
+
+import java.util.Objects;
+
+public class UserUpdateHandler extends SocketHandler {
+    public UserUpdateHandler(JFAImpl api) {
+        super(api);
+    }
+
+    @Override
+    protected Long handleInternally(DataObject content) {
+        SelfUserImpl self = (SelfUserImpl) getJFA().getSelfUser();
+
+        String name = content.getString("username");
+        String discriminator = content.getString("discriminator");
+        String globalName = content.getString("global_name", null);
+        String avatarId = content.getString("avatar", null);
+        Boolean verified = content.hasKey("verified") ? content.getBoolean("verified") : null;
+        Boolean mfaEnabled = content.hasKey("mfa_enabled") ? content.getBoolean("mfa_enabled") : null;
+
+        if (!Objects.equals(name, self.getName())) {
+            String oldName = self.getName();
+            self.setName(name);
+            getJFA().handleEvent(new SelfUpdateNameEvent(getJFA(), responseNumber, oldName));
+        }
+
+        if (!Objects.equals(discriminator, self.getDiscriminator())) {
+            String oldDiscriminator = self.getDiscriminator();
+            self.setDiscriminator(Short.parseShort(discriminator));
+            getJFA().handleEvent(new SelfUpdateDiscriminatorEvent(getJFA(), responseNumber, oldDiscriminator));
+        }
+
+        if (!Objects.equals(globalName, self.getGlobalName())) {
+            String oldGlobalName = self.getGlobalName();
+            self.setGlobalName(globalName);
+            getJFA().handleEvent(new SelfUpdateGlobalNameEvent(getJFA(), responseNumber, oldGlobalName));
+        }
+
+        if (!Objects.equals(avatarId, self.getAvatarId())) {
+            String oldAvatarId = self.getAvatarId();
+            self.setAvatarId(avatarId);
+            getJFA().handleEvent(new SelfUpdateAvatarEvent(getJFA(), responseNumber, oldAvatarId));
+        }
+
+        if (verified != null && verified != self.isVerified()) {
+            boolean wasVerified = self.isVerified();
+            self.setVerified(verified);
+            getJFA().handleEvent(new SelfUpdateVerifiedEvent(getJFA(), responseNumber, wasVerified));
+        }
+
+        if (mfaEnabled != null && mfaEnabled != self.isMfaEnabled()) {
+            boolean wasMfaEnabled = self.isMfaEnabled();
+            self.setMfaEnabled(mfaEnabled);
+            getJFA().handleEvent(new SelfUpdateMFAEvent(getJFA(), responseNumber, wasMfaEnabled));
+        }
+        return null;
+    }
+}
