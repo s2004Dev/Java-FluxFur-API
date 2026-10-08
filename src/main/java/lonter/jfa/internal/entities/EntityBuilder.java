@@ -238,12 +238,13 @@ public class EntityBuilder extends AbstractEntityBuilder {
                             object);
                     continue;
                 }
-                if (object.getInt("type", -1) != Sticker.Type.GUILD.getId()) {
-                    LOG.error(
-                            "Received GUILD_CREATE with sticker that had an unexpected type. GuildId: {} Type: {} JSON: {}",
-                            guildObj.getId(),
-                            object.getInt("type", -1),
-                            object);
+
+                final var stickerType = object.getInt("type", Sticker.Type.GUILD.getId());
+
+                if(stickerType != Sticker.Type.GUILD.getId()) {
+                    LOG.error("Received GUILD_CREATE with sticker that had an unexpected type. " +
+                        "GuildId: {} Type: {} JSON: {}", guildObj.getId(), stickerType, object);
+
                     continue;
                 }
 
@@ -529,19 +530,26 @@ public class EntityBuilder extends AbstractEntityBuilder {
     }
 
     public void updateUser(UserImpl userObj, DataObject user) {
+        if(!user.hasKey("username"))
+            return;
+
         String oldName = userObj.getName();
-        String newName = user.getString("username");
+        String newName = user.getString("username", oldName);
         String oldGlobalName = userObj.getGlobalName();
-        String newGlobalName = user.getString("global_name", null);
+        String newGlobalName = user.hasKey("global_name") ? user.getString("global_name", null) : oldGlobalName;
         short oldDiscriminator = userObj.getDiscriminatorInt();
-        short newDiscriminator = Short.parseShort(user.getString("discriminator", "0"));
+
+        short newDiscriminator = user.hasKey("discriminator") ? Short.parseShort(user.getString("discriminator", "0"))
+          : oldDiscriminator;
+
         String oldAvatar = userObj.getAvatarId();
-        String newAvatar = user.getString("avatar", null);
+        String newAvatar = user.hasKey("avatar") ? user.getString("avatar", null) : oldAvatar;
         int oldFlags = userObj.getFlagsRaw();
-        int newFlags = user.getInt("public_flags", 0);
+        int newFlags = user.getInt("public_flags", oldFlags);
         User.PrimaryGuild oldPrimaryGuild = userObj.getPrimaryGuild();
+
         User.PrimaryGuild newPrimaryGuild =
-                user.optObject("primary_guild").map(this::createPrimaryGuild).orElse(null);
+          user.optObject("primary_guild").map(this::createPrimaryGuild).orElse(oldPrimaryGuild);
 
         JFAImpl jfa = getJFA();
         long responseNumber = jfa.getResponseTotal();
@@ -2061,8 +2069,14 @@ public class EntityBuilder extends AbstractEntityBuilder {
     public RichStickerImpl createRichSticker(DataObject content) {
         long id = content.getLong("id");
         String name = content.getString("name");
-        Sticker.StickerFormat format = Sticker.StickerFormat.fromId(content.getInt("format_type"));
-        Sticker.Type type = Sticker.Type.fromId(content.getInt("type", -1));
+
+        final var format = Sticker.StickerFormat.fromId(content.getInt("format_type",
+          content.getBoolean("animated", false) ? 2 : 1));
+
+        var type = Sticker.Type.fromId(content.getInt("type", Sticker.Type.GUILD.getId()));
+
+        if(type == Sticker.Type.UNKNOWN)
+            type = Sticker.Type.GUILD;
 
         String description = content.getString("description", "");
         Set<String> tags = Collections.emptySet();
