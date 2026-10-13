@@ -40,7 +40,7 @@ final var jfa = JFABuilder.createDefault(token)
   .build();
 
 // With DefaultShardManagerBuilder
-val shard = DefaultShardManagerBuilder.createDefault(token)
+final var shard = DefaultShardManagerBuilder.createDefault(token)
   .setRestConfig(new RestConfig().setBaseUrl(url))
   .build();
 ```
