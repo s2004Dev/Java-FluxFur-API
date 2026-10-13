@@ -31,10 +31,18 @@ In case you want to use a different instance of Fluxer that isn't FluxFur you ca
 // You can put your instance's endpoint here.
 final var url = "https://examplefluxerhost.com";
 
-final var jfa = JFABuilder.createDefault("token")
+// You can put your bot's token here.
+final var token = "token";
+
+// With JFABuilder
+final var jfa = JFABuilder.createDefault(token)
   .setRestConfig(new RestConfig().setBaseUrl(url))
   .build();
 
+// With DefaultShardManagerBuilder
+val shard = DefaultShardManagerBuilder.createDefault(token)
+  .setRestConfig(new RestConfig().setBaseUrl(url))
+  .build();
 ```
 
 ### Credits
