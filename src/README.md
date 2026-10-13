@@ -31,7 +31,7 @@ In case you want to use a different instance of Fluxer that isn't FluxFur you ca
 // You can put your instance's endpoint here.
 final var url = "https://examplefluxerhost.com";
 
-final var jda = JDABuilder.createDefault("token")
+final var jfa = JFABuilder.createDefault("token")
   .setRestConfig(new RestConfig().setBaseUrl(url))
   .build();
 
