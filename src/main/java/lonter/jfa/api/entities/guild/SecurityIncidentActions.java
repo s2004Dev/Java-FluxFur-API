@@ -109,11 +109,10 @@ public class SecurityIncidentActions {
         if (obj == this) {
             return true;
         }
-        if (!(obj instanceof SecurityIncidentActions)) {
+        if (!(obj instanceof SecurityIncidentActions other)) {
             return false;
         }
-        SecurityIncidentActions other = (SecurityIncidentActions) obj;
-        return this.invitesDisabledUntil == other.invitesDisabledUntil
+      return this.invitesDisabledUntil == other.invitesDisabledUntil
                 && this.directMessagesDisabledUntil == other.directMessagesDisabledUntil;
     }
 

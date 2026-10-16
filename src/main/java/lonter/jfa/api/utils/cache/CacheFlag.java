@@ -88,7 +88,7 @@ public enum CacheFlag {
      */
     ONLINE_STATUS(GatewayIntent.GUILD_PRESENCES),
     /**
-     * Enables cache for {@link Guild#getScheduledEventCache()}
+     * Enables cache for
      *
      * <p>Requires {@link lonter.jfa.api.requests.GatewayIntent#SCHEDULED_EVENTS SCHEDULED_EVENTS} intent to be enabled.
      */

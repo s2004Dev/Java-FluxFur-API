@@ -60,7 +60,6 @@ import lonter.jfa.api.requests.restaction.pagination.AuditLogPaginationAction;
 import lonter.jfa.api.requests.restaction.pagination.BanPaginationAction;
 import lonter.jfa.api.requests.restaction.pagination.PaginationAction;
 import lonter.jfa.api.utils.*;
-import lonter.jfa.api.utils.FluxerAssets;
 import lonter.jfa.api.utils.cache.*;
 import lonter.jfa.api.utils.concurrent.Task;
 import lonter.jfa.internal.interactions.CommandDataImpl;
@@ -79,7 +78,6 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
-import java.util.stream.Collectors;
 
 import javax.annotation.CheckReturnValue;
 import org.jetbrains.annotations.NotNull;
@@ -821,15 +819,6 @@ public interface Guild extends IGuildChannelContainer<GuildChannel>, ISnowflake,
         return iconId == null ? null : FluxerAssets.guildIcon(format, getId(), iconId);
     }
 
-    /**
-     * The Features of the {@link lonter.jfa.api.entities.Guild Guild}.
-     *
-     * <p>Features can be updated using {@link GuildManager#setFeatures(Collection)}.
-     *
-     * @return Never-null, unmodifiable Set containing all of the Guild's features.
-     *
-     * @see <a target="_blank" href="https://fluxer.com/developers/docs/resources/guild#guild-object-guild-features">List of Features</a>
-     */
     @NotNull
     @Unmodifiable
     Set<String> getFeatures();
@@ -2581,8 +2570,9 @@ public interface Guild extends IGuildChannelContainer<GuildChannel>, ISnowflake,
     @CheckReturnValue
     default RestAction<RichCustomEmoji> retrieveEmoji(@NotNull CustomEmoji emoji) {
         Checks.notNull(emoji, "Emoji");
-        if (emoji instanceof RichCustomEmoji && ((RichCustomEmoji) emoji).getGuild() != null) {
-            Checks.check(((RichCustomEmoji) emoji).getGuild().equals(this), "Emoji must be from the same Guild!");
+        if (emoji instanceof RichCustomEmoji) {
+          ((RichCustomEmoji) emoji).getGuild();
+          Checks.check(((RichCustomEmoji) emoji).getGuild().equals(this), "Emoji must be from the same Guild!");
         }
 
         JFA jfa = getJFA();
@@ -2590,9 +2580,8 @@ public interface Guild extends IGuildChannelContainer<GuildChannel>, ISnowflake,
                 jfa,
                 RichCustomEmoji.class,
                 () -> {
-                    if (emoji instanceof RichCustomEmoji) {
-                        RichCustomEmoji richEmoji = (RichCustomEmoji) emoji;
-                        if (richEmoji.getOwner() != null
+                    if (emoji instanceof RichCustomEmoji richEmoji) {
+                      if (richEmoji.getOwner() != null
                                 || !getSelfMember().hasPermission(Permission.MANAGE_GUILD_EXPRESSIONS)) {
                             return richEmoji;
                         }
@@ -2818,7 +2807,7 @@ public interface Guild extends IGuildChannelContainer<GuildChannel>, ISnowflake,
      *          .limit(1)
      *          .queue(list -> {
      *             if (list.isEmpty()) return;
-     *             AuditLogEntry entry = list.get(0);
+     *             AuditLogEntry entry = list.getFirst();
      *             String message = String.format("%#s banned %#s with reason %s",
      *                                            entry.getUser(), event.getUser(), entry.getReason());
      *             modLog.forEach(channel ->
@@ -3268,7 +3257,7 @@ public interface Guild extends IGuildChannelContainer<GuildChannel>, ISnowflake,
         }
 
         List<Role> rolesWithoutPublicRole =
-                roles.stream().filter(role -> !role.isPublicRole()).collect(Collectors.toList());
+                roles.stream().filter(role -> !role.isPublicRole()).toList();
         if (rolesWithoutPublicRole.isEmpty()) {
             return loadMembers();
         }
@@ -3627,7 +3616,7 @@ public interface Guild extends IGuildChannelContainer<GuildChannel>, ISnowflake,
      */
     @NotNull
     @CheckReturnValue
-    default Task<List<Member>> retrieveMembersByIds(@NotNull long... ids) {
+    default Task<List<Member>> retrieveMembersByIds(long @NotNull ... ids) {
         boolean presence = getJFA().getGatewayIntents().contains(GatewayIntent.GUILD_PRESENCES);
         return retrieveMembersByIds(presence, ids);
     }
@@ -3790,7 +3779,7 @@ public interface Guild extends IGuildChannelContainer<GuildChannel>, ISnowflake,
      */
     @NotNull
     @CheckReturnValue
-    Task<List<Member>> retrieveMembersByIds(boolean includePresence, @NotNull long... ids);
+    Task<List<Member>> retrieveMembersByIds(boolean includePresence, long @NotNull ... ids);
 
     /**
      * Queries a list of members using a radix tree based on the provided name prefix.
@@ -4255,7 +4244,7 @@ public interface Guild extends IGuildChannelContainer<GuildChannel>, ISnowflake,
      * Bans up to 200 of the provided users.
      * <br>To set a ban reason, use {@link AuditableRestAction#reason(String)}.
      *
-     * <p>The {@link BulkBanResponse} includes a list of {@link BulkBanResponse#getFailedUsers() failed users},
+     * <p>The {@link BulkBanResponse} includes a list of {@link BulkBanResponse#failedUsers() failed users},
      * which is populated with users that could not be banned, for instance due to some internal server error or permission issues.
      * This list of failed users also includes all users that were already banned.
      *
@@ -4297,7 +4286,7 @@ public interface Guild extends IGuildChannelContainer<GuildChannel>, ISnowflake,
      * Bans up to 200 of the provided users.
      * <br>To set a ban reason, use {@link AuditableRestAction#reason(String)}.
      *
-     * <p>The {@link BulkBanResponse} includes a list of {@link BulkBanResponse#getFailedUsers() failed users},
+     * <p>The {@link BulkBanResponse} includes a list of {@link BulkBanResponse#failedUsers() failed users},
      * which is populated with users that could not be banned, for instance due to some internal server error or permission issues.
      * This list of failed users also includes all users that were already banned.
      *
@@ -4740,7 +4729,7 @@ public interface Guild extends IGuildChannelContainer<GuildChannel>, ISnowflake,
      *
      * <p>This is logically equivalent to:
      * {@snippet lang="java":
-     * Set<Role> roles = new HashSet<>(member.getRoles());
+     * Set<Role> roles = new HashSet<Role>(member.getRoles());
      * roles.addAll(rolesToAdd);
      * roles.removeAll(rolesToRemove);
      * RestAction<Void> action = guild.modifyMemberRoles(member, roles);
@@ -6383,102 +6372,90 @@ public interface Guild extends IGuildChannelContainer<GuildChannel>, ISnowflake,
         }
     }
 
+  /**
+   * Represents a Ban object.
+   *
+   * @see #retrieveBanList()
+   * @see <a href="https://fluxer.com/developers/docs/resources/guild#ban-object" target="_blank">Fluxer Docs: Ban Object</a>
+   */
+  record Ban(User user, String reason) {
+
     /**
-     * Represents a Ban object.
+     * The {@link User User} that was banned
      *
-     * @see #retrieveBanList()
-     * @see <a href="https://fluxer.com/developers/docs/resources/guild#ban-object" target="_blank">Fluxer Docs: Ban Object</a>
+     * @return The banned User
      */
-    class Ban {
-        protected final User user;
-        protected final String reason;
-
-        public Ban(User user, String reason) {
-            this.user = user;
-            this.reason = reason;
-        }
-
-        /**
-         * The {@link lonter.jfa.api.entities.User User} that was banned
-         *
-         * @return The banned User
-         */
-        @NotNull
-        public User getUser() {
-            return user;
-        }
-
-        /**
-         * The reason why this user was banned
-         *
-         * @return The reason for this ban, or {@code null}
-         */
-        @Nullable
-        public String getReason() {
-            return reason;
-        }
-
-        @Override
-        public String toString() {
-            return new EntityString(this)
-                    .addMetadata("user", user)
-                    .addMetadata("reason", reason)
-                    .toString();
-        }
+    @Override
+    @NotNull
+    public User user() {
+      return user;
     }
 
     /**
-     * Meta-Data for a Guild
+     * The reason why this user was banned
+     *
+     * @return The reason for this ban, or {@code null}
      */
-    class MetaData {
-        private final int memberLimit;
-        private final int presenceLimit;
-        private final int approximatePresences;
-        private final int approximateMembers;
-
-        public MetaData(int memberLimit, int presenceLimit, int approximatePresences, int approximateMembers) {
-            this.memberLimit = memberLimit;
-            this.presenceLimit = presenceLimit;
-            this.approximatePresences = approximatePresences;
-            this.approximateMembers = approximateMembers;
-        }
-
-        /**
-         * The active member limit for this guild.
-         * <br>This limit restricts how many users can be member for this guild at once.
-         *
-         * @return The member limit
-         */
-        public int getMemberLimit() {
-            return memberLimit;
-        }
-
-        /**
-         * The active presence limit for this guild.
-         * <br>This limit restricts how many users can be connected/online for this guild at once.
-         *
-         * @return The presence limit
-         */
-        public int getPresenceLimit() {
-            return presenceLimit;
-        }
-
-        /**
-         * The approximate number of online members in this guild.
-         *
-         * @return The approximate presence count
-         */
-        public int getApproximatePresences() {
-            return approximatePresences;
-        }
-
-        /**
-         * The approximate number of members in this guild.
-         *
-         * @return The approximate member count
-         */
-        public int getApproximateMembers() {
-            return approximateMembers;
-        }
+    @Override
+    @Nullable
+    public String reason() {
+      return reason;
     }
+
+    @Override
+    public @NotNull String toString() {
+      return new EntityString(this)
+        .addMetadata("user", user)
+        .addMetadata("reason", reason)
+        .toString();
+    }
+  }
+
+  /**
+   * Meta-Data for a Guild
+   */
+  record MetaData(int memberLimit, int presenceLimit, int approximatePresences, int approximateMembers) {
+
+    /**
+     * The active member limit for this guild.
+     * <br>This limit restricts how many users can be member for this guild at once.
+     *
+     * @return The member limit
+     */
+    @Override
+    public int memberLimit() {
+      return memberLimit;
+    }
+
+    /**
+     * The active presence limit for this guild.
+     * <br>This limit restricts how many users can be connected/online for this guild at once.
+     *
+     * @return The presence limit
+     */
+    @Override
+    public int presenceLimit() {
+      return presenceLimit;
+    }
+
+    /**
+     * The approximate number of online members in this guild.
+     *
+     * @return The approximate presence count
+     */
+    @Override
+    public int approximatePresences() {
+      return approximatePresences;
+    }
+
+    /**
+     * The approximate number of members in this guild.
+     *
+     * @return The approximate member count
+     */
+    @Override
+    public int approximateMembers() {
+      return approximateMembers;
+    }
+  }
 }

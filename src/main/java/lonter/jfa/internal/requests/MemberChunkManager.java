@@ -86,7 +86,7 @@ public class MemberChunkManager {
         init();
         DataObject request = DataObject.empty()
                 .put("guild_id", guild.getId())
-                .put("limit", Math.min(100, Math.max(1, limit)))
+                .put("limit", Math.clamp(limit, 1, 100))
                 .put("query", query);
 
         ChunkRequest chunkRequest = new ChunkRequest(handler, guild, request);

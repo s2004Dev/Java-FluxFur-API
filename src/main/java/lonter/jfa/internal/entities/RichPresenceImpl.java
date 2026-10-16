@@ -153,11 +153,10 @@ public class RichPresenceImpl extends ActivityImpl implements RichPresence {
         if (this == o) {
             return true;
         }
-        if (!(o instanceof RichPresenceImpl)) {
+        if (!(o instanceof RichPresenceImpl p)) {
             return false;
         }
-        RichPresenceImpl p = (RichPresenceImpl) o;
-        return applicationId == p.applicationId
+      return applicationId == p.applicationId
                 && Objects.equals(name, p.name)
                 && Objects.equals(url, p.url)
                 && Objects.equals(type, p.type)

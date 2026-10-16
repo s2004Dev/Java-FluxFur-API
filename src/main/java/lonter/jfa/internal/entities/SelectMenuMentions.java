@@ -288,30 +288,36 @@ public class SelectMenuMentions implements Mentions {
                     }
                     break;
                 case ROLE:
-                    if (mentionable instanceof Member) {
-                        boolean mentioned = ((Member) mentionable)
-                                .getUnsortedRoles().stream()
-                                        .anyMatch(role -> isMentioned(role, Message.MentionType.ROLE));
-                        if (mentioned) {
-                            return true;
-                        }
-                    } else if (mentionable instanceof User) {
-                        boolean mentioned = getMembers().stream()
-                                .filter(it -> it.getIdLong() == mentionable.getIdLong())
-                                .findFirst()
-                                .map(member -> isMentioned(member, Message.MentionType.ROLE))
-                                .orElse(false);
-                        if (mentioned) {
-                            return true;
-                        }
-                    } else if (mentionable instanceof Role) {
-                        boolean mentioned = resolved.optObject("roles")
-                                .map(obj -> obj.hasKey(id))
-                                .orElse(false);
-                        if (mentioned) {
-                            return true;
-                        }
+                  switch (mentionable) {
+                    case Member member1 -> {
+                      boolean mentioned = member1
+                        .getUnsortedRoles().stream()
+                        .anyMatch(role -> isMentioned(role, Message.MentionType.ROLE));
+                      if (mentioned) {
+                        return true;
+                      }
                     }
+                    case User user -> {
+                      boolean mentioned = getMembers().stream()
+                        .filter(it -> it.getIdLong() == mentionable.getIdLong())
+                        .findFirst()
+                        .map(member -> isMentioned(member, Message.MentionType.ROLE))
+                        .orElse(false);
+                      if (mentioned) {
+                        return true;
+                      }
+                    }
+                    case Role role -> {
+                      boolean mentioned = resolved.optObject("roles")
+                        .map(obj -> obj.hasKey(id))
+                        .orElse(false);
+                      if (mentioned) {
+                        return true;
+                      }
+                    }
+                    default -> {
+                    }
+                  }
                     break;
                 case CHANNEL:
                     if (mentionable instanceof GuildChannel && getChannels().contains(mentionable)) {

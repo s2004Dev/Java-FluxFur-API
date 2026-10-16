@@ -18,17 +18,12 @@ package lonter.jfa.api.entities;
 
 import lonter.jfa.internal.utils.EntityString;
 
-import java.util.Objects;
-
 import org.jetbrains.annotations.NotNull;
 
 /**
- * Meta data for the vanity invite of a guild
+ * Metadata for the vanity invite of a guild
  */
-public class VanityInvite {
-    private final String code;
-    private final int uses;
-
+public record VanityInvite(String code, int uses) {
     public VanityInvite(@NotNull String code, int uses) {
         this.code = code;
         this.uses = uses;
@@ -39,8 +34,9 @@ public class VanityInvite {
      *
      * @return The code
      */
+    @Override
     @NotNull
-    public String getCode() {
+    public String code() {
         return code;
     }
 
@@ -50,7 +46,8 @@ public class VanityInvite {
      *
      * @return The invite uses
      */
-    public int getUses() {
+    @Override
+    public int uses() {
         return uses;
     }
 
@@ -61,7 +58,7 @@ public class VanityInvite {
      */
     @NotNull
     public String getUrl() {
-        return "https://fluxer.gg/" + getCode();
+        return "https://fluxer.gg/" + code();
     }
 
     @Override
@@ -69,20 +66,14 @@ public class VanityInvite {
         if (this == obj) {
             return true;
         }
-        if (!(obj instanceof VanityInvite)) {
+        if (!(obj instanceof VanityInvite(String code1, int uses1))) {
             return false;
         }
-        VanityInvite other = (VanityInvite) obj;
-        return uses == other.uses && code.equals(other.code);
+      return uses == uses1 && code.equals(code1);
     }
 
     @Override
-    public int hashCode() {
-        return Objects.hash(code, uses);
-    }
-
-    @Override
-    public String toString() {
+    public @NotNull String toString() {
         return new EntityString(this).addMetadata("code", code).toString();
     }
 }

@@ -150,11 +150,10 @@ public class ThumbnailImpl extends AbstractComponentImpl
         if (o == this) {
             return true;
         }
-        if (!(o instanceof ThumbnailImpl)) {
+        if (!(o instanceof ThumbnailImpl thumbnail)) {
             return false;
         }
-        ThumbnailImpl thumbnail = (ThumbnailImpl) o;
-        return uniqueId == thumbnail.uniqueId
+      return uniqueId == thumbnail.uniqueId
                 && spoiler == thumbnail.spoiler
                 && Objects.equals(url, thumbnail.url)
                 && Objects.equals(description, thumbnail.description);

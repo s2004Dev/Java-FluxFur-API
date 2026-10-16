@@ -70,11 +70,10 @@ public class TeamMemberImpl implements TeamMember {
         if (obj == this) {
             return true;
         }
-        if (!(obj instanceof TeamMemberImpl)) {
+        if (!(obj instanceof TeamMemberImpl member)) {
             return false;
         }
-        TeamMemberImpl member = (TeamMemberImpl) obj;
-        return member.teamId == this.teamId && member.user.equals(this.user);
+      return member.teamId == this.teamId && member.user.equals(this.user);
     }
 
     @Override

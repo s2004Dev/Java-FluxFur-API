@@ -273,14 +273,13 @@ public class RoleConnectionMetadata implements SerializableData {
 
     @Override
     public boolean equals(Object obj) {
-        if (!(obj instanceof RoleConnectionMetadata)) {
+        if (!(obj instanceof RoleConnectionMetadata o)) {
             return false;
         }
         if (this == obj) {
             return true;
         }
-        RoleConnectionMetadata o = (RoleConnectionMetadata) obj;
-        return this.type == o.type
+      return this.type == o.type
                 && this.key.equals(o.key)
                 && this.name.equals(o.name)
                 && this.description.equals(o.description);

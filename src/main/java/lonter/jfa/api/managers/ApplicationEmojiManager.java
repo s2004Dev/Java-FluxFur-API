@@ -72,7 +72,7 @@ public interface ApplicationEmojiManager extends Manager<ApplicationEmojiManager
     @NotNull
     @Override
     @CheckReturnValue
-    ApplicationEmojiManager reset(@NotNull long... fields);
+    ApplicationEmojiManager reset(long @NotNull ... fields);
 
     /**
      * The target {@link ApplicationEmoji} that will be modified by this Manager

@@ -81,7 +81,7 @@ public class DataObject implements SerializableData {
      * @return A DataObject instance for the provided payload
      */
     @NotNull
-    public static DataObject fromJson(@NotNull byte[] data) {
+    public static DataObject fromJson(byte @NotNull [] data) {
         Map<String, Object> map = SerializationUtil.fromJson(SerializationUtil.getMapType(), data);
         return new DataObject(map);
     }
@@ -152,7 +152,7 @@ public class DataObject implements SerializableData {
      * @return A DataObject instance for the provided payload
      */
     @NotNull
-    public static DataObject fromETF(@NotNull byte[] data) {
+    public static DataObject fromETF(byte @NotNull [] data) {
         Checks.notNull(data, "Data");
         try {
             Map<String, Object> map = ExTermDecoder.unpackMap(ByteBuffer.wrap(data));
@@ -736,8 +736,7 @@ public class DataObject implements SerializableData {
      *
      * @return byte array containing the JSON representation of this object
      */
-    @NotNull
-    public byte[] toJson() {
+    public byte @NotNull [] toJson() {
         return SerializationUtil.toJson(data);
     }
 
@@ -746,8 +745,7 @@ public class DataObject implements SerializableData {
      *
      * @return byte array containing the encoded ETF term
      */
-    @NotNull
-    public byte[] toETF() {
+    public byte @NotNull [] toETF() {
         ByteBuffer buffer = ExTermEncoder.pack(data);
         return Arrays.copyOfRange(buffer.array(), buffer.arrayOffset(), buffer.arrayOffset() + buffer.limit());
     }

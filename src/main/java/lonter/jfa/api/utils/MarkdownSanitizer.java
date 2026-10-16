@@ -34,7 +34,7 @@ public class MarkdownSanitizer {
     /** Normal characters that are not special for markdown, ignoring this has no effect */
     public static final int NORMAL = 0;
     /** Bold region such as "**Hello**" */
-    public static final int BOLD = 1 << 0;
+    public static final int BOLD = 1;
     /** Italics region for underline such as "_Hello_" */
     public static final int ITALICS_U = 1 << 1;
     /** Italics region for asterisks such as "*Hello*" */
@@ -318,15 +318,12 @@ public class MarkdownSanitizer {
             }
         }
         char current = sequence.charAt(index);
-        switch (current) {
-            case '*':
-                return doesEscape(index, sequence) ? ESCAPED_ITALICS_A : ITALICS_A;
-            case '_':
-                return doesEscape(index, sequence) ? ESCAPED_ITALICS_U : ITALICS_U;
-            case '`':
-                return doesEscape(index, sequence) ? ESCAPED_MONO : MONO;
-        }
-        return NORMAL;
+      return switch (current) {
+        case '*' -> doesEscape(index, sequence) ? ESCAPED_ITALICS_A : ITALICS_A;
+        case '_' -> doesEscape(index, sequence) ? ESCAPED_ITALICS_U : ITALICS_U;
+        case '`' -> doesEscape(index, sequence) ? ESCAPED_MONO : MONO;
+        default -> NORMAL;
+      };
     }
 
     private boolean hasCollision(int index, @NotNull String sequence, char c) {
@@ -421,45 +418,20 @@ public class MarkdownSanitizer {
     @NotNull
     private String handleRegion(int start, int end, @NotNull String sequence, int region) {
         String resolved = sequence.substring(start, end);
-        switch (region) {
-            case BLOCK:
-            case MONO:
-            case MONO_TWO:
-                return resolved;
-            default:
-                return new MarkdownSanitizer(ignored, strategy).compute(resolved);
-        }
+      return switch (region) {
+        case BLOCK, MONO, MONO_TWO -> resolved;
+        default -> new MarkdownSanitizer(ignored, strategy).compute(resolved);
+      };
     }
 
     private int getDelta(int region) {
-        switch (region) {
-            case ESCAPED_BLOCK:
-            case ESCAPED_BOLD | ITALICS_A:
-            case BLOCK:
-            case BOLD | ITALICS_A:
-                return 3;
-            case ESCAPED_MONO_TWO:
-            case ESCAPED_BOLD:
-            case ESCAPED_UNDERLINE:
-            case ESCAPED_SPOILER:
-            case ESCAPED_STRIKE:
-            case MONO_TWO:
-            case BOLD:
-            case UNDERLINE:
-            case SPOILER:
-            case STRIKE:
-                return 2;
-            case ESCAPED_ITALICS_A:
-            case ESCAPED_ITALICS_U:
-            case ESCAPED_MONO:
-            case ESCAPED_QUOTE:
-            case ITALICS_A:
-            case ITALICS_U:
-            case MONO:
-                return 1;
-            default:
-                return 0;
-        }
+      return switch (region) {
+        case ESCAPED_BLOCK, ESCAPED_BOLD | ITALICS_A, BLOCK, BOLD | ITALICS_A -> 3;
+        case ESCAPED_MONO_TWO, ESCAPED_BOLD, ESCAPED_UNDERLINE, ESCAPED_SPOILER, ESCAPED_STRIKE, MONO_TWO, BOLD,
+             UNDERLINE, SPOILER, STRIKE -> 2;
+        case ESCAPED_ITALICS_A, ESCAPED_ITALICS_U, ESCAPED_MONO, ESCAPED_QUOTE, ITALICS_A, ITALICS_U, MONO -> 1;
+        default -> 0;
+      };
     }
 
     private void applyStrategy(int region, @NotNull String seq, @NotNull StringBuilder builder) {

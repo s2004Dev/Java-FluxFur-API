@@ -374,11 +374,10 @@ public class AuditLogEntry implements ISnowflake {
 
     @Override
     public boolean equals(Object obj) {
-        if (!(obj instanceof AuditLogEntry)) {
+        if (!(obj instanceof AuditLogEntry other)) {
             return false;
         }
-        AuditLogEntry other = (AuditLogEntry) obj;
-        return other.id == id && other.targetId == targetId;
+      return other.id == id && other.targetId == targetId;
     }
 
     @Override

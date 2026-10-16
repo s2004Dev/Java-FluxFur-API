@@ -108,7 +108,7 @@ public interface ScheduledEventManager extends Manager<ScheduledEventManager> {
     @NotNull
     @Override
     @CheckReturnValue
-    ScheduledEventManager reset(@NotNull long... fields);
+    ScheduledEventManager reset(long @NotNull ... fields);
 
     /**
      * The target {@link ScheduledEvent} for this manager

@@ -126,7 +126,7 @@ public interface CustomEmoji extends Emoji, IMentionable {
 
     /**
      * Usable representation of this emoji (used to display in the client just like mentions with a specific format)
-     * <br>Emojis are used with the format <code>&lt;:{@link #getName getName()}:{@link #getId getId()}&gt;</code>
+     * <br>Emojis are used with the format <code>&lt;:{@link #name getName()}:{@link #getId getId()}&gt;</code>
      *
      * @return A usable String representation for this emoji
      *
@@ -135,7 +135,7 @@ public interface CustomEmoji extends Emoji, IMentionable {
     @NotNull
     @Override
     default String getAsMention() {
-        return (isAnimated() ? "<a:" : "<:") + getName() + ":" + getId() + ">";
+        return (isAnimated() ? "<a:" : "<:") + name() + ":" + getId() + ">";
     }
 
     @NotNull

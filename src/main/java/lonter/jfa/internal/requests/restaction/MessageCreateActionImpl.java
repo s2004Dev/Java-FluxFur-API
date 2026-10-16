@@ -40,7 +40,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.function.BooleanSupplier;
-import java.util.stream.Collectors;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -164,7 +163,7 @@ public class MessageCreateActionImpl extends RestActionImpl<Message>
             guildId = ((GuildChannel) channel).getGuild().getId();
         }
         this.messageReference = new MessageReferenceData(
-                MessageReference.MessageReferenceType.DEFAULT, guildId, channel.getId(), messageId);
+          MessageReference.MessageReferenceType.DEFAULT, guildId, channel.getId(), messageId);
         return this;
     }
 
@@ -195,9 +194,8 @@ public class MessageCreateActionImpl extends RestActionImpl<Message>
                 "Cannot send more than %d stickers in a message!",
                 Message.MAX_STICKER_COUNT);
         for (StickerSnowflake sticker : stickers) {
-            if (sticker instanceof GuildSticker) {
-                GuildSticker guildSticker = (GuildSticker) sticker;
-                Checks.check(
+            if (sticker instanceof GuildSticker guildSticker) {
+              Checks.check(
                         guildSticker.isAvailable(),
                         "Cannot use unavailable sticker. The guild may have lost the boost level required to use this sticker!");
                 Checks.check(
@@ -206,7 +204,7 @@ public class MessageCreateActionImpl extends RestActionImpl<Message>
             }
         }
 
-        this.stickers.addAll(stickers.stream().map(StickerSnowflake::getId).collect(Collectors.toList()));
+        this.stickers.addAll(stickers.stream().map(StickerSnowflake::getId).toList());
         return this;
     }
 
@@ -222,7 +220,7 @@ public class MessageCreateActionImpl extends RestActionImpl<Message>
         return (MessageCreateAction) super.deadline(timestamp);
     }
 
-    private class MessageReferenceData implements SerializableData {
+    private static class MessageReferenceData implements SerializableData {
         private final MessageReference.MessageReferenceType type;
         private final String messageId;
         private final String channelId;

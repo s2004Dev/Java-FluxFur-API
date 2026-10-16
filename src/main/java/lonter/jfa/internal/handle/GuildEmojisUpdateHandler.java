@@ -126,8 +126,8 @@ public class GuildEmojisUpdateHandler extends SocketHandler {
             return;
         }
 
-        if (!Objects.equals(oldEmoji.getName(), newEmoji.getName())) {
-            getJFA().handleEvent(new EmojiUpdateNameEvent(getJFA(), responseNumber, newEmoji, oldEmoji.getName()));
+        if (!Objects.equals(oldEmoji.name(), newEmoji.name())) {
+            getJFA().handleEvent(new EmojiUpdateNameEvent(getJFA(), responseNumber, newEmoji, oldEmoji.name()));
         }
 
         if (!CollectionUtils.isEqualCollection(oldEmoji.getRoles(), newEmoji.getRoles())) {

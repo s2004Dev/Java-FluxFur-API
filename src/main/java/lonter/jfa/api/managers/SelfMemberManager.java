@@ -89,7 +89,7 @@ public interface SelfMemberManager extends Manager<SelfMemberManager> {
     @NotNull
     @Override
     @CheckReturnValue
-    SelfMemberManager reset(@NotNull long... fields);
+    SelfMemberManager reset(long @NotNull ... fields);
 
     /**
      * Sets the nickname for the guild member of the currently logged in account.

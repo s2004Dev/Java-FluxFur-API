@@ -30,7 +30,7 @@ public class CombinedAudio {
     protected List<User> users;
     protected short[] audioData;
 
-    public CombinedAudio(@NotNull List<User> users, @NotNull short[] audioData) {
+    public CombinedAudio(@NotNull List<User> users, short @NotNull [] audioData) {
         this.users = Collections.unmodifiableList(users);
         this.audioData = audioData;
     }
@@ -62,8 +62,7 @@ public class CombinedAudio {
      *
      * @return Never-null byte array of PCM data defined by {@link lonter.jfa.api.audio.AudioReceiveHandler#OUTPUT_FORMAT AudioReceiveHandler.OUTPUT_FORMAT}
      */
-    @NotNull
-    public byte[] getAudioData(double volume) {
+    public byte @NotNull [] getAudioData(double volume) {
         return OpusPacket.getAudioData(audioData, volume);
     }
 }

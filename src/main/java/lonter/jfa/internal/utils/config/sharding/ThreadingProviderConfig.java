@@ -25,23 +25,21 @@ import java.util.concurrent.ThreadFactory;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class ThreadingProviderConfig {
-    private final ThreadPoolProvider<? extends ScheduledExecutorService> rateLimitSchedulerProvider;
-    private final ThreadPoolProvider<? extends ExecutorService> rateLimitElasticProvider;
-    private final ThreadPoolProvider<? extends ScheduledExecutorService> gatewayPoolProvider;
-    private final ThreadPoolProvider<? extends ExecutorService> callbackPoolProvider;
-    private final ThreadPoolProvider<? extends ExecutorService> eventPoolProvider;
-    private final ThreadPoolProvider<? extends ScheduledExecutorService> audioPoolProvider;
-    private final ThreadFactory threadFactory;
-
+public record ThreadingProviderConfig(ThreadPoolProvider<? extends ScheduledExecutorService> rateLimitSchedulerProvider,
+                                      ThreadPoolProvider<? extends ExecutorService> rateLimitElasticProvider,
+                                      ThreadPoolProvider<? extends ScheduledExecutorService> gatewayPoolProvider,
+                                      ThreadPoolProvider<? extends ExecutorService> callbackPoolProvider,
+                                      ThreadPoolProvider<? extends ExecutorService> eventPoolProvider,
+                                      ThreadPoolProvider<? extends ScheduledExecutorService> audioPoolProvider,
+                                      ThreadFactory threadFactory) {
     public ThreadingProviderConfig(
-            @Nullable ThreadPoolProvider<? extends ScheduledExecutorService> rateLimitSchedulerProvider,
-            @Nullable ThreadPoolProvider<? extends ExecutorService> rateLimitElasticProvider,
-            @Nullable ThreadPoolProvider<? extends ScheduledExecutorService> gatewayPoolProvider,
-            @Nullable ThreadPoolProvider<? extends ExecutorService> callbackPoolProvider,
-            @Nullable ThreadPoolProvider<? extends ExecutorService> eventPoolProvider,
-            @Nullable ThreadPoolProvider<? extends ScheduledExecutorService> audioPoolProvider,
-            @Nullable ThreadFactory threadFactory) {
+      @Nullable ThreadPoolProvider<? extends ScheduledExecutorService> rateLimitSchedulerProvider,
+      @Nullable ThreadPoolProvider<? extends ExecutorService> rateLimitElasticProvider,
+      @Nullable ThreadPoolProvider<? extends ScheduledExecutorService> gatewayPoolProvider,
+      @Nullable ThreadPoolProvider<? extends ExecutorService> callbackPoolProvider,
+      @Nullable ThreadPoolProvider<? extends ExecutorService> eventPoolProvider,
+      @Nullable ThreadPoolProvider<? extends ScheduledExecutorService> audioPoolProvider,
+      @Nullable ThreadFactory threadFactory) {
         this.rateLimitSchedulerProvider = rateLimitSchedulerProvider;
         this.rateLimitElasticProvider = rateLimitElasticProvider;
         this.gatewayPoolProvider = gatewayPoolProvider;
@@ -51,8 +49,9 @@ public class ThreadingProviderConfig {
         this.threadFactory = threadFactory;
     }
 
+    @Override
     @Nullable
-    public ThreadFactory getThreadFactory() {
+    public ThreadFactory threadFactory() {
         return threadFactory;
     }
 
@@ -86,33 +85,39 @@ public class ThreadingProviderConfig {
         shutdown(audioPoolProvider);
     }
 
+    @Override
     @Nullable
-    public ThreadPoolProvider<? extends ScheduledExecutorService> getRateLimitSchedulerProvider() {
+    public ThreadPoolProvider<? extends ScheduledExecutorService> rateLimitSchedulerProvider() {
         return rateLimitSchedulerProvider;
     }
 
+    @Override
     @Nullable
-    public ThreadPoolProvider<? extends ExecutorService> getRateLimitElasticProvider() {
+    public ThreadPoolProvider<? extends ExecutorService> rateLimitElasticProvider() {
         return rateLimitElasticProvider;
     }
 
+    @Override
     @Nullable
-    public ThreadPoolProvider<? extends ScheduledExecutorService> getGatewayPoolProvider() {
+    public ThreadPoolProvider<? extends ScheduledExecutorService> gatewayPoolProvider() {
         return gatewayPoolProvider;
     }
 
+    @Override
     @Nullable
-    public ThreadPoolProvider<? extends ExecutorService> getCallbackPoolProvider() {
+    public ThreadPoolProvider<? extends ExecutorService> callbackPoolProvider() {
         return callbackPoolProvider;
     }
 
+    @Override
     @Nullable
-    public ThreadPoolProvider<? extends ExecutorService> getEventPoolProvider() {
+    public ThreadPoolProvider<? extends ExecutorService> eventPoolProvider() {
         return eventPoolProvider;
     }
 
+    @Override
     @Nullable
-    public ThreadPoolProvider<? extends ScheduledExecutorService> getAudioPoolProvider() {
+    public ThreadPoolProvider<? extends ScheduledExecutorService> audioPoolProvider() {
         return audioPoolProvider;
     }
 

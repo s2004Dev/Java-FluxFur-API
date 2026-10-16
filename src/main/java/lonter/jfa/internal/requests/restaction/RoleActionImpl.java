@@ -31,7 +31,6 @@ import lonter.jfa.internal.entities.GuildImpl;
 import lonter.jfa.internal.utils.Checks;
 import okhttp3.RequestBody;
 
-import java.awt.*;
 import java.util.concurrent.TimeUnit;
 import java.util.function.BooleanSupplier;
 

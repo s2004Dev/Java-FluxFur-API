@@ -29,8 +29,8 @@ import org.jetbrains.annotations.Nullable;
 /**
  * Represents a Custom Emoji hosted on the Bot Account.
  *
- * <p><b>This does not represent unicode emojis like they are used in the official client!
- * The format {@code :smiley:} is a client-side alias which is replaced by the unicode emoji, not a custom emoji.</b>
+ * <p><b>This does not represent Unicode emojis like they are used in the official client!
+ * The format {@code :smiley:} is a client-side alias which is replaced by the Unicode emoji, not a custom emoji.</b>
  *
  * @see JFA#createApplicationEmoji(String, Icon)
  * @see JFA#retrieveApplicationEmojiById(long)

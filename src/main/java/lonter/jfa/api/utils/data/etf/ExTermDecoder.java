@@ -135,44 +135,24 @@ public class ExTermDecoder {
 
     private static Object unpack0(@NotNull ByteBuffer buffer) {
         int tag = buffer.get();
-        switch (tag) {
-            case COMPRESSED:
-                return unpackCompressed(buffer);
-            case SMALL_INT:
-                return unpackSmallInt(buffer);
-            case SMALL_BIGINT:
-                return unpackSmallBigint(buffer);
-            case INT:
-                return unpackInt(buffer);
-
-            case FLOAT:
-                return unpackOldFloat(buffer);
-            case NEW_FLOAT:
-                return unpackFloat(buffer);
-
-            case SMALL_ATOM_UTF8:
-                return unpackSmallAtom(buffer, StandardCharsets.UTF_8);
-            case SMALL_ATOM:
-                return unpackSmallAtom(buffer, StandardCharsets.ISO_8859_1);
-            case ATOM_UTF8:
-                return unpackAtom(buffer, StandardCharsets.UTF_8);
-            case ATOM:
-                return unpackAtom(buffer, StandardCharsets.ISO_8859_1);
-
-            case MAP:
-                return unpackMap0(buffer);
-            case LIST:
-                return unpackList0(buffer);
-            case NIL:
-                return Collections.emptyList();
-
-            case STRING:
-                return unpackString(buffer);
-            case BINARY:
-                return unpackBinary(buffer);
-            default:
-                throw new IllegalArgumentException("Unknown tag " + tag);
-        }
+      return switch (tag) {
+        case COMPRESSED -> unpackCompressed(buffer);
+        case SMALL_INT -> unpackSmallInt(buffer);
+        case SMALL_BIGINT -> unpackSmallBigint(buffer);
+        case INT -> unpackInt(buffer);
+        case FLOAT -> unpackOldFloat(buffer);
+        case NEW_FLOAT -> unpackFloat(buffer);
+        case SMALL_ATOM_UTF8 -> unpackSmallAtom(buffer, StandardCharsets.UTF_8);
+        case SMALL_ATOM -> unpackSmallAtom(buffer, StandardCharsets.ISO_8859_1);
+        case ATOM_UTF8 -> unpackAtom(buffer, StandardCharsets.UTF_8);
+        case ATOM -> unpackAtom(buffer, StandardCharsets.ISO_8859_1);
+        case MAP -> unpackMap0(buffer);
+        case LIST -> unpackList0(buffer);
+        case NIL -> Collections.emptyList();
+        case STRING -> unpackString(buffer);
+        case BINARY -> unpackBinary(buffer);
+        default -> throw new IllegalArgumentException("Unknown tag " + tag);
+      };
     }
 
     private static Object unpackCompressed(@NotNull ByteBuffer buffer) {
@@ -244,16 +224,12 @@ public class ExTermDecoder {
 
     private static Object unpackAtom(@NotNull ByteBuffer buffer, @NotNull Charset charset, int length) {
         String value = getString(buffer, charset, length);
-        switch (value) {
-            case "true":
-                return true;
-            case "false":
-                return false;
-            case "nil":
-                return null;
-            default:
-                return value.intern();
-        }
+      return switch (value) {
+        case "true" -> true;
+        case "false" -> false;
+        case "nil" -> null;
+        default -> value.intern();
+      };
     }
 
     private static String getString(@NotNull ByteBuffer buffer, @NotNull Charset charset, int length) {

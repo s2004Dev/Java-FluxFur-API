@@ -40,7 +40,7 @@ public class CustomEmojiImpl implements CustomEmoji, EmojiUnion {
     }
 
     @NotNull
-    public String getName() {
+    public String name() {
         return name;
     }
 
@@ -82,11 +82,10 @@ public class CustomEmojiImpl implements CustomEmoji, EmojiUnion {
         if (obj == this) {
             return true;
         }
-        if (!(obj instanceof CustomEmoji)) {
+        if (!(obj instanceof CustomEmoji other)) {
             return false;
         }
-        CustomEmoji other = (CustomEmoji) obj;
-        return this.id == other.getIdLong();
+      return this.id == other.getIdLong();
     }
 
     @Override

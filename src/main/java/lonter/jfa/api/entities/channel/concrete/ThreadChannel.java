@@ -36,8 +36,6 @@ import lonter.jfa.internal.utils.Checks;
 import org.jetbrains.annotations.Unmodifiable;
 
 import java.time.OffsetDateTime;
-import java.util.FormattableFlags;
-import java.util.Formatter;
 import java.util.List;
 
 import javax.annotation.CheckReturnValue;
@@ -1052,23 +1050,7 @@ public interface ThreadChannel extends GuildMessageChannel, IMemberContainer, IS
     @CheckReturnValue
     ThreadChannelManager getManager();
 
-    @Override
-    default void formatTo(Formatter formatter, int flags, int width, int precision) {
-        boolean leftJustified = (flags & FormattableFlags.LEFT_JUSTIFY) == FormattableFlags.LEFT_JUSTIFY;
-        boolean upper = (flags & FormattableFlags.UPPERCASE) == FormattableFlags.UPPERCASE;
-        boolean alt = (flags & FormattableFlags.ALTERNATE) == FormattableFlags.ALTERNATE;
-        String out;
-
-        if (alt) {
-            out = "#" + (upper ? getName().toUpperCase(formatter.locale()) : getName());
-        } else {
-            out = getAsMention();
-        }
-
-        MiscUtil.appendTo(formatter, width, precision, leftJustified, out);
-    }
-
-    /**
+  /**
      * The values permitted for the auto archive duration of a {@link ThreadChannel}.
      *
      * <p>This is the time before an idle thread will be automatically hidden.

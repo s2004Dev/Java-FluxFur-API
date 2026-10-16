@@ -157,11 +157,10 @@ public class LabelImpl extends AbstractComponentImpl implements Label, ModalTopL
         if (o == this) {
             return true;
         }
-        if (!(o instanceof LabelImpl)) {
+        if (!(o instanceof LabelImpl that)) {
             return false;
         }
-        LabelImpl that = (LabelImpl) o;
-        return uniqueId == that.uniqueId
+      return uniqueId == that.uniqueId
                 && Objects.equals(label, that.label)
                 && Objects.equals(description, that.description)
                 && Objects.equals(child, that.child);

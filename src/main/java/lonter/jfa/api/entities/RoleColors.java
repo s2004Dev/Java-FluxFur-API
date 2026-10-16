@@ -194,11 +194,10 @@ public class RoleColors implements SerializableData {
         if (obj == this) {
             return true;
         }
-        if (!(obj instanceof RoleColors)) {
+        if (!(obj instanceof RoleColors other)) {
             return false;
         }
-        RoleColors other = (RoleColors) obj;
-        return this.primary == other.primary && this.secondary == other.secondary && this.tertiary == other.tertiary;
+      return this.primary == other.primary && this.secondary == other.secondary && this.tertiary == other.tertiary;
     }
 
     @Override

@@ -85,11 +85,10 @@ public class AutoCompleteQuery {
         if (obj == this) {
             return true;
         }
-        if (!(obj instanceof AutoCompleteQuery)) {
+        if (!(obj instanceof AutoCompleteQuery query)) {
             return false;
         }
-        AutoCompleteQuery query = (AutoCompleteQuery) obj;
-        return type == query.type && name.equals(query.name) && value.equals(query.value);
+      return type == query.type && name.equals(query.name) && value.equals(query.value);
     }
 
     @Override

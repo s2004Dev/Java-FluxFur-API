@@ -303,14 +303,13 @@ public class MessageReference {
     }
 
     private void checkPermission(Permission permission) {
-        if (guild == null || !(channel instanceof GuildChannel)) {
+        if (guild == null || !(channel instanceof GuildChannel guildChannel)) {
             return;
         }
 
         Member selfMember = guild.getSelfMember();
-        GuildChannel guildChannel = (GuildChannel) channel;
 
-        Checks.checkAccess(selfMember, guildChannel);
+      Checks.checkAccess(selfMember, guildChannel);
         if (!selfMember.hasPermission(guildChannel, permission)) {
             throw new InsufficientPermissionException(guildChannel, permission);
         }

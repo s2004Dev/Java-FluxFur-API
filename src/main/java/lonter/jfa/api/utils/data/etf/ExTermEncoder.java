@@ -249,7 +249,7 @@ public class ExTermEncoder {
     }
 
     @NotNull
-    private static ByteBuffer packArray(@NotNull ByteBuffer buffer, @NotNull long[] array) {
+    private static ByteBuffer packArray(@NotNull ByteBuffer buffer, long @NotNull [] array) {
         if (array.length == 0) {
             return packNil(buffer);
         }
@@ -264,7 +264,7 @@ public class ExTermEncoder {
     }
 
     @NotNull
-    private static ByteBuffer packArray(@NotNull ByteBuffer buffer, @NotNull int[] array) {
+    private static ByteBuffer packArray(@NotNull ByteBuffer buffer, int @NotNull [] array) {
         if (array.length == 0) {
             return packNil(buffer);
         }
@@ -279,7 +279,7 @@ public class ExTermEncoder {
     }
 
     @NotNull
-    private static ByteBuffer packArray(@NotNull ByteBuffer buffer, @NotNull short[] array) {
+    private static ByteBuffer packArray(@NotNull ByteBuffer buffer, short @NotNull [] array) {
         if (array.length == 0) {
             return packNil(buffer);
         }
@@ -294,7 +294,7 @@ public class ExTermEncoder {
     }
 
     @NotNull
-    private static ByteBuffer packArray(@NotNull ByteBuffer buffer, @NotNull byte[] array) {
+    private static ByteBuffer packArray(@NotNull ByteBuffer buffer, byte @NotNull [] array) {
         if (array.length == 0) {
             return packNil(buffer);
         }

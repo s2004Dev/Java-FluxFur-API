@@ -42,7 +42,7 @@ public abstract class SocketHandler {
         }
         this.allContent = null;
         if (getJFA().isEventPassthrough()) {
-            CURRENT_EVENT.set(null);
+          CURRENT_EVENT.remove();
         }
     }
 

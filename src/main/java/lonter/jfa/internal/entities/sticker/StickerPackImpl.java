@@ -101,10 +101,9 @@ public class StickerPackImpl implements StickerPack {
         if (obj == this) {
             return true;
         }
-        if (!(obj instanceof StickerPackImpl)) {
+        if (!(obj instanceof StickerPackImpl other)) {
             return false;
         }
-        StickerPackImpl other = (StickerPackImpl) obj;
-        return id == other.id;
+      return id == other.id;
     }
 }

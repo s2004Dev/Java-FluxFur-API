@@ -135,11 +135,10 @@ public class GuildSetupNode {
 
     @Override
     public boolean equals(Object obj) {
-        if (!(obj instanceof GuildSetupNode)) {
+        if (!(obj instanceof GuildSetupNode node)) {
             return false;
         }
-        GuildSetupNode node = (GuildSetupNode) obj;
-        return node.id == id;
+      return node.id == id;
     }
 
     private GuildSetupController getController() {

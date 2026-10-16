@@ -315,7 +315,7 @@ public interface ShardManager extends IGuildChannelContainer<Channel> {
      *         The name of the requested {@link RichCustomEmoji RichCustomEmojis}. Without colons.
      * @param  ignoreCase
      *         Whether to ignore case or not when comparing the provided name to each {@link
-     *         RichCustomEmoji#getName()}.
+     *         RichCustomEmoji#name()}.
      *
      * @return Possibly-empty list of all the {@link RichCustomEmoji RichCustomEmojis} that all have the same
      *         name as the provided name.

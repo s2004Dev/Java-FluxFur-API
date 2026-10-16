@@ -22,7 +22,6 @@ import lonter.jfa.api.utils.cache.MemberCacheView;
 import lonter.jfa.internal.utils.Checks;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -93,7 +92,7 @@ public class MemberCacheViewImpl extends SnowflakeCacheViewImpl<Member> implemen
         }
 
         List<Role> rolesWithoutPublicRole =
-                roles.stream().filter(role -> !role.isPublicRole()).collect(Collectors.toList());
+                roles.stream().filter(role -> !role.isPublicRole()).toList();
         if (rolesWithoutPublicRole.isEmpty()) {
             return asList();
         }

@@ -531,7 +531,7 @@ public enum AuditLogKey {
 
     // EMOJI
     /**
-     * Change of the {@link RichCustomEmoji#getName() Emoji.getName()} value.
+     * Change of the {@link RichCustomEmoji#name() Emoji.getName()} value.
      *
      * <p>Expected type: <b>String</b>
      */

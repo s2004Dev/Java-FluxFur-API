@@ -57,7 +57,7 @@ public interface MessageChannelMixin<T extends MessageChannelMixin<T>>
     @NotNull
     default List<CompletableFuture<Void>> purgeMessages(@NotNull List<? extends Message> messages) {
         checkCanAccess();
-        if (messages == null || messages.isEmpty()) {
+        if (messages.isEmpty()) {
             return Collections.emptyList();
         }
 
@@ -80,9 +80,9 @@ public interface MessageChannelMixin<T extends MessageChannelMixin<T>>
     }
 
     @NotNull
-    default List<CompletableFuture<Void>> purgeMessagesById(@NotNull long... messageIds) {
+    default List<CompletableFuture<Void>> purgeMessagesById(long @NotNull ... messageIds) {
         checkCanAccess();
-        if (messageIds == null || messageIds.length == 0) {
+        if (messageIds.length == 0) {
             return Collections.emptyList();
         }
 
@@ -119,7 +119,7 @@ public interface MessageChannelMixin<T extends MessageChannelMixin<T>>
                 // then use the standard deleteMessageById request
                 // as you cannot bulk delete a single message
                 if (toDelete.size() == 1) {
-                    list.add(deleteMessageById(toDelete.get(0)).submit());
+                    list.add(deleteMessageById(toDelete.getFirst()).submit());
                 } else if (!toDelete.isEmpty()) {
                     list.add(bulkDeleteMessages(toDelete).submit());
                 }

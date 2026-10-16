@@ -24,28 +24,20 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 /**
- * Represents a {@link lonter.jfa.api.entities.Message} activity.
+ * Represents a {@link Message} activity.
  *
  * @see Message#getActivity()
  */
-public class MessageActivity {
-    private final ActivityType type;
-    private final String partyId;
-    private final Application application;
-
-    public MessageActivity(ActivityType type, String partyId, Application application) {
-        this.type = type;
-        this.partyId = partyId;
-        this.application = application;
-    }
+public record MessageActivity(ActivityType type, String partyId, Application application) {
 
     /**
-     * The current {@link lonter.jfa.api.entities.MessageActivity.ActivityType ActivityType}
+     * The current {@link ActivityType ActivityType}
      *
      * @return the type of the activity, or {@link ActivityType#UNKNOWN UNKNOWN}
      */
+    @Override
     @NotNull
-    public ActivityType getType() {
+    public ActivityType type() {
         return type;
     }
 
@@ -54,23 +46,25 @@ public class MessageActivity {
      *
      * @return Possibly-null party id
      */
+    @Override
     @Nullable
-    public String getPartyId() {
+    public String partyId() {
         return partyId;
     }
 
     /**
-     * The {@link lonter.jfa.api.entities.MessageActivity.Application Application} this {@link lonter.jfa.api.entities.MessageActivity MessageActivity} may have.
+     * The {@link Application Application} this {@link MessageActivity MessageActivity} may have.
      *
-     * @return A possibly-null {@link lonter.jfa.api.entities.MessageActivity.Application}
+     * @return A possibly-null {@link Application}
      */
+    @Override
     @Nullable
-    public MessageActivity.Application getApplication() {
+    public MessageActivity.Application application() {
         return application;
     }
 
     /**
-     * Represents the {@link lonter.jfa.api.entities.MessageActivity.Application Application} of a MessageActivity, if it has been set.
+     * Represents the {@link Application Application} of a MessageActivity, if it has been set.
      */
     public static class Application implements ISnowflake {
         private final String name;
@@ -130,15 +124,10 @@ public class MessageActivity {
         /**
          * The url of the icon image for this application.
          *
-         * @param  format
-         *         The format in which the image should be
-         *
-         * @throws IllegalArgumentException
-         *         If the format is {@code null}
-         *
+         * @param format The format in which the image should be
          * @return the url of the icon
-         *
-         * @see    FluxerAssets#applicationIcon(ImageFormat, String, String)
+         * @throws IllegalArgumentException If the format is {@code null}
+         * @see FluxerAssets#applicationIcon(ImageFormat, String, String)
          */
         @Nullable
         public String getIconUrl(@NotNull ImageFormat format) {
@@ -150,8 +139,7 @@ public class MessageActivity {
          * Returns an {@link ImageProxy} for this application's icon.
          *
          * @return Possibly-null {@link ImageProxy} of this application's icon
-         *
-         * @see    #getIconUrl()
+         * @see #getIconUrl()
          */
         @Nullable
         public ImageProxy getIcon() {
@@ -162,16 +150,11 @@ public class MessageActivity {
         /**
          * Returns an {@link ImageProxy} for this application's icon.
          *
-         * @param  format
-         *         The format in which the image should be
-         *
-         * @throws IllegalArgumentException
-         *         If the format is {@code null}
-         *
+         * @param format The format in which the image should be
          * @return Possibly-null {@link ImageProxy} of this application's icon
-         *
-         * @see    #getIconUrl(ImageFormat)
-         * @see    FluxerAssets#applicationIcon(ImageFormat, String, String)
+         * @throws IllegalArgumentException If the format is {@code null}
+         * @see #getIconUrl(ImageFormat)
+         * @see FluxerAssets#applicationIcon(ImageFormat, String, String)
          */
         @Nullable
         public ImageProxy getIcon(@NotNull ImageFormat format) {
@@ -201,15 +184,10 @@ public class MessageActivity {
         /**
          * The url of the cover image for this application.
          *
-         * @param  format
-         *         The format in which the image should be
-         *
-         * @throws IllegalArgumentException
-         *         If the format is {@code null}v
-         *
+         * @param format The format in which the image should be
          * @return the url of the cover/splash
-         *
-         * @see    FluxerAssets#applicationCover(ImageFormat, String, String)
+         * @throws IllegalArgumentException If the format is {@code null}v
+         * @see FluxerAssets#applicationCover(ImageFormat, String, String)
          */
         @Nullable
         public String getCoverUrl(@NotNull ImageFormat format) {
@@ -221,8 +199,7 @@ public class MessageActivity {
          * Returns an {@link ImageProxy} for this cover's icon.
          *
          * @return Possibly-null {@link ImageProxy} of this cover's icon
-         *
-         * @see    #getCoverUrl()
+         * @see #getCoverUrl()
          */
         @Nullable
         public ImageProxy getCover() {
@@ -233,16 +210,11 @@ public class MessageActivity {
         /**
          * Returns an {@link ImageProxy} for this cover's icon.
          *
-         * @param  format
-         *         The format in which the image should be
-         *
-         * @throws IllegalArgumentException
-         *         If the format is {@code null}
-         *
+         * @param format The format in which the image should be
          * @return Possibly-null {@link ImageProxy} of this cover's icon
-         *
-         * @see    #getCoverUrl(ImageFormat)
-         * @see    FluxerAssets#applicationCover(ImageFormat, String, String)
+         * @throws IllegalArgumentException If the format is {@code null}
+         * @see #getCoverUrl(ImageFormat)
+         * @see FluxerAssets#applicationCover(ImageFormat, String, String)
          */
         @Nullable
         public ImageProxy getCover(@NotNull ImageFormat format) {
@@ -256,27 +228,27 @@ public class MessageActivity {
     }
 
     /**
-     * An enum representing {@link lonter.jfa.api.entities.MessageActivity MessageActivity} types.
+     * An enum representing {@link MessageActivity MessageActivity} types.
      */
     public enum ActivityType {
         /**
-         * The {@link lonter.jfa.api.entities.MessageActivity MessageActivity} type used for inviting people to join a game.
+         * The {@link MessageActivity MessageActivity} type used for inviting people to join a game.
          */
         JOIN(1),
         /**
-         * The {@link lonter.jfa.api.entities.MessageActivity MessageActivity} type used for inviting people to spectate a game.
+         * The {@link MessageActivity MessageActivity} type used for inviting people to spectate a game.
          */
         SPECTATE(2),
         /**
-         * The {@link lonter.jfa.api.entities.MessageActivity MessageActivity} type used for inviting people to listen (Spotify) together.
+         * The {@link MessageActivity MessageActivity} type used for inviting people to listen (Spotify) together.
          */
         LISTENING(3),
         /**
-         * The {@link lonter.jfa.api.entities.MessageActivity MessageActivity} type used for requesting to join a game.
+         * The {@link MessageActivity MessageActivity} type used for requesting to join a game.
          */
         JOIN_REQUEST(5),
         /**
-         * Represents any unknown or unsupported {@link lonter.jfa.api.entities.MessageActivity MessageActivity} types.
+         * Represents any unknown or unsupported {@link MessageActivity MessageActivity} types.
          */
         UNKNOWN(-1);
 
@@ -287,7 +259,7 @@ public class MessageActivity {
         }
 
         /**
-         * The id of this {@link lonter.jfa.api.entities.MessageActivity.ActivityType ActivityType}.
+         * The id of this {@link ActivityType ActivityType}.
          *
          * @return the id of the type
          */

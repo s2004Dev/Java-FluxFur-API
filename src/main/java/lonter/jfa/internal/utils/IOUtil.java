@@ -30,6 +30,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URLEncoder;
 import java.nio.ByteBuffer;
+import java.nio.charset.StandardCharsets;
 import java.util.concurrent.TimeUnit;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.Inflater;
@@ -69,7 +70,7 @@ public class IOUtil {
             for (int i = 0; i < params.length; i += 2) {
                 builder.append(params[i])
                         .append('=')
-                        .append(URLEncoder.encode(params[i + 1].toString(), "UTF-8"))
+                        .append(URLEncoder.encode(params[i + 1].toString(), StandardCharsets.UTF_8))
                         .append('&');
             }
 
@@ -77,7 +78,7 @@ public class IOUtil {
             builder.setLength(builder.length() - 1);
 
             return builder.toString();
-        } catch (URISyntaxException | UnsupportedEncodingException e) {
+        } catch (URISyntaxException e) {
             throw new IllegalArgumentException(e);
         }
     }
@@ -142,7 +143,7 @@ public class IOUtil {
 
             // Read in the bytes
             int offset = 0;
-            int numRead = 0;
+            int numRead;
             while (offset < bytes.length && (numRead = is.read(bytes, offset, bytes.length - offset)) >= 0) {
                 offset += numRead;
             }
@@ -178,7 +179,7 @@ public class IOUtil {
 
         byte[] buffer = new byte[1024];
         try (ByteArrayOutputStream bos = new ByteArrayOutputStream()) {
-            int readAmount = 0;
+            int readAmount;
             while ((readAmount = stream.read(buffer)) != -1) {
                 bos.write(buffer, 0, readAmount);
             }

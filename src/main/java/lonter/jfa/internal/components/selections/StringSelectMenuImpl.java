@@ -92,11 +92,10 @@ public class StringSelectMenuImpl extends SelectMenuImpl implements StringSelect
         if (obj == this) {
             return true;
         }
-        if (!(obj instanceof StringSelectMenu)) {
+        if (!(obj instanceof StringSelectMenu other)) {
             return false;
         }
-        StringSelectMenu other = (StringSelectMenu) obj;
-        return Objects.equals(id, other.getCustomId())
+      return Objects.equals(id, other.getCustomId())
                 && Objects.equals(placeholder, other.getPlaceholder())
                 && minValues == other.getMinValues()
                 && maxValues == other.getMaxValues()

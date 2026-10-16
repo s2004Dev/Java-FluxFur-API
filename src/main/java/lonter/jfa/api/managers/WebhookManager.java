@@ -91,7 +91,7 @@ public interface WebhookManager extends Manager<WebhookManager> {
     @NotNull
     @Override
     @CheckReturnValue
-    WebhookManager reset(@NotNull long... fields);
+    WebhookManager reset(long @NotNull ... fields);
 
     /**
      * The target {@link lonter.jfa.api.entities.Webhook Webhook}

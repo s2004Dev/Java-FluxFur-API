@@ -24,9 +24,11 @@ import lonter.jfa.internal.utils.EntityString;
 import lonter.jfa.internal.utils.Helpers;
 import org.jetbrains.annotations.Contract;
 
+import java.time.DateTimeException;
 import java.time.Instant;
+import java.time.temporal.Temporal;
 import java.time.temporal.TemporalUnit;
-import java.util.Objects;
+import java.time.temporal.UnsupportedTemporalTypeException;
 import java.util.regex.Pattern;
 
 import org.jetbrains.annotations.NotNull;
@@ -34,7 +36,7 @@ import org.jetbrains.annotations.Nullable;
 
 /**
  * Represents a Fluxer {@link Activity Activity}.
- * <br>This should contain all information provided from Fluxer about a Activity.
+ * <br>This should contain all information provided from Fluxer about an Activity.
  *
  * @see    #of(ActivityType, String)
  * @see    #of(ActivityType, String, String)
@@ -333,26 +335,18 @@ public interface Activity {
     @NotNull
     static Activity of(@NotNull ActivityType type, @NotNull String name, @Nullable String url) {
         Checks.notNull(type, "Type");
-        switch (type) {
-            case PLAYING:
-                return playing(name);
-            case STREAMING:
-                return streaming(name, url);
-            case LISTENING:
-                return listening(name);
-            case WATCHING:
-                return watching(name);
-            case COMPETING:
-                return competing(name);
-            case CUSTOM_STATUS:
-                return customStatus(name);
-            default:
-                throw new IllegalArgumentException("ActivityType " + type + " is not supported!");
-        }
+      return switch (type) {
+        case PLAYING -> playing(name);
+        case STREAMING -> streaming(name, url);
+        case LISTENING -> listening(name);
+        case WATCHING -> watching(name);
+        case COMPETING -> competing(name);
+        case CUSTOM_STATUS -> customStatus(name);
+      };
     }
 
     /**
-     * Checks if a given String is a valid Twitch/Youtube streaming url (ie, one that will display "Streaming" on the Fluxer client).
+     * Checks if a given String is a valid Twitch/YouTube streaming url (ie, one that will display "Streaming" on the Fluxer client).
      *
      * @param  url
      *         The url to check.
@@ -427,149 +421,115 @@ public interface Activity {
          */
         @NotNull
         public static ActivityType fromKey(int key) {
-            switch (key) {
-                case 0:
-                default:
-                    return PLAYING;
-                case 1:
-                    return STREAMING;
-                case 2:
-                    return LISTENING;
-                case 3:
-                    return WATCHING;
-                case 4:
-                    return CUSTOM_STATUS;
-                case 5:
-                    return COMPETING;
-            }
+          return switch (key) {
+            case 1 -> STREAMING;
+            case 2 -> LISTENING;
+            case 3 -> WATCHING;
+            case 4 -> CUSTOM_STATUS;
+            case 5 -> COMPETING;
+            default -> PLAYING;
+          };
         }
     }
 
     /**
      * Represents the start and end timestamps for a running match
      */
-    class Timestamps {
-        protected final long start;
-
-        protected final long end;
-
-        public Timestamps(long start, long end) {
-            this.start = start;
-            this.end = end;
-        }
+        record Timestamps(long start, long end) {
 
         /**
          * Epoch second timestamp of match start, or {@code 0} of unset.
          *
          * @return Epoch second timestamp of match start, or {@code 0} of unset.
          */
-        public long getStart() {
-            return start;
-        }
-
-        /**
-         * Shortcut for {@code Instant.ofEpochSecond(start)}
-         *
-         * @return Instant of match start, or {@code null} if unset
-         */
-        @Nullable
-        public Instant getStartTime() {
-            return start <= 0 ? null : Instant.ofEpochMilli(start);
-        }
-
-        /**
-         * Epoch second timestamp of match end, or {@code 0} of unset.
-         *
-         * @return Epoch second timestamp of match end, or {@code 0} of unset.
-         */
-        public long getEnd() {
-            return end;
-        }
-
-        /**
-         * Shortcut for {@code Instant.ofEpochSecond(start)}
-         *
-         * @return Instant of match start, or {@code null} if unset
-         */
-        @Nullable
-        public Instant getEndTime() {
-            return end <= 0 ? null : Instant.ofEpochMilli(end);
-        }
-
-        /**
-         * Calculates the amount of time until {@link #getEndTime()} in terms of the specified unit.
-         * <br>If {@link #getEndTime()} is {@code null} this will be negative.
-         *
-         * @param  unit
-         *         The {@link java.time.temporal.TemporalUnit TemporalUnit} to return
-         *
-         * @throws IllegalArgumentException
-         *         If the provided unit is {@code null}
-         * @throws ArithmeticException
-         *         If a numeric overflow occurs
-         * @throws java.time.DateTimeException
-         *         If the amount cannot be calculated
-         * @throws java.time.temporal.UnsupportedTemporalTypeException
-         *         If the provided unit is not supported
-         *
-         * @return Remaining time in the provided {@link java.time.temporal.TemporalUnit TemporalUnit} or {@code -1} if unset
-         *
-         * @see    java.time.Instant#until(java.time.temporal.Temporal, java.time.temporal.TemporalUnit) Instant.until(Temporal, TemporalUnit)
-         * @see    java.time.temporal.TemporalUnit
-         */
-        public long getRemainingTime(@NotNull TemporalUnit unit) {
-            Checks.notNull(unit, "TemporalUnit");
-            Instant end = getEndTime();
-            return end != null ? Instant.now().until(end, unit) : -1;
-        }
-
-        /**
-         * Calculates the elapsed time from {@link #getStartTime()} to now in terms of the specified unit.
-         * <br>If {@link #getStartTime()} is {@code null} this will be negative.
-         *
-         * @param  unit
-         *         The {@link java.time.temporal.TemporalUnit TemporalUnit} to return
-         *
-         * @throws IllegalArgumentException
-         *         If the provided unit is {@code null}
-         * @throws ArithmeticException
-         *         If a numeric overflow occurs
-         * @throws java.time.DateTimeException
-         *         If the amount cannot be calculated
-         * @throws java.time.temporal.UnsupportedTemporalTypeException
-         *         If the provided unit is not supported
-         *
-         * @return Elapsed time in the provided {@link java.time.temporal.TemporalUnit TemporalUnit} or {@code -1} if unset
-         *
-         * @see    java.time.Instant#until(java.time.temporal.Temporal, java.time.temporal.TemporalUnit) Instant.until(Temporal, TemporalUnit)
-         * @see    java.time.temporal.TemporalUnit
-         */
-        public long getElapsedTime(@NotNull TemporalUnit unit) {
-            Checks.notNull(unit, "TemporalUnit");
-            Instant start = getStartTime();
-            return start != null ? start.until(Instant.now(), unit) : -1;
-        }
-
-        @Override
-        public String toString() {
-            return new EntityString("RichPresenceTimestamp")
-                    .addMetadata("start", start)
-                    .addMetadata("end", end)
-                    .toString();
-        }
-
-        @Override
-        public boolean equals(Object obj) {
-            if (!(obj instanceof Timestamps)) {
-                return false;
+            @Override
+            public long start() {
+                return start;
             }
-            Timestamps t = (Timestamps) obj;
-            return start == t.start && end == t.end;
-        }
 
-        @Override
-        public int hashCode() {
-            return Objects.hash(start, end);
-        }
+            /**
+             * Shortcut for {@code Instant.ofEpochSecond(start)}
+             *
+             * @return Instant of match start, or {@code null} if unset
+             */
+            @Nullable
+            public Instant getStartTime() {
+                return start <= 0 ? null : Instant.ofEpochMilli(start);
+            }
+
+            /**
+             * Epoch second timestamp of match end, or {@code 0} of unset.
+             *
+             * @return Epoch second timestamp of match end, or {@code 0} of unset.
+             */
+            @Override
+            public long end() {
+                return end;
+            }
+
+            /**
+             * Shortcut for {@code Instant.ofEpochSecond(start)}
+             *
+             * @return Instant of match start, or {@code null} if unset
+             */
+            @Nullable
+            public Instant getEndTime() {
+                return end <= 0 ? null : Instant.ofEpochMilli(end);
+            }
+
+            /**
+             * Calculates the amount of time until {@link #getEndTime()} in terms of the specified unit.
+             * <br>If {@link #getEndTime()} is {@code null} this will be negative.
+             *
+             * @param unit The {@link TemporalUnit TemporalUnit} to return
+             * @return Remaining time in the provided {@link TemporalUnit TemporalUnit} or {@code -1} if unset
+             * @throws IllegalArgumentException         If the provided unit is {@code null}
+             * @throws ArithmeticException              If a numeric overflow occurs
+             * @throws DateTimeException                If the amount cannot be calculated
+             * @throws UnsupportedTemporalTypeException If the provided unit is not supported
+             * @see Instant#until(Temporal, TemporalUnit) Instant.until(Temporal, TemporalUnit)
+             * @see TemporalUnit
+             */
+            public long getRemainingTime(@NotNull TemporalUnit unit) {
+                Checks.notNull(unit, "TemporalUnit");
+                Instant end = getEndTime();
+                return end != null ? Instant.now().until(end, unit) : -1;
+            }
+
+            /**
+             * Calculates the elapsed time from {@link #getStartTime()} to now in terms of the specified unit.
+             * <br>If {@link #getStartTime()} is {@code null} this will be negative.
+             *
+             * @param unit The {@link TemporalUnit TemporalUnit} to return
+             * @return Elapsed time in the provided {@link TemporalUnit TemporalUnit} or {@code -1} if unset
+             * @throws IllegalArgumentException         If the provided unit is {@code null}
+             * @throws ArithmeticException              If a numeric overflow occurs
+             * @throws DateTimeException                If the amount cannot be calculated
+             * @throws UnsupportedTemporalTypeException If the provided unit is not supported
+             * @see Instant#until(Temporal, TemporalUnit) Instant.until(Temporal, TemporalUnit)
+             * @see TemporalUnit
+             */
+            public long getElapsedTime(@NotNull TemporalUnit unit) {
+                Checks.notNull(unit, "TemporalUnit");
+                Instant start = getStartTime();
+                return start != null ? start.until(Instant.now(), unit) : -1;
+            }
+
+            @Override
+            public @NotNull String toString() {
+                return new EntityString("RichPresenceTimestamp")
+                  .addMetadata("start", start)
+                  .addMetadata("end", end)
+                  .toString();
+            }
+
+            @Override
+            public boolean equals(Object obj) {
+                if (!(obj instanceof Timestamps(long start1, long end1))) {
+                    return false;
+                }
+              return start == start1 && end == end1;
+            }
+
     }
 }

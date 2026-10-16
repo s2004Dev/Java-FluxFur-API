@@ -154,11 +154,10 @@ public class RoleIcon {
         if (obj == this) {
             return true;
         }
-        if (!(obj instanceof RoleIcon)) {
+        if (!(obj instanceof RoleIcon icon)) {
             return false;
         }
-        RoleIcon icon = (RoleIcon) obj;
-        return Objects.equals(icon.iconId, iconId) && Objects.equals(icon.emoji, emoji);
+      return Objects.equals(icon.iconId, iconId) && Objects.equals(icon.emoji, emoji);
     }
 
     @Override

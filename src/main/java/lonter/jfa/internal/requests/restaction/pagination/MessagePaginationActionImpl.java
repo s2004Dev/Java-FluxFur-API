@@ -45,9 +45,8 @@ public class MessagePaginationActionImpl extends PaginationActionImpl<Message, M
     public MessagePaginationActionImpl(MessageChannel channel) {
         super(channel.getJFA(), Route.Messages.GET_MESSAGE_HISTORY.compile(channel.getId()), 1, 100, 100);
 
-        if (channel instanceof GuildChannel) {
-            GuildChannel guildChannel = (GuildChannel) channel;
-            Member selfMember = guildChannel.getGuild().getSelfMember();
+        if (channel instanceof GuildChannel guildChannel) {
+          Member selfMember = guildChannel.getGuild().getSelfMember();
             Checks.checkAccess(selfMember, guildChannel);
             if (!selfMember.hasPermission(guildChannel, Permission.MESSAGE_HISTORY)) {
                 throw new InsufficientPermissionException(guildChannel, Permission.MESSAGE_HISTORY);
@@ -91,7 +90,7 @@ public class MessagePaginationActionImpl extends PaginationActionImpl<Message, M
         }
 
         if (!messages.isEmpty()) {
-            last = messages.get(messages.size() - 1);
+            last = messages.getLast();
             lastKey = last.getIdLong();
         }
 

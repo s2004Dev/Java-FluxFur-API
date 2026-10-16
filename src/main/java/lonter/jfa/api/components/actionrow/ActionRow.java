@@ -152,18 +152,11 @@ public interface ActionRow extends MessageTopLevelComponent, ContainerChildCompo
      * @return The maximum amount an action row can contain
      */
     static int getMaxAllowed(@NotNull Component.Type type) {
-        switch (type) {
-            case BUTTON:
-                return 5;
-            case STRING_SELECT:
-            case USER_SELECT:
-            case ROLE_SELECT:
-            case MENTIONABLE_SELECT:
-            case CHANNEL_SELECT:
-                return 1;
-            default:
-                return 0;
-        }
+      return switch (type) {
+        case BUTTON -> 5;
+        case STRING_SELECT, USER_SELECT, ROLE_SELECT, MENTIONABLE_SELECT, CHANNEL_SELECT -> 1;
+        default -> 0;
+      };
     }
 
     @NotNull

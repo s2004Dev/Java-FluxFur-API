@@ -48,7 +48,7 @@ import org.jetbrains.annotations.NotNull;
  * JFABuilder builder = JFABuilder.createDefault(BOT_TOKEN);
  * builder.setSessionController(new SessionControllerAdapter() {
  *     @Override
- *     public void appendSession(SessionConnectNode node) {
+ *     public void appendSession(@NotNull SessionConnectNode node) {
  *         System.out.println("[SessionController] Adding SessionConnectNode to Queue!");
  *         super.appendSession(node);
  *     }
@@ -160,61 +160,51 @@ public interface SessionController {
     /**
      * POJO containing the gateway endpoint and recommended shard total for a shard manager.
      */
-    class ShardedGateway {
-        private final String url;
-        private final int shardTotal;
-        private final int concurrency;
-
-        /**
-         * Creates a new GatewayBot instance with the provided properties
-         *
-         * @param url
-         *        The gateway endpoint (wss)
-         * @param shardTotal
-         *        The recommended shard total
-         */
-        public ShardedGateway(String url, int shardTotal) {
-            this(url, shardTotal, 1);
-        }
-
-        public ShardedGateway(String url, int shardTotal, int concurrency) {
-            this.url = url;
-            this.shardTotal = shardTotal;
-            this.concurrency = concurrency;
-        }
+        record ShardedGateway(String url, int shardTotal, int concurrency) {
+            /**
+             * Creates a new GatewayBot instance with the provided properties
+             *
+             * @param url        The gateway endpoint (wss)
+             * @param shardTotal The recommended shard total
+             */
+            public ShardedGateway(String url, int shardTotal) {
+                this(url, shardTotal, 1);
+            }
 
         /**
          * The gateway endpoint
          *
          * @return The endpoint
          */
-        @NotNull
-        public String getUrl() {
-            return url;
-        }
+            @Override
+            @NotNull
+            public String url() {
+                return url;
+            }
 
-        /**
-         * The recommended shard total
-         *
-         * @return The shard total
-         */
-        public int getShardTotal() {
-            return shardTotal;
-        }
+            /**
+             * The recommended shard total
+             *
+             * @return The shard total
+             */
+            @Override
+            public int shardTotal() {
+                return shardTotal;
+            }
 
-        /**
-         * The concurrency level for this bot.
-         * <br>This should not be a custom value as fluxer determines the eligible concurrency.
-         * Using a different concurrency value could result in issues and possibly a ban due to login spam.
-         *
-         * @return The concurrency level
-         *
-         * @see    #setConcurrency(int)
-         */
-        public int getConcurrency() {
-            return concurrency;
+            /**
+             * The concurrency level for this bot.
+             * <br>This should not be a custom value as fluxer determines the eligible concurrency.
+             * Using a different concurrency value could result in issues and possibly a ban due to login spam.
+             *
+             * @return The concurrency level
+             * @see #setConcurrency(int)
+             */
+            @Override
+            public int concurrency() {
+                return concurrency;
+            }
         }
-    }
 
     /**
      * Represents a WebSocketClient request to start a session.

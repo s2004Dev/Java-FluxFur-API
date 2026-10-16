@@ -53,7 +53,7 @@ public interface AuditableRestAction<T> extends RestAction<T> {
      * via {@link lonter.jfa.api.audit.AuditLogEntry#getReason() AuditLogEntry.getReason()}
      * in iterable {@link AuditLogPaginationAction AuditLogPaginationActions}
      * from {@link lonter.jfa.api.entities.Guild#retrieveAuditLogs() Guild.retrieveAuditLogs()}!
-     * For {@link lonter.jfa.api.entities.Guild#ban(UserSnowflake, int, TimeUnit) guild bans}, this is also accessible via {@link Guild.Ban#getReason()}.
+     * For {@link lonter.jfa.api.entities.Guild#ban(UserSnowflake, int, TimeUnit) guild bans}, this is also accessible via {@link Guild.Ban#reason()}.
      *
      * <p>This will specify the reason via the {@code X-Audit-Log-Reason} Request Header.
      *

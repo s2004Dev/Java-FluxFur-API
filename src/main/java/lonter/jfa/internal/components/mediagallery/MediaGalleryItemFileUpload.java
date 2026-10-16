@@ -108,11 +108,10 @@ public class MediaGalleryItemFileUpload implements MediaGalleryItem, FileContain
         if (o == this) {
             return true;
         }
-        if (!(o instanceof MediaGalleryItemFileUpload)) {
+        if (!(o instanceof MediaGalleryItemFileUpload that)) {
             return false;
         }
-        MediaGalleryItemFileUpload that = (MediaGalleryItemFileUpload) o;
-        return spoiler == that.spoiler
+      return spoiler == that.spoiler
                 && Objects.equals(file, that.file)
                 && Objects.equals(description, that.description);
     }

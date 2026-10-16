@@ -79,7 +79,7 @@ public interface AttachedFile extends Closeable {
      * @return {@link FileUpload}
      */
     @NotNull
-    static FileUpload fromData(@NotNull byte[] data, @NotNull String name) {
+    static FileUpload fromData(byte @NotNull [] data, @NotNull String name) {
         return FileUpload.fromData(data, name);
     }
 

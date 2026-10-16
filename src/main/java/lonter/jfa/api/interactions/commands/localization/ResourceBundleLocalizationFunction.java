@@ -58,7 +58,7 @@ public class ResourceBundleLocalizationFunction implements LocalizationFunction 
      *
      * <p><b>Example usage:</b>
      * <br>This creates a LocalizationFunction from a French ResourceBundle (MyCommands_fr.properties)
-     *
+     * <p>
      * {@snippet lang="java":
      *     final LocalizationFunction localizationFunction = ResourceBundleLocalizationFunction
      *                 .fromBundle(ResourceBundle.getBundle("MyCommands", Locale.FRENCH), FluxerLocale.FRENCH)
@@ -91,7 +91,7 @@ public class ResourceBundleLocalizationFunction implements LocalizationFunction 
      *
      * <p><b>Example usage:</b>
      * <br>This creates a LocalizationFunction from 2 resource bundles, one in Spanish (MyCommands_es_ES.properties) and one in French (MyCommands_fr.properties)
-     *
+     * <p>
      * {@snippet lang="java":
      *     final LocalizationFunction localizationFunction = ResourceBundleLocalizationFunction
      *                         .fromBundles("MyCommands", FluxerLocale.SPANISH, FluxerLocale.FRENCH)
@@ -218,35 +218,22 @@ public class ResourceBundleLocalizationFunction implements LocalizationFunction 
         }
     }
 
-    private static final class Bundle {
-        private final FluxerLocale targetLocale;
-        private final ResourceBundle resourceBundle;
+  private record Bundle(FluxerLocale targetLocale, ResourceBundle resourceBundle) {
 
-        public Bundle(FluxerLocale targetLocale, ResourceBundle resourceBundle) {
-            this.targetLocale = targetLocale;
-            this.resourceBundle = resourceBundle;
-        }
+    @Override
+    public boolean equals(Object o) {
+      if (this == o) {
+        return true;
+      }
+      if (!(o instanceof Bundle(FluxerLocale locale, ResourceBundle resourceBundle1))) {
+        return false;
+      }
 
-        @Override
-        public boolean equals(Object o) {
-            if (this == o) {
-                return true;
-            }
-            if (!(o instanceof Bundle)) {
-                return false;
-            }
-
-            Bundle bundle = (Bundle) o;
-
-            if (!targetLocale.equals(bundle.targetLocale)) {
-                return false;
-            }
-            return resourceBundle.equals(bundle.resourceBundle);
-        }
-
-        @Override
-        public int hashCode() {
-            return Objects.hash(targetLocale, resourceBundle);
-        }
+      if (!targetLocale.equals(locale)) {
+        return false;
+      }
+      return resourceBundle.equals(resourceBundle1);
     }
+
+  }
 }

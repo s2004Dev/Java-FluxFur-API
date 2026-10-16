@@ -65,11 +65,10 @@ public class UnknownComponentImpl extends AbstractComponentImpl
         if (this == o) {
             return true;
         }
-        if (!(o instanceof UnknownComponentImpl)) {
+        if (!(o instanceof UnknownComponentImpl that)) {
             return false;
         }
-        UnknownComponentImpl that = (UnknownComponentImpl) o;
-        return Objects.equals(data, that.data);
+      return Objects.equals(data, that.data);
     }
 
     @Override

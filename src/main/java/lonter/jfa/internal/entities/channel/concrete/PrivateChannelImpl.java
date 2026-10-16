@@ -131,11 +131,10 @@ public class PrivateChannelImpl extends AbstractChannelImpl<PrivateChannelImpl>
         if (obj == this) {
             return true;
         }
-        if (!(obj instanceof PrivateChannelImpl)) {
+        if (!(obj instanceof PrivateChannelImpl impl)) {
             return false;
         }
-        PrivateChannelImpl impl = (PrivateChannelImpl) obj;
-        return impl.id == this.id;
+      return impl.id == this.id;
     }
 
     private void updateUser() {

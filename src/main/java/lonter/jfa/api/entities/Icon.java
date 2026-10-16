@@ -121,7 +121,7 @@ public class Icon {
      * @return An Icon instance representing the specified image data
      */
     @NotNull
-    public static Icon from(@NotNull byte[] data) {
+    public static Icon from(byte @NotNull [] data) {
         return from(data, IconType.JPEG);
     }
 
@@ -189,7 +189,7 @@ public class Icon {
      * @return An Icon instance representing the specified image data
      */
     @NotNull
-    public static Icon from(@NotNull byte[] data, @NotNull IconType type) {
+    public static Icon from(byte @NotNull [] data, @NotNull IconType type) {
         Checks.notNull(data, "Provided byte[]");
         Checks.notNull(type, "IconType");
 
@@ -274,22 +274,13 @@ public class Icon {
         @NotNull
         public static IconType fromExtension(@NotNull String extension) {
             Checks.notNull(extension, "Extension Type");
-            switch (extension.toLowerCase()) {
-                case "jpe":
-                case "jif":
-                case "jfif":
-                case "jfi":
-                case "jpg":
-                case "jpeg":
-                    return JPEG;
-                case "png":
-                    return PNG;
-                case "webp":
-                    return WEBP;
-                case "gif":
-                    return GIF;
-            }
-            return UNKNOWN;
+          return switch (extension.toLowerCase()) {
+            case "jpe", "jif", "jfif", "jfi", "jpg", "jpeg" -> JPEG;
+            case "png" -> PNG;
+            case "webp" -> WEBP;
+            case "gif" -> GIF;
+            default -> UNKNOWN;
+          };
         }
     }
 }

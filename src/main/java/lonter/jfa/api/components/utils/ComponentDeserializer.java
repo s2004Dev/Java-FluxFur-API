@@ -245,41 +245,23 @@ public class ComponentDeserializer {
 
     @NotNull
     private IComponentUnion parseComponent(@NotNull DataObject data) {
-        switch (Component.Type.fromKey(data.getInt("type"))) {
-            case ACTION_ROW:
-                return new ActionRowImpl(this, data);
-            case BUTTON:
-                return new ButtonImpl(data);
-            case STRING_SELECT:
-                return new StringSelectMenuImpl(data);
-            case TEXT_INPUT:
-                return new TextInputImpl(data);
-            case USER_SELECT:
-            case ROLE_SELECT:
-            case MENTIONABLE_SELECT:
-            case CHANNEL_SELECT:
-                return new EntitySelectMenuImpl(data);
-            case SECTION:
-                return new SectionImpl(this, data);
-            case TEXT_DISPLAY:
-                return new TextDisplayImpl(data);
-            case THUMBNAIL:
-                return (IComponentUnion) toThumbnail(data);
-            case MEDIA_GALLERY:
-                return (IComponentUnion) toMediaGallery(data);
-            case FILE_DISPLAY:
-                return (IComponentUnion) toFileDisplay(data);
-            case SEPARATOR:
-                return new SeparatorImpl(data);
-            case CONTAINER:
-                return new ContainerImpl(this, data);
-            case LABEL:
-                return new LabelImpl(this, data);
-            case FILE_UPLOAD:
-                return new AttachmentUploadImpl(data);
-            default:
-                return new UnknownComponentImpl(data);
-        }
+      return switch (Component.Type.fromKey(data.getInt("type"))) {
+        case ACTION_ROW -> new ActionRowImpl(this, data);
+        case BUTTON -> new ButtonImpl(data);
+        case STRING_SELECT -> new StringSelectMenuImpl(data);
+        case TEXT_INPUT -> new TextInputImpl(data);
+        case USER_SELECT, ROLE_SELECT, MENTIONABLE_SELECT, CHANNEL_SELECT -> new EntitySelectMenuImpl(data);
+        case SECTION -> new SectionImpl(this, data);
+        case TEXT_DISPLAY -> new TextDisplayImpl(data);
+        case THUMBNAIL -> (IComponentUnion) toThumbnail(data);
+        case MEDIA_GALLERY -> (IComponentUnion) toMediaGallery(data);
+        case FILE_DISPLAY -> (IComponentUnion) toFileDisplay(data);
+        case SEPARATOR -> new SeparatorImpl(data);
+        case CONTAINER -> new ContainerImpl(this, data);
+        case LABEL -> new LabelImpl(this, data);
+        case FILE_UPLOAD -> new AttachmentUploadImpl(data);
+        default -> new UnknownComponentImpl(data);
+      };
     }
 
     @NotNull

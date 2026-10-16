@@ -99,9 +99,8 @@ public class Request<T> {
 
     private void cleanup() {
         // Try closing any open request bodies that were never read from
-        if (body instanceof MultipartBody) {
-            MultipartBody multi = (MultipartBody) body;
-            multi.parts().stream()
+        if (body instanceof MultipartBody multi) {
+          multi.parts().stream()
                     .map(MultipartBody.Part::body)
                     .filter(AutoCloseable.class::isInstance)
                     .map(AutoCloseable.class::cast)

@@ -33,7 +33,7 @@ public interface ResolvedMedia {
      * @return The ID of the attachment, or {@code null}
      */
     @Nullable
-    String getAttachmentId();
+    String attachmentId();
 
     /**
      * The ID of the attachment represented by this resolved media,
@@ -43,7 +43,7 @@ public interface ResolvedMedia {
      */
     @Nullable
     default Long getAttachmentIdLong() {
-        String attachmentId = getAttachmentId();
+        String attachmentId = attachmentId();
         return attachmentId != null ? Long.parseUnsignedLong(attachmentId) : null;
     }
 
@@ -56,7 +56,7 @@ public interface ResolvedMedia {
      * @return The URL of this media
      */
     @NotNull
-    String getUrl();
+    String url();
 
     /**
      * The URL of this media, proxied by Fluxer's CDN.
@@ -68,7 +68,7 @@ public interface ResolvedMedia {
      * @return The proxy URL of this media
      */
     @NotNull
-    String getProxyUrl();
+    String proxyUrl();
 
     /**
      * An {@link AttachmentProxy} for this media.
@@ -88,7 +88,7 @@ public interface ResolvedMedia {
      *
      * @return Width of this media, or {@code 0}
      */
-    int getWidth();
+    int width();
 
     /**
      * The height of this media, if available, or {@code 0}.
@@ -97,7 +97,7 @@ public interface ResolvedMedia {
      *
      * @return Height of this media, or {@code 0}
      */
-    int getHeight();
+    int height();
 
     /**
      * The <a href="https://en.wikipedia.org/wiki/Media_type" target="_blank">media type</a>,
@@ -108,5 +108,5 @@ public interface ResolvedMedia {
      * @return The media type, or {@code null}
      */
     @Nullable
-    String getContentType();
+    String contentType();
 }

@@ -42,11 +42,11 @@ public interface AudioSendHandler {
 
     /**
      * If {@link #canProvide()} returns true JFA will call this method in an attempt to retrieve audio data from the
-     * handler. This method need to provide 20 Milliseconds of audio data as a <b>array-backed</b> {@link java.nio.ByteBuffer}.
+     * handler. This method need to provide 20 Milliseconds of audio data as an <b>array-backed</b> {@link java.nio.ByteBuffer}.
      * Use either {@link java.nio.ByteBuffer#allocate(int)} or {@link java.nio.ByteBuffer#wrap(byte[])}.
      * <p>
      * Considering this system needs to be low-latency / high-speed, it is recommended that the loading of audio data
-     * be done before hand or in parallel and not loaded from disk when this method is called by JFA. Attempting to load
+     * be done beforehand or in parallel and not loaded from disk when this method is called by JFA. Attempting to load
      * all audio data from disk when this method is called will most likely cause issues due to IO blocking this thread.
      * <p>
      * The provided audio data needs to be in the format: 48KHz 16bit stereo signed BigEndian PCM.

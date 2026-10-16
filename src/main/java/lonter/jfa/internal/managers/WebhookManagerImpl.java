@@ -78,7 +78,7 @@ public class WebhookManagerImpl extends ManagerBase<WebhookManager> implements W
     @NotNull
     @Override
     @CheckReturnValue
-    public WebhookManagerImpl reset(@NotNull long... fields) {
+    public WebhookManagerImpl reset(long @NotNull ... fields) {
         super.reset(fields);
         return this;
     }

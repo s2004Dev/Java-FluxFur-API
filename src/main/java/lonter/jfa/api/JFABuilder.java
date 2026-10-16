@@ -84,7 +84,7 @@ public class JFABuilder {
     protected OkHttpClient.Builder httpClientBuilder = null;
     protected OkHttpClient httpClient = null;
     protected WebSocketFactory wsFactory = null;
-    protected String token = null;
+    protected String token;
     protected IEventManager eventManager = null;
     protected JFA.ShardInfo shardInfo = null;
     protected Compression compression = Compression.ZLIB;
@@ -94,7 +94,7 @@ public class JFABuilder {
     protected int maxReconnectDelay = 900;
     protected int largeThreshold = 250;
     protected int maxBufferSize = 2048;
-    protected int intents = -1; // don't use intents by default
+    protected int intents; // don't use intents by default
     protected EnumSet<ConfigFlag> flags = ConfigFlag.getDefault();
     protected ChunkingFilter chunkingFilter = ChunkingFilter.ALL;
     protected MemberCachePolicy memberCachePolicy = MemberCachePolicy.ALL;
@@ -679,11 +679,7 @@ public class JFABuilder {
      */
     @NotNull
     public JFABuilder setMemberCachePolicy(@Nullable MemberCachePolicy policy) {
-        if (policy == null) {
-            this.memberCachePolicy = MemberCachePolicy.ALL;
-        } else {
-            this.memberCachePolicy = policy;
-        }
+      this.memberCachePolicy = Objects.requireNonNullElse(policy, MemberCachePolicy.ALL);
         return this;
     }
 
@@ -1687,7 +1683,7 @@ public class JFABuilder {
      */
     @NotNull
     public JFABuilder setLargeThreshold(int threshold) {
-        this.largeThreshold = Math.max(50, Math.min(250, threshold)); // enforce 50 <= t <= 250
+        this.largeThreshold = Math.clamp(threshold, 50, 250); // enforce 50 <= t <= 250
         return this;
     }
 

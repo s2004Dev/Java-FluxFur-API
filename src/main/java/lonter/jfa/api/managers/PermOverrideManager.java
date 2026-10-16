@@ -94,7 +94,7 @@ public interface PermOverrideManager extends Manager<PermOverrideManager> {
     @NotNull
     @Override
     @CheckReturnValue
-    PermOverrideManager reset(@NotNull long... fields);
+    PermOverrideManager reset(long @NotNull ... fields);
 
     /**
      * The {@link lonter.jfa.api.entities.Guild Guild} this Manager's

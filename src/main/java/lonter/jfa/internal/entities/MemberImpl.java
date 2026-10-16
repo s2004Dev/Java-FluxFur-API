@@ -34,10 +34,8 @@ import lonter.jfa.internal.utils.EntityString;
 import lonter.jfa.internal.utils.Helpers;
 import lonter.jfa.internal.utils.PermissionUtil;
 
-import java.awt.*;
 import java.time.OffsetDateTime;
 import java.util.*;
-import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Stream;
 
@@ -413,12 +411,11 @@ public class MemberImpl implements Member, MemberMixin<MemberImpl> {
         if (o == this) {
             return true;
         }
-        if (!(o instanceof MemberImpl)) {
+        if (!(o instanceof MemberImpl oMember)) {
             return false;
         }
 
-        MemberImpl oMember = (MemberImpl) o;
-        return oMember.user.getIdLong() == user.getIdLong() && oMember.guild.getIdLong() == guild.getIdLong();
+      return oMember.user.getIdLong() == user.getIdLong() && oMember.guild.getIdLong() == guild.getIdLong();
     }
 
     @Override

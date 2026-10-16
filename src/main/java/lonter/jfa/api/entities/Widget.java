@@ -156,7 +156,7 @@ public interface Widget extends ISnowflake {
      * @see     Widget#getMemberById(String)
      * @see     VoiceChannel#getMembers()
      */
-    public interface Member extends IMentionable {
+    interface Member extends IMentionable {
 
         /**
          * Returns whether or not the given member is a bot account
@@ -398,7 +398,7 @@ public interface Widget extends ISnowflake {
      * @see     Widget#getVoiceChannelById(long)
      * @see     Widget#getVoiceChannelById(String)
      */
-    public interface VoiceChannel extends ISnowflake {
+    interface VoiceChannel extends ISnowflake {
 
         /**
          * Gets the integer position of the channel
@@ -437,7 +437,7 @@ public interface Widget extends ISnowflake {
      *
      * @see     Member#getVoiceState()
      */
-    public interface VoiceState {
+    interface VoiceState {
 
         /**
          * Gets the channel the member is in

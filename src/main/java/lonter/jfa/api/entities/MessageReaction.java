@@ -517,11 +517,10 @@ public class MessageReaction {
         if (obj == this) {
             return true;
         }
-        if (!(obj instanceof MessageReaction)) {
+        if (!(obj instanceof MessageReaction r)) {
             return false;
         }
-        MessageReaction r = (MessageReaction) obj;
-        return r.emoji.equals(emoji) && r.isSelf() == this.isSelf() && r.messageId == messageId;
+      return r.emoji.equals(emoji) && r.isSelf() == this.isSelf() && r.messageId == messageId;
     }
 
     @Override

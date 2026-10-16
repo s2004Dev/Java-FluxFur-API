@@ -138,7 +138,7 @@ public class SectionImpl extends AbstractComponentImpl
                 SectionAccessoryComponent.class,
                 Collections.singletonList(accessory),
                 replacer,
-                newAccessories -> newAccessories.isEmpty() ? null : newAccessories.get(0));
+                newAccessories -> newAccessories.isEmpty() ? null : newAccessories.getFirst());
 
         return validated(newAccessory, newContent, uniqueId);
     }
@@ -179,11 +179,10 @@ public class SectionImpl extends AbstractComponentImpl
         if (o == this) {
             return true;
         }
-        if (!(o instanceof SectionImpl)) {
+        if (!(o instanceof SectionImpl that)) {
             return false;
         }
-        SectionImpl that = (SectionImpl) o;
-        return uniqueId == that.uniqueId
+      return uniqueId == that.uniqueId
                 && Objects.equals(components, that.components)
                 && Objects.equals(accessory, that.accessory);
     }

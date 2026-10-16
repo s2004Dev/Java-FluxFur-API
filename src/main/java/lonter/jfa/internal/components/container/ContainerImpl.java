@@ -175,11 +175,10 @@ public class ContainerImpl extends AbstractComponentImpl implements Container, M
         if (o == this) {
             return true;
         }
-        if (!(o instanceof ContainerImpl)) {
+        if (!(o instanceof ContainerImpl that)) {
             return false;
         }
-        ContainerImpl that = (ContainerImpl) o;
-        return uniqueId == that.uniqueId
+      return uniqueId == that.uniqueId
                 && spoiler == that.spoiler
                 && Objects.equals(components, that.components)
                 && Objects.equals(accentColor, that.accentColor);

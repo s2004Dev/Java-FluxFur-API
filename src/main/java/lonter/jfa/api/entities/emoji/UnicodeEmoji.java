@@ -47,6 +47,6 @@ public interface UnicodeEmoji extends Emoji {
     @NotNull
     @Override
     default String getFormatted() {
-        return getName();
+        return name();
     }
 }

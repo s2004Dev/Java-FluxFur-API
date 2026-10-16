@@ -117,8 +117,7 @@ public class InteractionImpl implements Interaction {
             // (G)DMs
             user = jfa.getEntityBuilder().createUser(userObj);
             member = null;
-            ChannelType type = channelType;
-            switch (type) {
+          switch (channelType) {
                 case PRIVATE:
                     this.channel = interactionEntityBuilder.createPrivateChannel(channelJson, user);
                     break;
@@ -127,7 +126,7 @@ public class InteractionImpl implements Interaction {
                     break;
                 default:
                     throw new IllegalArgumentException(
-                            "Received interaction in unexpected channel type! Type " + type + " is not supported yet!");
+                            "Received interaction in unexpected channel type! Type " + channelType + " is not supported yet!");
             }
         }
 

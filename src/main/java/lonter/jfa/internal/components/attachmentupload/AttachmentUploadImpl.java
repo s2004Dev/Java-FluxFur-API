@@ -120,11 +120,10 @@ public class AttachmentUploadImpl extends AbstractComponentImpl implements Attac
         if (o == this) {
             return true;
         }
-        if (!(o instanceof AttachmentUploadImpl)) {
+        if (!(o instanceof AttachmentUploadImpl that)) {
             return false;
         }
-        AttachmentUploadImpl that = (AttachmentUploadImpl) o;
-        return uniqueId == that.uniqueId
+      return uniqueId == that.uniqueId
                 && minValues == that.minValues
                 && maxValues == that.maxValues
                 && required == that.required

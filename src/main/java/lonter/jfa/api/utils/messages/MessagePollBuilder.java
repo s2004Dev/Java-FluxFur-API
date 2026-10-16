@@ -69,7 +69,7 @@ public class MessagePollBuilder {
         this.isMultiAnswer = poll.isMultiAnswer();
         this.layout = poll.getLayout();
         for (MessagePoll.Answer answer : poll.getAnswers()) {
-            addAnswer(answer.getText(), answer.getEmoji());
+            addAnswer(answer.text(), answer.emoji());
         }
     }
 

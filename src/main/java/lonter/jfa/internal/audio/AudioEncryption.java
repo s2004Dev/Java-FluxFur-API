@@ -62,13 +62,10 @@ public enum AudioEncryption {
     }
 
     public static AudioEncryption forMode(String mode) {
-        switch (mode) {
-            case "aead_aes256_gcm_rtpsize":
-                return AEAD_AES256_GCM_RTPSIZE;
-            case "aead_xchacha20_poly1305_rtpsize":
-                return AEAD_XCHACHA20_POLY1305_RTPSIZE;
-            default:
-                return null;
-        }
+      return switch (mode) {
+        case "aead_aes256_gcm_rtpsize" -> AEAD_AES256_GCM_RTPSIZE;
+        case "aead_xchacha20_poly1305_rtpsize" -> AEAD_XCHACHA20_POLY1305_RTPSIZE;
+        default -> null;
+      };
     }
 }

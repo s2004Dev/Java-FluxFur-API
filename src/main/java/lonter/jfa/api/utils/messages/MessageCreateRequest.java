@@ -118,7 +118,7 @@ public interface MessageCreateRequest<R extends MessageCreateRequest<R>> extends
      * Sending a message with multiple action rows:
      * {@snippet lang="java":
      * final List<MessageTopLevelComponent> list = new ArrayList<>();
-     * list.add(ActionRow.of(selectMenu); // first row
+     * list.add(ActionRow.of(selectMenu)); // first row
      * list.add(ActionRow.of(button1, button2)); // second row (shows below the first)
      *
      * channel.sendMessage("Content here")

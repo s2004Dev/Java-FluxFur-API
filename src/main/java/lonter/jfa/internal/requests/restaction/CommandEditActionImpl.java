@@ -46,7 +46,7 @@ import org.jetbrains.annotations.Nullable;
 
 public class CommandEditActionImpl extends RestActionImpl<Command> implements CommandEditAction {
     private static final String UNDEFINED = "undefined";
-    private static final int NAME_SET = 1 << 0;
+    private static final int NAME_SET = 1;
     private static final int DESCRIPTION_SET = 1 << 1;
     private static final int OPTIONS_SET = 1 << 2;
     private static final int PERMISSIONS_SET = 1 << 3;

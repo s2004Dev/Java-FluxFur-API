@@ -130,11 +130,10 @@ public class FileDisplayImpl extends AbstractComponentImpl
         if (o == this) {
             return true;
         }
-        if (!(o instanceof FileDisplayImpl)) {
+        if (!(o instanceof FileDisplayImpl fileDisplay)) {
             return false;
         }
-        FileDisplayImpl fileDisplay = (FileDisplayImpl) o;
-        return uniqueId == fileDisplay.uniqueId
+      return uniqueId == fileDisplay.uniqueId
                 && spoiler == fileDisplay.spoiler
                 && Objects.equals(url, fileDisplay.url);
     }

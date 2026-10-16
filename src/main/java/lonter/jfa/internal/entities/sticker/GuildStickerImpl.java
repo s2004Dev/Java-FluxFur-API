@@ -168,11 +168,10 @@ public class GuildStickerImpl extends RichStickerImpl implements GuildSticker {
         if (obj == this) {
             return true;
         }
-        if (!(obj instanceof GuildStickerImpl)) {
+        if (!(obj instanceof GuildStickerImpl other)) {
             return false;
         }
-        GuildStickerImpl other = (GuildStickerImpl) obj;
-        return id == other.id
+      return id == other.id
                 && format == other.format
                 && getType() == other.getType()
                 && available == other.available

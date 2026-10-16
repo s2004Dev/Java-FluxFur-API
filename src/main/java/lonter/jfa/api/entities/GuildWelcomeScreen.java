@@ -52,7 +52,7 @@ public interface GuildWelcomeScreen {
      * @return The Guild, or {@code null}
      */
     @Nullable
-    Guild getGuild();
+    Guild guild();
 
     /**
      * Returns the {@link GuildWelcomeScreenManager Manager} for this guild's welcome screen.
@@ -77,7 +77,7 @@ public interface GuildWelcomeScreen {
      * @return The server description shown in the welcome screen or {@code null}
      */
     @Nullable
-    String getDescription();
+    String description();
 
     /**
      * The channels shown in the welcome screen.
@@ -85,13 +85,13 @@ public interface GuildWelcomeScreen {
      * @return Possibly-empty, unmodifiable list of the channels shown in the welcome screen
      */
     @NotNull
-    List<Channel> getChannels();
+    List<Channel> channels();
 
     /**
      * POJO for the recommended channels information provided by a welcome screen.
      * <br>Recommended channels are shown in the welcome screen after joining a server.
      *
-     * @see GuildWelcomeScreen#getChannels()
+     * @see GuildWelcomeScreen#channels()
      */
     interface Channel extends ISnowflake, SerializableData {
         /** Maximum length of a channel description ({@value}) */

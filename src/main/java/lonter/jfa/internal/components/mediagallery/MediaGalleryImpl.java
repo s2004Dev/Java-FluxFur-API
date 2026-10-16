@@ -117,11 +117,10 @@ public class MediaGalleryImpl extends AbstractComponentImpl
         if (o == this) {
             return true;
         }
-        if (!(o instanceof MediaGalleryImpl)) {
+        if (!(o instanceof MediaGalleryImpl that)) {
             return false;
         }
-        MediaGalleryImpl that = (MediaGalleryImpl) o;
-        return uniqueId == that.uniqueId && Objects.equals(items, that.items);
+      return uniqueId == that.uniqueId && Objects.equals(items, that.items);
     }
 
     @Override

@@ -362,15 +362,13 @@ public class WebSocketClient extends WebSocketAdapter implements WebSocketListen
                     encoding.name().toLowerCase());
             if (compression != Compression.NONE) {
                 gatewayUrl = IOUtil.addQuery(gatewayUrl, "compress", compression.getKey());
-                switch (compression) {
-                    case ZLIB:
-                        if (decompressor == null || decompressor.getType() != Compression.ZLIB) {
-                            decompressor = new ZlibDecompressor(api.getMaxBufferSize());
-                        }
-                        break;
-                    default:
-                        throw new IllegalStateException("Unknown compression");
+              if (compression == Compression.ZLIB) {
+                if (decompressor == null || decompressor.getType() != Compression.ZLIB) {
+                  decompressor = new ZlibDecompressor(api.getMaxBufferSize());
                 }
+              } else {
+                throw new IllegalStateException("Unknown compression");
+              }
             }
 
             WebSocketFactory socketFactory = new WebSocketFactory(api.getWebSocketFactory());
@@ -393,7 +391,7 @@ public class WebSocketClient extends WebSocketAdapter implements WebSocketListen
     }
 
     @Override
-    public void onThreadStarted(WebSocket websocket, ThreadType threadType, Thread thread) throws Exception {
+    public void onThreadStarted(WebSocket websocket, ThreadType threadType, Thread thread) {
         api.setContext();
     }
 
@@ -766,7 +764,7 @@ public class WebSocketClient extends WebSocketAdapter implements WebSocketListen
         AbstractCacheView<AudioManager> managerView = api.getAudioManagersView();
         try (UnlockHook hook = managerView.writeLock()) {
             TLongObjectMap<AudioManager> managerMap = managerView.getMap();
-            if (managerMap.size() > 0) {
+            if (!managerMap.isEmpty()) {
                 LOG.trace("Updating AudioManager references");
             }
 
@@ -1024,12 +1022,12 @@ public class WebSocketClient extends WebSocketAdapter implements WebSocketListen
     }
 
     @Override
-    public void handleCallbackError(WebSocket websocket, Throwable cause) throws Exception {
+    public void handleCallbackError(WebSocket websocket, Throwable cause) {
         handleError(cause);
     }
 
     @Override
-    public void onError(WebSocket websocket, WebSocketException cause) throws Exception {
+    public void onError(WebSocket websocket, WebSocketException cause) {
         handleError(cause);
     }
 
@@ -1045,7 +1043,7 @@ public class WebSocketClient extends WebSocketAdapter implements WebSocketListen
     }
 
     @Override
-    public void onThreadCreated(WebSocket websocket, ThreadType threadType, Thread thread) throws Exception {
+    public void onThreadCreated(WebSocket websocket, ThreadType threadType, Thread thread) {
         String identifier = api.getIdentifierString();
         switch (threadType) {
             case CONNECT_THREAD:
@@ -1377,11 +1375,10 @@ public class WebSocketClient extends WebSocketAdapter implements WebSocketListen
             if (obj == this) {
                 return true;
             }
-            if (!(obj instanceof StartingNode)) {
+            if (!(obj instanceof StartingNode node)) {
                 return false;
             }
-            StartingNode node = (StartingNode) obj;
-            return node.getJFA().equals(getJFA());
+          return node.getJFA().equals(getJFA());
         }
     }
 
@@ -1418,11 +1415,10 @@ public class WebSocketClient extends WebSocketAdapter implements WebSocketListen
             if (obj == this) {
                 return true;
             }
-            if (!(obj instanceof ReconnectNode)) {
+            if (!(obj instanceof ReconnectNode node)) {
                 return false;
             }
-            ReconnectNode node = (ReconnectNode) obj;
-            return node.getJFA().equals(getJFA());
+          return node.getJFA().equals(getJFA());
         }
     }
 }

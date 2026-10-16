@@ -65,8 +65,7 @@ public class SerializationUtil {
         return listType;
     }
 
-    @NotNull
-    public static byte[] toJson(@NotNull Object data) {
+    public static byte @NotNull [] toJson(@NotNull Object data) {
         Checks.notNull(data, "Data");
         try {
             return mapper.writeValueAsBytes(data);
@@ -97,13 +96,13 @@ public class SerializationUtil {
     }
 
     @NotNull
-    public static <T> T fromJson(@NotNull Class<T> clazz, @NotNull byte[] data) {
+    public static <T> T fromJson(@NotNull Class<T> clazz, byte @NotNull [] data) {
         Checks.notNull(clazz, "Class");
         return fromJson(mapper.constructType(clazz), data);
     }
 
     @NotNull
-    public static <T> T fromJson(@NotNull JavaType type, @NotNull byte[] data) {
+    public static <T> T fromJson(@NotNull JavaType type, byte @NotNull [] data) {
         Checks.notNull(type, "Type");
         Checks.notNull(data, "Data");
 

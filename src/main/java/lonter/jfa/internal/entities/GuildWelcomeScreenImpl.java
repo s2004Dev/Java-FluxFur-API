@@ -30,111 +30,108 @@ import java.util.List;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class GuildWelcomeScreenImpl implements GuildWelcomeScreen {
-    private final Guild guild;
-    private final String description;
-    private final List<Channel> channels;
+public record GuildWelcomeScreenImpl(Guild guild, String description,
+                                     List<Channel> channels) implements GuildWelcomeScreen {
+  public GuildWelcomeScreenImpl(
+    @Nullable Guild guild, @Nullable String description, @NotNull List<Channel> channels) {
+    this.guild = guild;
+    this.description = description;
+    this.channels = channels;
+  }
 
-    public GuildWelcomeScreenImpl(
-            @Nullable Guild guild, @Nullable String description, @NotNull List<Channel> channels) {
-        this.guild = guild;
-        this.description = description;
-        this.channels = channels;
+  @Nullable
+  @Override
+  public Guild guild() {
+    return guild;
+  }
+
+  @NotNull
+  @Override
+  public GuildWelcomeScreenManager getManager() {
+    if (guild == null) {
+      throw new IllegalStateException("Cannot modify a guild welcome screen from an Invite");
+    }
+    return guild.modifyWelcomeScreen();
+  }
+
+  @Nullable
+  @Override
+  public String description() {
+    return description;
+  }
+
+  @NotNull
+  @Override
+  public List<Channel> channels() {
+    return channels;
+  }
+
+  /**
+   * POJO for the recommended channels information provided by a welcome screen.
+   * <br>Recommended channels are shown in the welcome screen after joining a server.
+   *
+   * @see GuildWelcomeScreen#channels ()
+   */
+  public static class ChannelImpl implements Channel {
+    private final Guild guild;
+    private final long id;
+    private final String description;
+    private final EmojiUnion emoji;
+
+    public ChannelImpl(@Nullable Guild guild, long id, @NotNull String description, @Nullable EmojiUnion emoji) {
+      this.guild = guild;
+      this.id = id;
+      this.description = description;
+      this.emoji = emoji;
     }
 
     @Nullable
     @Override
     public Guild getGuild() {
-        return guild;
+      return guild;
     }
 
-    @NotNull
     @Override
-    public GuildWelcomeScreenManager getManager() {
-        if (guild == null) {
-            throw new IllegalStateException("Cannot modify a guild welcome screen from an Invite");
-        }
-        return guild.modifyWelcomeScreen();
+    public long getIdLong() {
+      return id;
     }
 
     @Nullable
     @Override
-    public String getDescription() {
-        return description;
+    public GuildChannel getChannel() {
+      if (guild == null) {
+        return null;
+      }
+
+      return guild.getGuildChannelById(id);
     }
 
     @NotNull
     @Override
-    public List<Channel> getChannels() {
-        return channels;
+    public String getDescription() {
+      return description;
     }
 
-    /**
-     * POJO for the recommended channels information provided by a welcome screen.
-     * <br>Recommended channels are shown in the welcome screen after joining a server.
-     *
-     * @see GuildWelcomeScreen#getChannels()
-     */
-    public static class ChannelImpl implements GuildWelcomeScreen.Channel {
-        private final Guild guild;
-        private final long id;
-        private final String description;
-        private final EmojiUnion emoji;
-
-        public ChannelImpl(@Nullable Guild guild, long id, @NotNull String description, @Nullable EmojiUnion emoji) {
-            this.guild = guild;
-            this.id = id;
-            this.description = description;
-            this.emoji = emoji;
-        }
-
-        @Nullable
-        @Override
-        public Guild getGuild() {
-            return guild;
-        }
-
-        @Override
-        public long getIdLong() {
-            return id;
-        }
-
-        @Nullable
-        @Override
-        public GuildChannel getChannel() {
-            if (guild == null) {
-                return null;
-            }
-
-            return guild.getGuildChannelById(id);
-        }
-
-        @NotNull
-        @Override
-        public String getDescription() {
-            return description;
-        }
-
-        @Nullable
-        @Override
-        public EmojiUnion getEmoji() {
-            return emoji;
-        }
-
-        @NotNull
-        @Override
-        public DataObject toData() {
-            DataObject data = DataObject.empty();
-            data.put("channel_id", id);
-            data.put("description", description);
-            if (emoji != null) {
-                if (emoji.getType() == Emoji.Type.CUSTOM) {
-                    data.put("emoji_id", ((CustomEmoji) emoji).getId());
-                }
-                data.put("emoji_name", emoji.getName());
-            }
-
-            return data;
-        }
+    @Nullable
+    @Override
+    public EmojiUnion getEmoji() {
+      return emoji;
     }
+
+    @NotNull
+    @Override
+    public DataObject toData() {
+      DataObject data = DataObject.empty();
+      data.put("channel_id", id);
+      data.put("description", description);
+      if (emoji != null) {
+        if (emoji.getType() == Emoji.Type.CUSTOM) {
+          data.put("emoji_id", ((CustomEmoji) emoji).getId());
+        }
+        data.put("emoji_name", emoji.name());
+      }
+
+      return data;
+    }
+  }
 }

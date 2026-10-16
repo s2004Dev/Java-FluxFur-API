@@ -244,11 +244,10 @@ public class WebhookImpl extends AbstractWebhookClient<Message> implements Webho
         if (obj == this) {
             return true;
         }
-        if (!(obj instanceof WebhookImpl)) {
+        if (!(obj instanceof WebhookImpl impl)) {
             return false;
         }
-        WebhookImpl impl = (WebhookImpl) obj;
-        return impl.id == id;
+      return impl.id == id;
     }
 
     @Override

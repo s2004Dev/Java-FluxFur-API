@@ -984,7 +984,7 @@ public class OptionData implements SerializableData {
     @NotNull
     public OptionData addChoices(@NotNull Collection<? extends Command.Choice> choices) {
         Checks.notNull(choices, "Choices");
-        if (choices.size() == 0) {
+        if (choices.isEmpty()) {
             return this;
         }
         if (this.choices == null || !type.canSupportChoices()) {

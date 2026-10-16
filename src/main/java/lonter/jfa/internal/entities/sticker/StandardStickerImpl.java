@@ -74,10 +74,9 @@ public class StandardStickerImpl extends RichStickerImpl implements StandardStic
         if (obj == this) {
             return true;
         }
-        if (!(obj instanceof StandardStickerImpl)) {
+        if (!(obj instanceof StandardStickerImpl other)) {
             return false;
         }
-        StandardStickerImpl other = (StandardStickerImpl) obj;
-        return id == other.id; // Standard stickers shouldn't change, so we can just compare id
+      return id == other.id; // Standard stickers shouldn't change, so we can just compare id
     }
 }

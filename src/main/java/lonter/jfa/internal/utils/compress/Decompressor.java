@@ -35,6 +35,5 @@ public interface Decompressor {
 
     // returns null when the decompression isn't done,
     // for example when no Z_SYNC_FLUSH was present
-    @Nullable
-    byte[] decompress(byte[] data) throws DataFormatException;
+    byte @Nullable [] decompress(byte[] data) throws DataFormatException;
 }

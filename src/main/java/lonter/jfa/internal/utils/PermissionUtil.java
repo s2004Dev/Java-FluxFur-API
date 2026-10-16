@@ -18,6 +18,7 @@ package lonter.jfa.internal.utils;
 
 import lonter.jfa.api.Permission;
 import lonter.jfa.api.entities.*;
+import lonter.jfa.api.entities.channel.ChannelType;
 import lonter.jfa.api.entities.channel.attribute.ICategorizableChannel;
 import lonter.jfa.api.entities.channel.attribute.IPermissionContainer;
 import lonter.jfa.api.entities.channel.concrete.TextChannel;
@@ -104,7 +105,7 @@ public class PermissionUtil {
         }
         List<Role> issuerRoles = issuer.getRoles();
         List<Role> targetRoles = target.getRoles();
-        return !issuerRoles.isEmpty() && (targetRoles.isEmpty() || canInteract(issuerRoles.get(0), targetRoles.get(0)));
+        return !issuerRoles.isEmpty() && (targetRoles.isEmpty() || canInteract(issuerRoles.getFirst(), targetRoles.getFirst()));
     }
 
     /**
@@ -134,7 +135,7 @@ public class PermissionUtil {
             return true;
         }
         List<Role> issuerRoles = issuer.getRoles();
-        return !issuerRoles.isEmpty() && canInteract(issuerRoles.get(0), target);
+        return !issuerRoles.isEmpty() && canInteract(issuerRoles.getFirst(), target);
     }
 
     /**
@@ -217,7 +218,8 @@ public class PermissionUtil {
         Checks.notNull(emoji, "Target Emoji");
         Checks.notNull(channel, "Target Channel");
 
-        if (emoji.getGuild() == null || !emoji.getGuild().isMember(issuer)) {
+      emoji.getGuild();
+      if (!emoji.getGuild().isMember(issuer)) {
             return false; // cannot use an emoji if you're not in its guild
         }
         Member member = emoji.getGuild().getMemberById(issuer.getIdLong());
@@ -228,17 +230,15 @@ public class PermissionUtil {
         // managed
         // currently we cannot check whether other users have nitro, we assume no here
         boolean external = emoji.isManaged() || (issuer.isBot() && botOverride);
-        switch (channel.getType()) {
-            case TEXT:
-                TextChannel text = (TextChannel) channel;
-                member = text.getGuild().getMemberById(issuer.getIdLong());
-                return emoji.getGuild().equals(text.getGuild()) // within the same guild
-                        || (external
-                                && member != null
-                                && member.hasPermission(text, Permission.MESSAGE_EXT_EMOJI)); // in different guild
-            default:
-                return external; // In Group or Private it only needs to be external
-        }
+      if (channel.getType() == ChannelType.TEXT) {
+        TextChannel text = (TextChannel) channel;
+        member = text.getGuild().getMemberById(issuer.getIdLong());
+        return emoji.getGuild().equals(text.getGuild()) // within the same guild
+          || (external
+          && member != null
+          && member.hasPermission(text, Permission.MESSAGE_EXT_EMOJI)); // in different guild
+      }
+      return external; // In Group or Private it only needs to be external
     }
 
     /**
@@ -421,9 +421,8 @@ public class PermissionUtil {
 
         // MANAGE_CHANNEL allows to delete channels within a category
         // (this is undocumented behavior)
-        if (channel instanceof ICategorizableChannel) {
-            ICategorizableChannel categorizableChannel = (ICategorizableChannel) channel;
-            if (categorizableChannel.getParentCategory() != null
+        if (channel instanceof ICategorizableChannel categorizableChannel) {
+          if (categorizableChannel.getParentCategory() != null
                     && checkPermission(categorizableChannel.getParentCategory(), member, Permission.MANAGE_CHANNEL)) {
                 permission |= Permission.MANAGE_CHANNEL.getRawValue();
             }

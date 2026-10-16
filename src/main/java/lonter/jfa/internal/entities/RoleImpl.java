@@ -317,11 +317,10 @@ public class RoleImpl implements Role, RoleMixin<RoleImpl> {
         if (o == this) {
             return true;
         }
-        if (!(o instanceof RoleImpl)) {
+        if (!(o instanceof RoleImpl oRole)) {
             return false;
         }
-        RoleImpl oRole = (RoleImpl) o;
-        return this.getIdLong() == oRole.getIdLong();
+      return this.getIdLong() == oRole.getIdLong();
     }
 
     @Override
@@ -495,11 +494,10 @@ public class RoleImpl implements Role, RoleMixin<RoleImpl> {
             if (obj == this) {
                 return true;
             }
-            if (!(obj instanceof RoleTagsImpl)) {
+            if (!(obj instanceof RoleTagsImpl other)) {
                 return false;
             }
-            RoleTagsImpl other = (RoleTagsImpl) obj;
-            return botId == other.botId
+          return botId == other.botId
                     && integrationId == other.integrationId
                     && premiumSubscriber == other.premiumSubscriber
                     && availableForPurchase == other.availableForPurchase

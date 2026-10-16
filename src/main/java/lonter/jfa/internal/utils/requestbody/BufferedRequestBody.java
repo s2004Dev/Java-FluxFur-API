@@ -64,7 +64,6 @@ public class BufferedRequestBody extends TypedBody<BufferedRequestBody> {
     }
 
     @Override
-    @SuppressWarnings("deprecation")
     protected void finalize() {
         IOUtil.silentClose(source);
     }

@@ -228,11 +228,10 @@ public class DetachedRoleImpl implements Role, RoleMixin<DetachedRoleImpl> {
         if (o == this) {
             return true;
         }
-        if (!(o instanceof DetachedRoleImpl)) {
+        if (!(o instanceof DetachedRoleImpl oRole)) {
             return false;
         }
-        DetachedRoleImpl oRole = (DetachedRoleImpl) o;
-        return this.getIdLong() == oRole.getIdLong();
+      return this.getIdLong() == oRole.getIdLong();
     }
 
     @Override

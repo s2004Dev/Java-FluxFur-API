@@ -83,9 +83,8 @@ public abstract class Pair<L, R> implements /*Map.Entry<L, R>, Comparable<Pair<L
         if (obj == this) {
             return true;
         }
-        if (obj instanceof Pair<?, ?>) {
-            Pair<?, ?> other = (Pair<?, ?>) obj;
-            return Objects.equals(getLeft(), other.getLeft()) && Objects.equals(getRight(), other.getRight());
+        if (obj instanceof Pair<?, ?> other) {
+          return Objects.equals(getLeft(), other.getLeft()) && Objects.equals(getRight(), other.getRight());
         }
         return false;
     }

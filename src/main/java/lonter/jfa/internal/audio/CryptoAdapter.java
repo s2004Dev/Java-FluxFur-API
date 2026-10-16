@@ -47,25 +47,17 @@ public interface CryptoAdapter {
     }
 
     static boolean isModeSupported(AudioEncryption mode) {
-        switch (mode) {
-            case AEAD_AES256_GCM_RTPSIZE:
-                return Security.getAlgorithms("Cipher").contains(AES_GCM_NO_PADDING);
-            case AEAD_XCHACHA20_POLY1305_RTPSIZE:
-                return true;
-            default:
-                return false;
-        }
+      return switch (mode) {
+        case AEAD_AES256_GCM_RTPSIZE -> Security.getAlgorithms("Cipher").contains(AES_GCM_NO_PADDING);
+        case AEAD_XCHACHA20_POLY1305_RTPSIZE -> true;
+      };
     }
 
     static CryptoAdapter getAdapter(AudioEncryption mode, byte[] secretKey) {
-        switch (mode) {
-            case AEAD_AES256_GCM_RTPSIZE:
-                return new CryptoAdapter.AES_GCM_Adapter(secretKey);
-            case AEAD_XCHACHA20_POLY1305_RTPSIZE:
-                return new XChaCha20Poly1305Adapter(secretKey);
-            default:
-                throw new IllegalStateException("Unsupported encryption mode: " + mode);
-        }
+      return switch (mode) {
+        case AEAD_AES256_GCM_RTPSIZE -> new AES_GCM_Adapter(secretKey);
+        case AEAD_XCHACHA20_POLY1305_RTPSIZE -> new XChaCha20Poly1305Adapter(secretKey);
+      };
     }
 
     abstract class AbstractAaedAdapter implements CryptoAdapter {

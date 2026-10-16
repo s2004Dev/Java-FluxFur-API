@@ -109,7 +109,7 @@ public interface RoleManager extends Manager<RoleManager> {
     @NotNull
     @Override
     @CheckReturnValue
-    RoleManager reset(@NotNull long... fields);
+    RoleManager reset(long @NotNull ... fields);
 
     /**
      * The target {@link Role} for this

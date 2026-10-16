@@ -274,7 +274,7 @@ class AudioWebSocket extends WebSocketAdapter implements DaveProtocolCallbacks {
     public void onConnected(WebSocket websocket, Map<String, List<String>> headers) {
         if (shutdown) {
             // Somehow this AudioWebSocket was shutdown before we finished connecting....
-            // thus we just disconnect here since we were asked to shutdown
+            // thus we just disconnect here since we were asked to shut down
             socket.sendClose(1000);
             return;
         }
@@ -499,7 +499,7 @@ class AudioWebSocket extends WebSocketAdapter implements DaveProtocolCallbacks {
                     LOG.error("None of the provided encryption modes are supported: {}", modes);
                     return;
                 } else {
-                    LOG.debug("Using encryption mode " + encryption.getKey());
+                  LOG.debug("Using encryption mode {}", encryption.getKey());
                 }
 
                 // Find our external IP and Port using Fluxer
@@ -692,7 +692,7 @@ class AudioWebSocket extends WebSocketAdapter implements DaveProtocolCallbacks {
     }
 
     private InetSocketAddress handleUdpDiscovery(InetSocketAddress address, int ssrc) {
-        // We will now send a packet to fluxer to punch a port hole in the NAT wall.
+        // We will now send a packet to fluxer to punch a porthole in the NAT wall.
         // This is called UDP hole punching.
         try {
             // First close existing socket from possible previous attempts
@@ -727,7 +727,7 @@ class AudioWebSocket extends WebSocketAdapter implements DaveProtocolCallbacks {
 
             // Example string:"   121.83.253.66 ��"
             // You'll notice that there are 4 leading nulls and a large amount of nulls
-            // between the the ip and the last 2 bytes.
+            // between the ip and the last 2 bytes.
             // Not sure why these exist.
             // The last 2 bytes are the port. More info below.
 
@@ -819,8 +819,7 @@ class AudioWebSocket extends WebSocketAdapter implements DaveProtocolCallbacks {
         return getJFA().getUserById(userId);
     }
 
-    @Override
-    @SuppressWarnings("deprecation") /* If this was in JDK9 we would be using java.lang.ref.Cleaner instead! */
+    @Override/* If this was in JDK9 we would be using java.lang.ref.Cleaner instead! */
     protected void finalize() {
         if (!shutdown) {
             LOG.error("Finalization hook of AudioWebSocket was triggered without properly shutting down");

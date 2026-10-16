@@ -54,17 +54,15 @@ public class MessageBulkDeleteHandler extends SocketHandler {
 
         if (getJFA().isBulkDeleteSplittingEnabled()) {
             SocketHandler handler = getJFA().getClient().getHandlers().get("MESSAGE_DELETE");
-            content.getArray("ids").forEach(id -> {
-                handler.handle(
-                        responseNumber,
-                        DataObject.empty()
-                                .put("t", "MESSAGE_DELETE")
-                                .put(
-                                        "d",
-                                        DataObject.empty()
-                                                .put("channel_id", Long.toUnsignedString(channelId))
-                                                .put("id", id)));
-            });
+            content.getArray("ids").forEach(id -> handler.handle(
+                    responseNumber,
+                    DataObject.empty()
+                            .put("t", "MESSAGE_DELETE")
+                            .put(
+                                    "d",
+                                    DataObject.empty()
+                                            .put("channel_id", Long.toUnsignedString(channelId))
+                                            .put("id", id))));
         } else {
             GuildMessageChannel channel = getJFA().getChannelById(GuildMessageChannel.class, channelId);
             if (channel == null) {

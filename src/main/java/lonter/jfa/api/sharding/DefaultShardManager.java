@@ -188,7 +188,7 @@ public class DefaultShardManager implements ShardManager {
         this.chunkingFilter = chunkingFilter == null ? ChunkingFilter.ALL : chunkingFilter;
         this.restConfigProvider = restConfigProvider == null ? (i) -> new RestConfig() : restConfigProvider;
         this.audioModuleConfig = audioModuleConfig;
-        this.executor = createExecutor(this.threadingConfig.getThreadFactory());
+        this.executor = createExecutor(this.threadingConfig.threadFactory());
         this.shutdownHook =
                 this.metaConfig.isUseShutdownHook() ? new Thread(this::shutdown, "JFA Shutdown Hook") : null;
 
@@ -474,31 +474,31 @@ public class DefaultShardManager implements ShardManager {
 
         // imagine if we had macros or closures or destructuring :)
         ExecutorPair<ScheduledExecutorService> rateLimitSchedulerPair =
-                resolveExecutor(threadingConfig.getRateLimitSchedulerProvider(), shardId);
+                resolveExecutor(threadingConfig.rateLimitSchedulerProvider(), shardId);
         ScheduledExecutorService rateLimitScheduler = rateLimitSchedulerPair.executor;
         boolean shutdownRateLimitScheduler = rateLimitSchedulerPair.automaticShutdown;
 
         ExecutorPair<ExecutorService> rateLimitElasticPair =
-                resolveExecutor(threadingConfig.getRateLimitElasticProvider(), shardId);
+                resolveExecutor(threadingConfig.rateLimitElasticProvider(), shardId);
         ExecutorService rateLimitElastic = rateLimitElasticPair.executor;
         boolean shutdownRateLimitElastic = rateLimitElasticPair.automaticShutdown;
 
         ExecutorPair<ScheduledExecutorService> gatewayPair =
-                resolveExecutor(threadingConfig.getGatewayPoolProvider(), shardId);
+                resolveExecutor(threadingConfig.gatewayPoolProvider(), shardId);
         ScheduledExecutorService gatewayPool = gatewayPair.executor;
         boolean shutdownGatewayPool = gatewayPair.automaticShutdown;
 
         ExecutorPair<ExecutorService> callbackPair =
-                resolveExecutor(threadingConfig.getCallbackPoolProvider(), shardId);
+                resolveExecutor(threadingConfig.callbackPoolProvider(), shardId);
         ExecutorService callbackPool = callbackPair.executor;
         boolean shutdownCallbackPool = callbackPair.automaticShutdown;
 
-        ExecutorPair<ExecutorService> eventPair = resolveExecutor(threadingConfig.getEventPoolProvider(), shardId);
+        ExecutorPair<ExecutorService> eventPair = resolveExecutor(threadingConfig.eventPoolProvider(), shardId);
         ExecutorService eventPool = eventPair.executor;
         boolean shutdownEventPool = eventPair.automaticShutdown;
 
         ExecutorPair<ScheduledExecutorService> audioPair =
-                resolveExecutor(threadingConfig.getAudioPoolProvider(), shardId);
+                resolveExecutor(threadingConfig.audioPoolProvider(), shardId);
         ScheduledExecutorService audioPool = audioPair.executor;
         boolean shutdownAudioPool = audioPair.automaticShutdown;
 
@@ -558,13 +558,9 @@ public class DefaultShardManager implements ShardManager {
 
         if (this.gatewayURL == null) {
             SessionController.ShardedGateway gateway = jfa.getShardedGateway();
-            this.sessionConfig.getSessionController().setConcurrency(gateway.getConcurrency());
-            this.gatewayURL = gateway.getUrl();
-            if (this.gatewayURL == null) {
-                throw new IllegalStateException("Acquired null gateway url from SessionController");
-            } else {
-                LOG.info("Login Successful!");
-            }
+            this.sessionConfig.getSessionController().setConcurrency(gateway.concurrency());
+            this.gatewayURL = gateway.url();
+          LOG.info("Login Successful!");
         }
 
         JFA.ShardInfo shardInfo = new JFA.ShardInfo(shardId, getShardsTotal());
@@ -697,15 +693,8 @@ public class DefaultShardManager implements ShardManager {
         return new ExecutorPair<>(executor, automaticShutdown);
     }
 
-    protected static class ExecutorPair<E extends ExecutorService> {
-        protected final E executor;
-        protected final boolean automaticShutdown;
-
-        protected ExecutorPair(E executor, boolean automaticShutdown) {
-            this.executor = executor;
-            this.automaticShutdown = automaticShutdown;
-        }
-    }
+  protected record ExecutorPair<E extends ExecutorService>(E executor, boolean automaticShutdown) {
+  }
 
     protected class ShardTotalTask implements RestRateLimiter.Work {
         private final CompletableFuture<Integer> future;

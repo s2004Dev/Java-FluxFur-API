@@ -20,7 +20,6 @@ import lonter.jfa.api.entities.Guild;
 import lonter.jfa.api.entities.Icon;
 import lonter.jfa.api.entities.ScheduledEvent;
 
-import java.time.OffsetDateTime;
 import java.time.temporal.TemporalAccessor;
 
 import javax.annotation.CheckReturnValue;
@@ -39,7 +38,7 @@ import org.jetbrains.annotations.Nullable;
  * <ol>
  *     <li>
  *         {@link ScheduledEvent.Type#STAGE_INSTANCE Type.STAGE_INSTANCE}
- *         <br>These events are set to take place inside of a {@link lonter.jfa.api.entities.channel.concrete.StageChannel StageChannel}. The
+ *         <br>These events are set to take place inside a {@link lonter.jfa.api.entities.channel.concrete.StageChannel StageChannel}. The
  *         following permissions are required in the specified stage channel in order to create an event there:
  *          <ul>
  *              <li>{@link lonter.jfa.api.Permission#CREATE_SCHEDULED_EVENTS Permission.CREATE_SCHEDULED_EVENTS}</li>
@@ -50,7 +49,7 @@ import org.jetbrains.annotations.Nullable;
  *     </li>
  *     <li>
  *         {@link ScheduledEvent.Type#VOICE Type.VOICE}
- *         <br>These events are set to take place inside of a {@link lonter.jfa.api.entities.channel.concrete.VoiceChannel}. The
+ *         <br>These events are set to take place inside a {@link lonter.jfa.api.entities.channel.concrete.VoiceChannel}. The
  *         following permissions are required in the specified voice channel in order to create an event there:
  *         <ul>
  *             <li>{@link lonter.jfa.api.Permission#CREATE_SCHEDULED_EVENTS Permission.CREATE_SCHEDULED_EVENTS}</li>
@@ -67,8 +66,6 @@ import org.jetbrains.annotations.Nullable;
  * </ol>
  *
  * @see    lonter.jfa.api.entities.Guild
- * @see    Guild#createScheduledEvent(String, String, OffsetDateTime, OffsetDateTime)
- * @see    Guild#createScheduledEvent(String, lonter.jfa.api.entities.channel.middleman.GuildChannel, OffsetDateTime)
  */
 public interface ScheduledEventAction extends FluentAuditableRestAction<ScheduledEvent, ScheduledEventAction> {
     /**
@@ -97,7 +94,7 @@ public interface ScheduledEventAction extends FluentAuditableRestAction<Schedule
 
     /**
      * Sets the description for the new {@link ScheduledEvent ScheduledEvent}.
-     * This field may include markdown.
+     * This field may include Markdown.
      *
      * @param  description
      *         The description for the new {@link ScheduledEvent ScheduledEvent},

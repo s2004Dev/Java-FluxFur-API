@@ -63,26 +63,18 @@ public enum DataType {
      * @return True, if the value is of this type
      */
     public boolean isType(@Nullable Object value) {
-        switch (this) {
-            case INT:
-                return value instanceof Integer
-                        || value instanceof Long
-                        || value instanceof Short
-                        || value instanceof Byte;
-            case FLOAT:
-                return value instanceof Double || value instanceof Float;
-            case STRING:
-                return value instanceof String;
-            case BOOLEAN:
-                return value instanceof Boolean;
-            case ARRAY:
-                return value instanceof List;
-            case OBJECT:
-                return value instanceof Map;
-            case NULL:
-                return value == null;
-            default:
-                return false;
-        }
+      return switch (this) {
+        case INT -> value instanceof Integer
+          || value instanceof Long
+          || value instanceof Short
+          || value instanceof Byte;
+        case FLOAT -> value instanceof Double || value instanceof Float;
+        case STRING -> value instanceof String;
+        case BOOLEAN -> value instanceof Boolean;
+        case ARRAY -> value instanceof List;
+        case OBJECT -> value instanceof Map;
+        case NULL -> value == null;
+        default -> false;
+      };
     }
 }

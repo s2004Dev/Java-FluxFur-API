@@ -21,13 +21,10 @@ import lonter.jfa.api.components.MessageTopLevelComponent;
 import lonter.jfa.api.components.ResolvedMedia;
 import lonter.jfa.api.components.container.ContainerChildComponent;
 import lonter.jfa.api.utils.FileUpload;
-import lonter.jfa.api.utils.messages.MessageCreateBuilder;
 import lonter.jfa.api.utils.messages.MessageRequest;
 import lonter.jfa.internal.components.filedisplay.FileDisplayFileUpload;
 import lonter.jfa.internal.components.filedisplay.FileDisplayImpl;
 import lonter.jfa.internal.utils.Checks;
-
-import java.io.InputStream;
 
 import javax.annotation.CheckReturnValue;
 import org.jetbrains.annotations.NotNull;
@@ -43,73 +40,12 @@ import org.jetbrains.annotations.Nullable;
  * <p><b>Requirements:</b> {@linkplain MessageRequest#useComponentsV2() Components V2} needs to be enabled!
  */
 public interface FileDisplay extends Component, MessageTopLevelComponent, ContainerChildComponent {
-    /**
-     * Constructs a new {@link FileDisplay} from the {@link FileUpload}.
-     *
-     * <p>This method can also be used to upload external resources,
-     * such as by using {@link FileUpload#fromData(InputStream, String)},
-     * in which case it will re-upload the entire file.
-     *
-     * <p>This will automatically add the file when building the message,
-     * as such you do not need to add it manually (with {@link MessageCreateBuilder#addFiles(FileUpload...)} for example).
-     *
-     * <p><u>Example</u>
-     * {@snippet lang="java":
-     * MessageChannel channel; // = reference of a MessageChannel
-     * // It's recommended to use a more robust HTTP library instead,
-     * // such as Java 11+'s HttpClient, or OkHttp (included with JFA), among many other options.
-     * InputStream file = new URL("https://http.cat/500").openStream();
-     * // You can also replace this with a local file
-     * FileDisplay fileDisplay = FileDisplay.fromFile(FileUpload.fromData(file, "cat.png"))
-     *     .setDescription("This is a cute car :3");
-     * channel.sendComponents(fileDisplay)
-     *     .useComponentsV2()
-     *     .queue();
-     * }
-     *
-     * @param  file
-     *         The {@link FileUpload} to display
-     *
-     * @throws IllegalArgumentException
-     *         If {@code null} is provided
-     *
-     * @return The new {@link FileDisplay}
-     */
     @NotNull
     static FileDisplay fromFile(@NotNull FileUpload file) {
         Checks.notNull(file, "FileUpload");
         return new FileDisplayFileUpload(file);
     }
 
-    /**
-     * Constructs a new {@link FileDisplay} with the provided file name.
-     *
-     * <p>You will need to add the file before building the message,
-     * such as with {@link MessageCreateBuilder#addFiles(FileUpload...)}, for example.
-     *
-     * <p><u>Example</u>
-     * {@snippet lang="java":
-     * MessageChannel channel; // = reference of a MessageChannel
-     * // It's recommended to use a more robust HTTP library instead,
-     * // such as Java 11+'s HttpClient, or OkHttp (included with JFA), among many other options.
-     * InputStream file = new URL("https://http.cat/500").openStream();
-     * FileDisplay fileDisplay = FileDisplay.fromFileName("cat.png") // Match the file name in FileUpload
-     *     .setDescription("This is a cute car :3");
-     * channel.sendComponents(fileDisplay)
-     *     // You can also replace this with a local file
-     *     .addFiles(FileUpload.fromData(file, "cat.png"))
-     *     .useComponentsV2()
-     *     .queue();
-     * }
-     *
-     * @param  fileName
-     *         The name of the file to display
-     *
-     * @throws IllegalArgumentException
-     *         If {@code null} is provided
-     *
-     * @return The new {@link FileDisplay}
-     */
     @NotNull
     static FileDisplay fromFileName(@NotNull String fileName) {
         Checks.notNull(fileName, "File name");

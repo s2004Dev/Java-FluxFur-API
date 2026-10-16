@@ -21,8 +21,6 @@ import lonter.jfa.internal.JFAImpl;
 import lonter.jfa.internal.utils.JFALogger;
 import org.jetbrains.annotations.Unmodifiable;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -79,7 +77,7 @@ public class InterfacedEventManager implements IEventManager {
     @Override
     @Unmodifiable
     public List<Object> getRegisteredListeners() {
-        return Collections.unmodifiableList(new ArrayList<>(listeners));
+        return List.copyOf(listeners);
     }
 
     @Override

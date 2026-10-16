@@ -320,7 +320,7 @@ public interface CommandInteractionPayload extends Interaction {
     @Nullable
     default OptionMapping getOption(@NotNull String name) {
         List<OptionMapping> options = getOptionsByName(name);
-        return options.isEmpty() ? null : options.get(0);
+        return options.isEmpty() ? null : options.getFirst();
     }
 
     /**

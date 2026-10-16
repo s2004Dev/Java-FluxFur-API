@@ -693,12 +693,11 @@ public class Route {
 
     @Override
     public boolean equals(Object o) {
-        if (!(o instanceof Route)) {
+        if (!(o instanceof Route oRoute)) {
             return false;
         }
 
-        Route oRoute = (Route) o;
-        return method.equals(oRoute.method) && Arrays.equals(template, oRoute.template);
+      return method.equals(oRoute.method) && Arrays.equals(template, oRoute.template);
     }
 
     @Override
@@ -842,13 +841,11 @@ public class Route {
 
         @Override
         public boolean equals(Object o) {
-            if (!(o instanceof CompiledRoute)) {
+            if (!(o instanceof CompiledRoute oCompiled)) {
                 return false;
             }
 
-            CompiledRoute oCompiled = (CompiledRoute) o;
-
-            return baseRoute.equals(oCompiled.getBaseRoute()) && compiledRoute.equals(oCompiled.compiledRoute);
+          return baseRoute.equals(oCompiled.getBaseRoute()) && compiledRoute.equals(oCompiled.compiledRoute);
         }
 
         @Override

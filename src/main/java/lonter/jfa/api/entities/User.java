@@ -727,7 +727,7 @@ public interface User extends UserSnowflake {
 
             int raw = 0;
             for (UserFlag flag : flags) {
-                if (flag != null && flag != UNKNOWN) {
+                if (flag != UNKNOWN) {
                     raw |= flag.raw;
                 }
             }
@@ -876,12 +876,11 @@ public interface User extends UserSnowflake {
                 return true;
             }
 
-            if (!(obj instanceof PrimaryGuild)) {
+            if (!(obj instanceof PrimaryGuild other)) {
                 return false;
             }
 
-            PrimaryGuild other = (PrimaryGuild) obj;
-            return guildId == other.guildId
+          return guildId == other.guildId
                     && identityEnabled == other.identityEnabled
                     && Objects.equals(tag, other.tag)
                     && Objects.equals(badge, other.badge);

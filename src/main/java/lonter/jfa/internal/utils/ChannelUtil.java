@@ -129,11 +129,9 @@ public class ChannelUtil {
         }
 
         // Check actual position
-        if (b instanceof IPositionableChannel && a instanceof IPositionableChannel) {
-            IPositionableChannel oPositionableChannel = (IPositionableChannel) b;
-            IPositionableChannel thisPositionableChannel = (IPositionableChannel) a;
+        if (b instanceof IPositionableChannel oPositionableChannel && a instanceof IPositionableChannel thisPositionableChannel) {
 
-            if (thisPositionableChannel.getPositionRaw() != oPositionableChannel.getPositionRaw()) {
+          if (thisPositionableChannel.getPositionRaw() != oPositionableChannel.getPositionRaw()) {
                 return Integer.compare(thisPositionableChannel.getPositionRaw(), oPositionableChannel.getPositionRaw());
             }
         }

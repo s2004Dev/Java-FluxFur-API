@@ -37,7 +37,6 @@ import lonter.jfa.internal.utils.Checks;
 import lonter.jfa.internal.utils.JFALogger;
 
 import java.time.OffsetDateTime;
-import java.time.temporal.ChronoUnit;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.Future;
@@ -157,7 +156,7 @@ public class InteractionHookImpl extends AbstractWebhookClient<Message> implemen
     @Override
     public long getExpirationTimestamp() {
         OffsetDateTime creationTime = interaction == null ? OffsetDateTime.now() : interaction.getTimeCreated();
-        return creationTime.plus(15, ChronoUnit.MINUTES).toEpochSecond() * 1000;
+        return creationTime.plusMinutes(15).toEpochSecond() * 1000;
     }
 
     @NotNull

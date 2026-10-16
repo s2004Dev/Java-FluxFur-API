@@ -259,7 +259,7 @@ public class DetachedGuildImpl implements Guild, IDetachableEntityMixin {
 
     @NotNull
     @Override
-    @SuppressWarnings("ConstantConditions") // can't be null here
+    // can't be null here
     public List<Member> getBoosters() {
         throw detachedException();
     }
@@ -678,7 +678,7 @@ public class DetachedGuildImpl implements Guild, IDetachableEntityMixin {
 
     @NotNull
     @Override
-    public Task<List<Member>> retrieveMembersByIds(boolean includePresence, @NotNull long... ids) {
+    public Task<List<Member>> retrieveMembersByIds(boolean includePresence, long @NotNull ... ids) {
         throw detachedException();
     }
 
@@ -960,11 +960,10 @@ public class DetachedGuildImpl implements Guild, IDetachableEntityMixin {
         if (o == this) {
             return true;
         }
-        if (!(o instanceof DetachedGuildImpl)) {
+        if (!(o instanceof DetachedGuildImpl oGuild)) {
             return false;
         }
-        DetachedGuildImpl oGuild = (DetachedGuildImpl) o;
-        return this.id == oGuild.id;
+      return this.id == oGuild.id;
     }
 
     @Override

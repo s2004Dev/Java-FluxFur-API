@@ -113,11 +113,10 @@ public class FileDisplayFileUpload extends AbstractComponentImpl
         if (o == this) {
             return true;
         }
-        if (!(o instanceof FileDisplayFileUpload)) {
+        if (!(o instanceof FileDisplayFileUpload fileDisplay)) {
             return false;
         }
-        FileDisplayFileUpload fileDisplay = (FileDisplayFileUpload) o;
-        return uniqueId == fileDisplay.uniqueId
+      return uniqueId == fileDisplay.uniqueId
                 && spoiler == fileDisplay.spoiler
                 && Objects.equals(file, fileDisplay.file);
     }

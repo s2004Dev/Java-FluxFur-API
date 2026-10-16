@@ -89,7 +89,7 @@ public class PermOverrideManagerImpl extends ManagerBase<PermOverrideManager> im
     @NotNull
     @Override
     @CheckReturnValue
-    public PermOverrideManagerImpl reset(@NotNull long... fields) {
+    public PermOverrideManagerImpl reset(long @NotNull ... fields) {
         super.reset(fields);
         return this;
     }

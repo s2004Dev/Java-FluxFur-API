@@ -102,7 +102,7 @@ public class AudioManagerImpl implements AudioManager {
         }
 
         // if userLimit is 0 if no limit is set!
-        int userLimit = channel instanceof VoiceChannel ? ((VoiceChannel) channel).getUserLimit() : 0;
+        int userLimit = channel instanceof VoiceChannel ? channel.getUserLimit() : 0;
         if (userLimit > 0 && !perms.contains(Permission.ADMINISTRATOR)) {
             // Check if we can actually join this channel
             // - If there is a userlimit
@@ -313,8 +313,7 @@ public class AudioManagerImpl implements AudioManager {
         }
     }
 
-    @Override
-    @SuppressWarnings("deprecation") /* If this was in JDK9 we would be using java.lang.ref.Cleaner instead! */
+    @Override /* If this was in JDK9 we would be using java.lang.ref.Cleaner instead! */
     protected void finalize() {
         if (audioConnection != null) {
             LOG.warn(

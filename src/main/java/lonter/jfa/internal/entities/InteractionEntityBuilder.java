@@ -90,25 +90,19 @@ public class InteractionEntityBuilder extends AbstractEntityBuilder {
 
     public GuildChannel createGuildChannel(@NotNull Guild guild, DataObject channelData) {
         ChannelType channelType = ChannelType.fromId(channelData.getInt("type"));
-        switch (channelType) {
-            case TEXT:
-                return createTextChannel(guild, channelData);
-            case NEWS:
-                return createNewsChannel(guild, channelData);
-            case STAGE:
-                return createStageChannel(guild, channelData);
-            case VOICE:
-                return createVoiceChannel(guild, channelData);
-            case CATEGORY:
-                return createCategory(guild, channelData);
-            case FORUM:
-                return createForumChannel(guild, channelData);
-            case MEDIA:
-                return createMediaChannel(guild, channelData);
-            default:
-                LOG.debug("Cannot create channel for type " + channelData.getInt("type"));
-                return null;
+      return switch (channelType) {
+        case TEXT -> createTextChannel(guild, channelData);
+        case NEWS -> createNewsChannel(guild, channelData);
+        case STAGE -> createStageChannel(guild, channelData);
+        case VOICE -> createVoiceChannel(guild, channelData);
+        case CATEGORY -> createCategory(guild, channelData);
+        case FORUM -> createForumChannel(guild, channelData);
+        case MEDIA -> createMediaChannel(guild, channelData);
+        default -> {
+          LOG.debug("Cannot create channel for type {}", channelData.getInt("type"));
+          yield null;
         }
+      };
     }
 
     public Category createCategory(@NotNull Guild guild, DataObject json) {

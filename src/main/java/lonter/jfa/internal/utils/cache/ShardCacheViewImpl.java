@@ -154,17 +154,15 @@ public class ShardCacheViewImpl extends ReadWriteLockCache<JFA> implements Shard
             List<JFA> list = new LinkedList<>();
             for (JFA elem : elements.valueCollection()) {
                 String elementName = elem.getShardInfo().getShardString();
-                if (elementName != null) {
-                    if (ignoreCase) {
-                        if (elementName.equalsIgnoreCase(name)) {
-                            list.add(elem);
-                        }
-                    } else {
-                        if (elementName.equals(name)) {
-                            list.add(elem);
-                        }
-                    }
+              if (ignoreCase) {
+                if (elementName.equalsIgnoreCase(name)) {
+                  list.add(elem);
                 }
+              } else {
+                if (elementName.equals(name)) {
+                  list.add(elem);
+                }
+              }
             }
 
             return list;
@@ -218,11 +216,10 @@ public class ShardCacheViewImpl extends ReadWriteLockCache<JFA> implements Shard
         if (obj == this) {
             return true;
         }
-        if (!(obj instanceof ShardCacheViewImpl)) {
+        if (!(obj instanceof ShardCacheViewImpl view)) {
             return false;
         }
-        ShardCacheViewImpl view = (ShardCacheViewImpl) obj;
-        try (UnlockHook hook = readLock();
+      try (UnlockHook hook = readLock();
                 UnlockHook otherHook = view.readLock()) {
             return this.elements.equals(view.elements);
         }

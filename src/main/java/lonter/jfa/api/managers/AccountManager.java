@@ -98,7 +98,7 @@ public interface AccountManager extends Manager<AccountManager> {
     @NotNull
     @Override
     @CheckReturnValue
-    AccountManager reset(@NotNull long... fields);
+    AccountManager reset(long @NotNull ... fields);
 
     /**
      * Sets the username for the currently logged in account

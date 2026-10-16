@@ -79,7 +79,7 @@ public interface StageInstanceManager extends Manager<StageInstanceManager> {
     @NotNull
     @Override
     @CheckReturnValue
-    StageInstanceManager reset(@NotNull long... fields);
+    StageInstanceManager reset(long @NotNull ... fields);
 
     /**
      * The associated {@link StageInstance}

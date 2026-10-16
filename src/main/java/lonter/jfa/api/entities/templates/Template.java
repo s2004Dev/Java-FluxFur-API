@@ -301,11 +301,10 @@ public class Template {
         if (obj == this) {
             return true;
         }
-        if (!(obj instanceof Template)) {
+        if (!(obj instanceof Template impl)) {
             return false;
         }
-        Template impl = (Template) obj;
-        return impl.code.equals(this.code);
+      return impl.code.equals(this.code);
     }
 
     @Override

@@ -276,39 +276,31 @@ public class ApplicationInfoImpl implements ApplicationInfo {
         return new EntityString(this).toString();
     }
 
-    static class IntegrationTypeConfigurationImpl implements IntegrationTypeConfiguration {
-        private final InstallParameters installParameters;
+  record IntegrationTypeConfigurationImpl(InstallParameters installParameters) implements IntegrationTypeConfiguration {
 
-        IntegrationTypeConfigurationImpl(InstallParameters installParameters) {
-            this.installParameters = installParameters;
-        }
+    @Nullable
+    @Override
+    public InstallParameters installParameters() {
+      return installParameters;
+    }
+  }
 
-        @Nullable
-        @Override
-        public InstallParameters getInstallParameters() {
-            return installParameters;
-        }
+  record InstallParametersImpl(List<String> scopes, Set<Permission> permissions) implements InstallParameters {
+    InstallParametersImpl(List<String> scopes, Set<Permission> permissions) {
+      this.scopes = Collections.unmodifiableList(scopes);
+      this.permissions = Collections.unmodifiableSet(permissions);
     }
 
-    static class InstallParametersImpl implements InstallParameters {
-        private final List<String> scopes;
-        private final Set<Permission> permissions;
-
-        InstallParametersImpl(List<String> scopes, Set<Permission> permissions) {
-            this.scopes = Collections.unmodifiableList(scopes);
-            this.permissions = Collections.unmodifiableSet(permissions);
-        }
-
-        @NotNull
-        @Override
-        public List<String> getScopes() {
-            return scopes;
-        }
-
-        @NotNull
-        @Override
-        public Set<Permission> getPermissions() {
-            return permissions;
-        }
+    @NotNull
+    @Override
+    public List<String> scopes() {
+      return scopes;
     }
+
+    @NotNull
+    @Override
+    public Set<Permission> permissions() {
+      return permissions;
+    }
+  }
 }

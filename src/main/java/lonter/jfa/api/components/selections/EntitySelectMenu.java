@@ -140,8 +140,7 @@ public interface EntitySelectMenu extends SelectMenu {
     @CheckReturnValue
     @Override
     default Builder createCopy() {
-        //noinspection ConstantConditions
-        Builder builder = create(getCustomId(), getEntityTypes());
+      Builder builder = create(getCustomId(), getEntityTypes());
         EnumSet<ChannelType> channelTypes = getChannelTypes();
         if (!channelTypes.isEmpty()) {
             builder.setChannelTypes(channelTypes);
@@ -247,15 +246,13 @@ public interface EntitySelectMenu extends SelectMenu {
         public static DefaultValue fromData(@NotNull DataObject object) {
             Checks.notNull(object, "DataObject");
             long id = object.getUnsignedLong("id");
-            switch (object.getString("type")) {
-                case "role":
-                    return role(id);
-                case "user":
-                    return user(id);
-                case "channel":
-                    return channel(id);
-            }
-            throw new IllegalArgumentException("Unknown value type '" + object.getString("type", null) + "'");
+          return switch (object.getString("type")) {
+            case "role" -> role(id);
+            case "user" -> user(id);
+            case "channel" -> channel(id);
+            default ->
+              throw new IllegalArgumentException("Unknown value type '" + object.getString("type", null) + "'");
+          };
         }
 
         /**
@@ -424,11 +421,10 @@ public interface EntitySelectMenu extends SelectMenu {
             if (obj == this) {
                 return true;
             }
-            if (!(obj instanceof DefaultValue)) {
+            if (!(obj instanceof DefaultValue other)) {
                 return false;
             }
-            DefaultValue other = (DefaultValue) obj;
-            return id == other.id && type == other.type;
+          return id == other.id && type == other.type;
         }
 
         @Override

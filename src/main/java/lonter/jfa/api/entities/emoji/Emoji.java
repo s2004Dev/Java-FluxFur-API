@@ -38,7 +38,7 @@ import org.jetbrains.annotations.NotNull;
  *
  * <p>Implements {@link Formattable} with {@link #getFormatted()}.
  *
- * @see #getName()
+ * @see #name()
  */
 public interface Emoji extends SerializableData, Formattable {
     /**
@@ -114,7 +114,7 @@ public interface Emoji extends SerializableData, Formattable {
     @NotNull
     static CustomEmoji fromCustom(@NotNull CustomEmoji emoji) {
         Checks.notNull(emoji, "Emoji");
-        return fromCustom(emoji.getName(), emoji.getIdLong(), emoji.isAnimated());
+        return fromCustom(emoji.name(), emoji.getIdLong(), emoji.isAnimated());
     }
 
     // either <a?:name:id> or just unicode
@@ -193,7 +193,7 @@ public interface Emoji extends SerializableData, Formattable {
      * @return The unicode or custom name
      */
     @NotNull
-    String getName();
+    String name();
 
     /**
      * The reaction code for this emoji.
@@ -207,7 +207,7 @@ public interface Emoji extends SerializableData, Formattable {
 
     /**
      * Formatted string used in messages.
-     * <br>For unicode emoji, this is simply {@link #getName()}. For custom emoji, this will be the mention markdown format {@code <:name:id>}.
+     * <br>For unicode emoji, this is simply {@link #name()}. For custom emoji, this will be the mention markdown format {@code <:name:id>}.
      *
      * @return The formatted message string
      */

@@ -239,71 +239,71 @@ public interface RestRateLimiter {
     /**
      * Configuration for the rate-limiter.
      */
-    class RateLimitConfig {
-        private final ScheduledExecutorService scheduler;
-        private final ExecutorService elastic;
-        private final GlobalRateLimit globalRateLimit;
-        private final boolean isRelative;
+        record RateLimitConfig(ScheduledExecutorService scheduler, ExecutorService elastic, GlobalRateLimit globalRateLimit,
+                               boolean isRelative) {
+            public RateLimitConfig(
+              @NotNull ScheduledExecutorService scheduler,
+              @NotNull GlobalRateLimit globalRateLimit,
+              boolean isRelative) {
+                this(scheduler, scheduler, globalRateLimit, isRelative);
+            }
 
-        public RateLimitConfig(
-                @NotNull ScheduledExecutorService scheduler,
-                @NotNull GlobalRateLimit globalRateLimit,
-                boolean isRelative) {
-            this(scheduler, scheduler, globalRateLimit, isRelative);
-        }
+            public RateLimitConfig(
+              @NotNull ScheduledExecutorService scheduler,
+              @NotNull ExecutorService elastic,
+              @NotNull GlobalRateLimit globalRateLimit,
+              boolean isRelative) {
+                this.scheduler = scheduler;
+                this.elastic = elastic;
+                this.globalRateLimit = globalRateLimit;
+                this.isRelative = isRelative;
+            }
 
-        public RateLimitConfig(
-                @NotNull ScheduledExecutorService scheduler,
-                @NotNull ExecutorService elastic,
-                @NotNull GlobalRateLimit globalRateLimit,
-                boolean isRelative) {
-            this.scheduler = scheduler;
-            this.elastic = elastic;
-            this.globalRateLimit = globalRateLimit;
-            this.isRelative = isRelative;
-        }
+            /**
+             * The {@link ScheduledExecutorService} used to schedule rate-limit tasks.
+             *
+             * @return The {@link ScheduledExecutorService}
+             */
+            @Override
+            @NotNull
+            public ScheduledExecutorService scheduler() {
+                return scheduler;
+            }
 
-        /**
-         * The {@link ScheduledExecutorService} used to schedule rate-limit tasks.
-         *
-         * @return The {@link ScheduledExecutorService}
-         */
-        @NotNull
-        public ScheduledExecutorService getScheduler() {
-            return scheduler;
-        }
+            /**
+             * The elastic {@link ExecutorService} used to execute rate-limit tasks.
+             * <br>This pool can potentially scale up and down depending on use.
+             *
+             * <p>It is also possible that this pool is identical to {@link #scheduler ()}.
+             *
+             * @return The elastic {@link ExecutorService}
+             */
+            @Override
+            @NotNull
+            public ExecutorService elastic() {
+                return elastic;
+            }
 
-        /**
-         * The elastic {@link ExecutorService} used to execute rate-limit tasks.
-         * <br>This pool can potentially scale up and down depending on use.
-         *
-         * <p>It is also possible that this pool is identical to {@link #getScheduler()}.
-         *
-         * @return The elastic {@link ExecutorService}
-         */
-        @NotNull
-        public ExecutorService getElastic() {
-            return elastic;
-        }
+            /**
+             * The global rate-limit store.
+             *
+             * @return The global rate-limit store
+             */
+            @Override
+            @NotNull
+            public GlobalRateLimit globalRateLimit() {
+                return globalRateLimit;
+            }
 
-        /**
-         * The global rate-limit store.
-         *
-         * @return The global rate-limit store
-         */
-        @NotNull
-        public GlobalRateLimit getGlobalRateLimit() {
-            return globalRateLimit;
+            /**
+             * Whether to use {@link #RESET_AFTER_HEADER}.
+             * <br>This is primarily to avoid NTP sync issues.
+             *
+             * @return True, if {@link #RESET_AFTER_HEADER} should be used instead of {@link #RESET_HEADER}
+             */
+            @Override
+            public boolean isRelative() {
+                return isRelative;
+            }
         }
-
-        /**
-         * Whether to use {@link #RESET_AFTER_HEADER}.
-         * <br>This is primarily to avoid NTP sync issues.
-         *
-         * @return True, if {@link #RESET_AFTER_HEADER} should be used instead of {@link #RESET_HEADER}
-         */
-        public boolean isRelative() {
-            return isRelative;
-        }
-    }
 }

@@ -30,6 +30,7 @@ import okhttp3.RequestBody;
 import org.apache.commons.collections4.map.CaseInsensitiveMap;
 import org.slf4j.Logger;
 
+import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.*;
 import java.util.function.BiFunction;
@@ -298,11 +299,7 @@ public class RestActionImpl<T> implements RestAction<T> {
             Throwable mappedThrowable =
                     this.errorMapper != null ? this.errorMapper.apply(response, request, exception) : null;
 
-            if (mappedThrowable != null) {
-                request.onFailure(mappedThrowable);
-            } else {
-                request.onFailure(exception);
-            }
+          request.onFailure(Objects.requireNonNullElse(mappedThrowable, exception));
         }
     }
 

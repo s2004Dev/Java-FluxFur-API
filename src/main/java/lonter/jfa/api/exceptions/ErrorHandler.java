@@ -141,7 +141,7 @@ public class ErrorHandler implements Consumer<Throwable> {
      * {@snippet lang="java":
      * // Ignore SocketTimeoutException
      * public static void ban(Guild guild, String userId) {
-     *     guild.ban(userId).queue(null, new ErrorHandler().ignore(SocketTimeoutException.class);
+     *     guild.ban(userId).queue(null, new ErrorHandler().ignore(SocketTimeoutException.class));
      * }
      * }
      *
@@ -181,7 +181,7 @@ public class ErrorHandler implements Consumer<Throwable> {
      * {@snippet lang="java":
      * // Ignore all exceptions except for ErrorResponseException
      * public static void ban(Guild guild, String userId) {
-     *     guild.ban(userId).queue(null, new ErrorHandler().ignore((ex) -> !(ex instanceof ErrorResponseException));
+     *     guild.ban(userId).queue(null, new ErrorHandler().ignore((ex) -> !(ex instanceof ErrorResponseException)));
      * }
      * }
      *
@@ -337,9 +337,8 @@ public class ErrorHandler implements Consumer<Throwable> {
      * {@snippet lang="java":
      * public static void logErrorResponse(RestAction<?> action) {
      *     action.queue(null, new ErrorHandler()
-     *         .handle(Arrays.asList(Throwable.class),
-     *             (ex) -> ex instanceof Error,
-     *             (ex) -> ex.printStackTrace()));
+     *      .handle(List.of(Throwable.class),
+     *      (ex) -> ex instanceof Error, Exception::printStackTrace));
      * }
      * }
      *

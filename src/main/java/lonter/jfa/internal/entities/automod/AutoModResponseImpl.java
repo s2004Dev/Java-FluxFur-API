@@ -125,10 +125,9 @@ public class AutoModResponseImpl implements AutoModResponse {
         if (this == obj) {
             return true;
         }
-        if (!(obj instanceof AutoModResponseImpl)) {
+        if (!(obj instanceof AutoModResponseImpl o)) {
             return false;
         }
-        AutoModResponseImpl o = (AutoModResponseImpl) obj;
-        return type == o.type;
+      return type == o.type;
     }
 }

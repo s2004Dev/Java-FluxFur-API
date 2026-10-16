@@ -68,11 +68,10 @@ public class ApplicationTeamImpl implements ApplicationTeam {
         if (obj == this) {
             return true;
         }
-        if (!(obj instanceof ApplicationTeamImpl)) {
+        if (!(obj instanceof ApplicationTeamImpl app)) {
             return false;
         }
-        ApplicationTeamImpl app = (ApplicationTeamImpl) obj;
-        return app.id == this.id;
+      return app.id == this.id;
     }
 
     @Override

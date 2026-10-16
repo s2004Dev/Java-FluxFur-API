@@ -26,7 +26,7 @@ import java.nio.ByteBuffer;
 import org.jetbrains.annotations.Nullable;
 
 /**
- * Represents the contents of a audio packet that was either received from Fluxer or
+ * Represents the contents of an audio packet that was either received from Fluxer or
  * will be sent to fluxer.
  *
  * @see <a href="https://tools.ietf.org/html/rfc3550" target="_blank">RFC 3350 - RTP: A Transport Protocol for Real-Time Applications</a>
@@ -34,7 +34,7 @@ import org.jetbrains.annotations.Nullable;
 public class AudioPacket {
     /**
      * Bit index 0 and 1 represent the RTP Protocol version used. Fluxer uses the latest RTP protocol version, 2.<br>
-     * Bit index 2 represents whether or not we pad. Opus uses an internal padding system, so RTP padding is not used.<br>
+     * Bit index 2 represents whether we pad or not. Opus uses an internal padding system, so RTP padding is not used.<br>
      * Bit index 3 represents if we use extensions.<br>
      * Bit index 4 to 7 represent the CC or CSRC count. CSRC is Combined SSRC.
      */

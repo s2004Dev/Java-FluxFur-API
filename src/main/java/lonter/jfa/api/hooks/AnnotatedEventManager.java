@@ -89,7 +89,7 @@ public class AnnotatedEventManager implements IEventManager {
     @Override
     @Unmodifiable
     public List<Object> getRegisteredListeners() {
-        return Collections.unmodifiableList(new ArrayList<>(listeners));
+        return List.copyOf(listeners);
     }
 
     @Override

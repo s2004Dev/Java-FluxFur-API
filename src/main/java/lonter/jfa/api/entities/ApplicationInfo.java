@@ -476,13 +476,13 @@ public interface ApplicationInfo extends ISnowflake {
          * @return The OAuth2 install parameters for the default in-app authorization link
          */
         @Nullable
-        InstallParameters getInstallParameters();
+        InstallParameters installParameters();
     }
 
     /**
      * OAuth2 install parameter for the default in-app authorization link.
      *
-     * @see IntegrationTypeConfiguration#getInstallParameters()
+     * @see IntegrationTypeConfiguration#installParameters()
      */
     interface InstallParameters {
         /**
@@ -491,7 +491,7 @@ public interface ApplicationInfo extends ISnowflake {
          * @return The required scopes granted to the bot when invited
          */
         @NotNull
-        List<String> getScopes();
+        List<String> scopes();
 
         /**
          * Gets the permissions your bot asks for when invited.
@@ -500,7 +500,7 @@ public interface ApplicationInfo extends ISnowflake {
          * @return The permissions your bot asks for when invited
          */
         @NotNull
-        Set<Permission> getPermissions();
+        Set<Permission> permissions();
     }
 
     /**

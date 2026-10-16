@@ -264,7 +264,7 @@ public class MessageCreateBuilder extends AbstractMessageBuilder<MessageCreateDa
     }
 
     private boolean isV2Valid() {
-        return content.length() == 0
+        return content.isEmpty()
                 && embeds.isEmpty()
                 && poll == null
                 && !components.isEmpty()
@@ -328,7 +328,7 @@ public class MessageCreateBuilder extends AbstractMessageBuilder<MessageCreateDa
         List<MessageTopLevelComponentUnion> components = new ArrayList<>(this.components);
         AllowedMentionsData mentions = this.mentions.copy();
 
-        if (content.length() > 0 || !embeds.isEmpty() || poll != null) {
+        if (!content.isEmpty() || !embeds.isEmpty() || poll != null) {
             throw new IllegalStateException(
                     "Cannot build a message with components V2 enabled while having content, embeds, or poll");
         }

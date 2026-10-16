@@ -113,7 +113,7 @@ public class GuildImpl implements Guild {
     private final SortedSnowflakeCacheViewImpl<Role> roleCache =
             new SortedSnowflakeCacheViewImpl<>(Role.class, Role::getName, Comparator.reverseOrder());
     private final SnowflakeCacheViewImpl<RichCustomEmoji> emojicache =
-            new SnowflakeCacheViewImpl<>(RichCustomEmoji.class, RichCustomEmoji::getName);
+            new SnowflakeCacheViewImpl<>(RichCustomEmoji.class, RichCustomEmoji::name);
     private final SnowflakeCacheViewImpl<GuildSticker> stickerCache =
             new SnowflakeCacheViewImpl<>(GuildSticker.class, GuildSticker::getName);
     private final MemberCacheViewImpl memberCache = new MemberCacheViewImpl();
@@ -526,7 +526,7 @@ public class GuildImpl implements Guild {
 
     @NotNull
     @Override
-    @SuppressWarnings("ConstantConditions") // can't be null here
+    // can't be null here
     public List<Member> getBoosters() {
         return memberCache.applyStream((members) -> members.filter(m -> m.getTimeBoosted() != null)
                 .sorted(Comparator.comparing(Member::getTimeBoosted))
@@ -854,7 +854,7 @@ public class GuildImpl implements Guild {
             }
         });
 
-        return Collections.unmodifiableList(new ArrayList<>(channels));
+        return List.copyOf(channels);
     }
 
     @NotNull
@@ -1185,7 +1185,7 @@ public class GuildImpl implements Guild {
 
     @NotNull
     @Override
-    public Task<List<Member>> retrieveMembersByIds(boolean includePresence, @NotNull long... ids) {
+    public Task<List<Member>> retrieveMembersByIds(boolean includePresence, long @NotNull ... ids) {
         Checks.notNull(ids, "ID Array");
         Checks.check(
                 !includePresence || api.isIntent(GatewayIntent.GUILD_PRESENCES),
@@ -1709,7 +1709,7 @@ public class GuildImpl implements Guild {
         checkGuild(member.getGuild(), "Member");
         roles.forEach(role -> {
             Checks.notNull(role, "Role in collection");
-            checkGuild(role.getGuild(), "Role: " + role.toString());
+            checkGuild(role.getGuild(), "Role: " + role);
         });
 
         Checks.check(
@@ -1839,7 +1839,6 @@ public class GuildImpl implements Guild {
             body.put(
                     "roles",
                     Stream.of(roles)
-                            .filter(Objects::nonNull)
                             .map(ISnowflake::getId)
                             .collect(Collectors.toSet()));
         }
@@ -1887,24 +1886,15 @@ public class GuildImpl implements Guild {
 
         // Convert file extension to media-type
         String extension = file.getName().substring(index + 1).toLowerCase(Locale.ROOT);
-        MediaType mediaType;
-        switch (extension) {
-            case "apng":
-            case "png":
-                mediaType = Requester.MEDIA_TYPE_PNG;
-                break;
-            case "gif":
-                mediaType = Requester.MEDIA_TYPE_GIF;
-                break;
-            case "json":
-                mediaType = Requester.MEDIA_TYPE_JSON;
-                break;
-            default:
-                throw new IllegalArgumentException(
-                        "Unsupported file extension: '." + extension + "', must be PNG, GIF, or JSON.");
-        }
+        MediaType mediaType = switch (extension) {
+          case "apng", "png" -> Requester.MEDIA_TYPE_PNG;
+          case "gif" -> Requester.MEDIA_TYPE_GIF;
+          case "json" -> Requester.MEDIA_TYPE_JSON;
+          default -> throw new IllegalArgumentException(
+            "Unsupported file extension: '." + extension + "', must be PNG, GIF, or JSON.");
+        };
 
-        // Add sticker metadata as form parts (because payload_json is broken)
+      // Add sticker metadata as form parts (because payload_json is broken)
         MultipartBody.Builder builder = new MultipartBody.Builder().setType(MultipartBody.FORM);
         builder.addFormDataPart("name", name);
         builder.addFormDataPart("description", description);
@@ -1997,7 +1987,7 @@ public class GuildImpl implements Guild {
     protected void checkPosition(Role role) {
         if (!getSelfMember().canInteract(role)) {
             throw new HierarchyException(
-                    "Can't modify a role with higher or equal highest role than yourself! Role: " + role.toString());
+                    "Can't modify a role with higher or equal highest role than yourself! Role: " + role);
         }
     }
 
@@ -2054,11 +2044,10 @@ public class GuildImpl implements Guild {
             return;
         }
         AudioChannel connectedChannel = getSelfMember().getVoiceState().getChannel();
-        if (!(connectedChannel instanceof StageChannel)) {
+        if (!(connectedChannel instanceof StageChannel stage)) {
             return;
         }
-        StageChannel stage = (StageChannel) connectedChannel;
-        CompletableFuture<Void> future = pendingRequestToSpeak;
+      CompletableFuture<Void> future = pendingRequestToSpeak;
         pendingRequestToSpeak = null;
 
         try {
@@ -2344,8 +2333,7 @@ public class GuildImpl implements Guild {
 
     public List<Member> getConnectedMembers(GuildChannel channel) {
         return this.voiceStateCache.applyStream(stream -> stream.filter(state -> channel.equals(state.getChannel()))
-                .map(GuildVoiceStateImpl::getMember)
-                .filter(Objects::nonNull) // sanity filter
+                .map(GuildVoiceStateImpl::getMember) // sanity filter
                 .collect(Helpers.toUnmodifiableList()));
     }
 
@@ -2356,11 +2344,10 @@ public class GuildImpl implements Guild {
         if (o == this) {
             return true;
         }
-        if (!(o instanceof GuildImpl)) {
+        if (!(o instanceof GuildImpl oGuild)) {
             return false;
         }
-        GuildImpl oGuild = (GuildImpl) o;
-        return this.id == oGuild.id;
+      return this.id == oGuild.id;
     }
 
     @Override

@@ -182,7 +182,7 @@ public class ChannelManagerImpl<T extends GuildChannel, M extends ChannelManager
     @NotNull
     @Override
     @CheckReturnValue
-    public M reset(@NotNull long... fields) {
+    public M reset(long @NotNull ... fields) {
         super.reset(fields);
         return (M) this;
     }
@@ -332,15 +332,14 @@ public class ChannelManagerImpl<T extends GuildChannel, M extends ChannelManager
     @NotNull
     @CheckReturnValue
     public M sync(@NotNull IPermissionContainer syncSource) {
-        if (!(channel instanceof IPermissionContainer)) {
+        if (!(channel instanceof IPermissionContainer permChannel)) {
             throw new IllegalStateException("Can only set permissions on Channels that implement IPermissionContainer");
         }
 
         Checks.notNull(syncSource, "SyncSource");
         Checks.check(getGuild().equals(syncSource.getGuild()), "Sync only works for channels of same guild");
 
-        IPermissionContainer permChannel = (IPermissionContainer) channel;
-        if (syncSource.equals(getChannel())) {
+      if (syncSource.equals(getChannel())) {
             return (M) this;
         }
 
@@ -553,7 +552,7 @@ public class ChannelManagerImpl<T extends GuildChannel, M extends ChannelManager
         return (M) this;
     }
 
-    public M setAutoArchiveDuration(ThreadChannel.AutoArchiveDuration autoArchiveDuration) {
+    public @NotNull M setAutoArchiveDuration(ThreadChannel.@NotNull AutoArchiveDuration autoArchiveDuration) {
         Checks.notNull(autoArchiveDuration, "autoArchiveDuration");
 
         if (!type.isThread()) {
@@ -565,7 +564,7 @@ public class ChannelManagerImpl<T extends GuildChannel, M extends ChannelManager
         return (M) this;
     }
 
-    public M setArchived(boolean archived) {
+    public @NotNull M setArchived(boolean archived) {
         if (!type.isThread()) {
             throw new IllegalStateException("Can only set archived on threads");
         }
@@ -589,7 +588,7 @@ public class ChannelManagerImpl<T extends GuildChannel, M extends ChannelManager
         return (M) this;
     }
 
-    public M setLocked(boolean locked) {
+    public @NotNull M setLocked(boolean locked) {
         if (!type.isThread()) {
             throw new IllegalStateException("Can only set locked on threads");
         }
@@ -604,7 +603,7 @@ public class ChannelManagerImpl<T extends GuildChannel, M extends ChannelManager
         return (M) this;
     }
 
-    public M setInvitable(boolean invitable) {
+    public @NotNull M setInvitable(boolean invitable) {
         if (type != ChannelType.GUILD_PRIVATE_THREAD) {
             throw new IllegalStateException("Can only set invitable on private threads.");
         }
@@ -623,7 +622,7 @@ public class ChannelManagerImpl<T extends GuildChannel, M extends ChannelManager
         return (M) this;
     }
 
-    public M setPinned(boolean pinned) {
+    public @NotNull M setPinned(boolean pinned) {
         if (!type.isThread()) {
             throw new IllegalStateException("Can only pin threads.");
         }
@@ -636,7 +635,7 @@ public class ChannelManagerImpl<T extends GuildChannel, M extends ChannelManager
         return (M) this;
     }
 
-    public M setTagRequired(boolean requireTag) {
+    public @NotNull M setTagRequired(boolean requireTag) {
         if (!(channel instanceof IPostContainer)) {
             throw new IllegalStateException("Can only set tag required flag on forum/media channels.");
         }
@@ -649,7 +648,7 @@ public class ChannelManagerImpl<T extends GuildChannel, M extends ChannelManager
         return (M) this;
     }
 
-    public M setHideMediaDownloadOption(boolean hideOption) {
+    public @NotNull M setHideMediaDownloadOption(boolean hideOption) {
         if (!(channel instanceof MediaChannel)) {
             throw new IllegalStateException("Can only set hide media download flag on media channels.");
         }
@@ -662,7 +661,7 @@ public class ChannelManagerImpl<T extends GuildChannel, M extends ChannelManager
         return (M) this;
     }
 
-    public M setAvailableTags(List<? extends BaseForumTag> tags) {
+    public @NotNull M setAvailableTags(@NotNull List<? extends BaseForumTag> tags) {
         if (!(channel instanceof IPostContainer)) {
             throw new IllegalStateException("Can only set available tags on forum/media channels.");
         }
@@ -672,7 +671,7 @@ public class ChannelManagerImpl<T extends GuildChannel, M extends ChannelManager
         return (M) this;
     }
 
-    public M setAppliedTags(Collection<? extends ForumTagSnowflake> tags) {
+    public @NotNull M setAppliedTags(@NotNull Collection<? extends ForumTagSnowflake> tags) {
         if (type != ChannelType.GUILD_PUBLIC_THREAD) {
             throw new IllegalStateException("Can only set applied tags on forum post thread channels.");
         }
@@ -695,7 +694,7 @@ public class ChannelManagerImpl<T extends GuildChannel, M extends ChannelManager
         return (M) this;
     }
 
-    public M setDefaultReaction(Emoji emoji) {
+    public @NotNull M setDefaultReaction(Emoji emoji) {
         if (!(channel instanceof IPostContainer)) {
             throw new IllegalStateException("Can only set default reaction on forum/media channels.");
         }
@@ -704,7 +703,7 @@ public class ChannelManagerImpl<T extends GuildChannel, M extends ChannelManager
         return (M) this;
     }
 
-    public M setDefaultLayout(ForumChannel.Layout layout) {
+    public @NotNull M setDefaultLayout(ForumChannel.@NotNull Layout layout) {
         if (type != ChannelType.FORUM) {
             throw new IllegalStateException("Can only set default layout on forum channels.");
         }
@@ -717,7 +716,7 @@ public class ChannelManagerImpl<T extends GuildChannel, M extends ChannelManager
         return (M) this;
     }
 
-    public M setDefaultSortOrder(IPostContainer.SortOrder sortOrder) {
+    public @NotNull M setDefaultSortOrder(IPostContainer.@NotNull SortOrder sortOrder) {
         if (!(channel instanceof IPostContainer)) {
             throw new IllegalStateException("Can only set default layout on forum/media channels.");
         }
@@ -794,7 +793,7 @@ public class ChannelManagerImpl<T extends GuildChannel, M extends ChannelManager
                         DataObject.empty().put("emoji_id", ((CustomEmoji) defaultReactionEmoji).getId()));
             } else if (defaultReactionEmoji instanceof UnicodeEmoji) {
                 frame.put(
-                        "default_reaction_emoji", DataObject.empty().put("emoji_name", defaultReactionEmoji.getName()));
+                        "default_reaction_emoji", DataObject.empty().put("emoji_name", defaultReactionEmoji.name()));
             } else {
                 frame.put("default_reaction_emoji", null);
             }

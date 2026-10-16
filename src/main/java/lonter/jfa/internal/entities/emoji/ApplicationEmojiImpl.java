@@ -65,7 +65,7 @@ public class ApplicationEmojiImpl implements ApplicationEmoji, EmojiUnion {
 
     @NotNull
     @Override
-    public String getName() {
+    public String name() {
         return name;
     }
 
@@ -124,12 +124,11 @@ public class ApplicationEmojiImpl implements ApplicationEmoji, EmojiUnion {
         if (obj == this) {
             return true;
         }
-        if (!(obj instanceof ApplicationEmojiImpl)) {
+        if (!(obj instanceof ApplicationEmojiImpl other)) {
             return false;
         }
 
-        ApplicationEmojiImpl other = (ApplicationEmojiImpl) obj;
-        return this.id == other.getIdLong();
+      return this.id == other.getIdLong();
     }
 
     @Override

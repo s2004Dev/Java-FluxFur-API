@@ -152,11 +152,10 @@ public class TextInputImpl extends AbstractComponentImpl implements TextInput, L
         if (o == this) {
             return true;
         }
-        if (!(o instanceof TextInputImpl)) {
+        if (!(o instanceof TextInputImpl that)) {
             return false;
         }
-        TextInputImpl that = (TextInputImpl) o;
-        return uniqueId == that.uniqueId
+      return uniqueId == that.uniqueId
                 && minLength == that.minLength
                 && maxLength == that.maxLength
                 && required == that.required

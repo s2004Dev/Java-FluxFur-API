@@ -98,7 +98,7 @@ public class MessageMentionsImpl extends AbstractMentions {
         for (TLongIterator iter = unseen.iterator(); iter.hasNext(); ) {
             DataObject mention = userMentionMap.get(iter.next());
             if (mention.getBoolean("is_member")) {
-                members.add(0, entityBuilder.createMember((GuildImpl) guild, mention));
+                members.addFirst(entityBuilder.createMember((GuildImpl) guild, mention));
             }
         }
 
@@ -133,9 +133,9 @@ public class MessageMentionsImpl extends AbstractMentions {
         for (TLongIterator iter = unseen.iterator(); iter.hasNext(); ) {
             DataObject mention = userMentionMap.get(iter.next());
             if (mention.getBoolean("is_member")) {
-                users.add(0, entityBuilder.createUser(mention.getObject("user")));
+                users.addFirst(entityBuilder.createUser(mention.getObject("user")));
             } else {
-                users.add(0, entityBuilder.createUser(mention));
+                users.addFirst(entityBuilder.createUser(mention));
             }
         }
 

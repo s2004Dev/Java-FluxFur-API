@@ -123,11 +123,10 @@ public class AttachmentUpdate implements AttachedFile, ISnowflake {
 
     @Override
     public boolean equals(Object o) {
-        if (!(o instanceof AttachmentUpdate)) {
+        if (!(o instanceof AttachmentUpdate that)) {
             return false;
         }
-        AttachmentUpdate that = (AttachmentUpdate) o;
-        return id == that.id && Objects.equals(name, that.name);
+      return id == that.id && Objects.equals(name, that.name);
     }
 
     @Override

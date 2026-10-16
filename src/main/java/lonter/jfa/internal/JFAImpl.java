@@ -474,10 +474,8 @@ public class JFAImpl implements JFA {
         }
 
         // We avoid to lock both the guild cache and member cache to make a deadlock impossible
-        return getGuildCache().stream()
-                        .filter(guild -> guild.unloadMember(userId)) // this also removes it from user cache
-                        .count()
-                > 0L; // we use count to make sure it iterates all guilds not just one
+      // this also removes it from user cache
+      return getGuildCache().stream().anyMatch(guild -> guild.unloadMember(userId)); // we use count to make sure it iterates all guilds not just one
     }
 
     @Override

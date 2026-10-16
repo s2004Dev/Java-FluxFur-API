@@ -69,11 +69,10 @@ public class SecurityIncidentDetections {
         if (this == o) {
             return true;
         }
-        if (!(o instanceof SecurityIncidentDetections)) {
+        if (!(o instanceof SecurityIncidentDetections that)) {
             return false;
         }
-        SecurityIncidentDetections that = (SecurityIncidentDetections) o;
-        return this.dmSpamDetectedAt == that.dmSpamDetectedAt && this.raidDetectedAt == that.raidDetectedAt;
+      return this.dmSpamDetectedAt == that.dmSpamDetectedAt && this.raidDetectedAt == that.raidDetectedAt;
     }
 
     @Override

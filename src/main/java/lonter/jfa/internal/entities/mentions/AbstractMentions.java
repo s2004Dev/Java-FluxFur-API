@@ -223,7 +223,6 @@ public abstract class AbstractMentions implements Mentions {
 
     @NotNull
     @Override
-    @SuppressWarnings("ConstantConditions")
     public List<IMentionable> getMentions(@NotNull Message.MentionType... types) {
         if (types == null || types.length == 0) {
             return getMentions(Message.MentionType.values());
@@ -380,9 +379,8 @@ public abstract class AbstractMentions implements Mentions {
     }
 
     protected boolean isSlashCommandMentioned(IMentionable mentionable) {
-        if (mentionable instanceof ICommandReference) {
-            ICommandReference reference = (ICommandReference) mentionable;
-            for (SlashCommandReference r : getSlashCommands()) {
+        if (mentionable instanceof ICommandReference reference) {
+          for (SlashCommandReference r : getSlashCommands()) {
                 if (r.getFullCommandName().equals(reference.getFullCommandName())
                         && r.getIdLong() == reference.getIdLong()) {
                     return true;

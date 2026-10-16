@@ -62,7 +62,7 @@ public interface ChunkingFilter {
      * @return The resulting filter
      */
     @NotNull
-    static ChunkingFilter include(@NotNull long... ids) {
+    static ChunkingFilter include(long @NotNull ... ids) {
         Checks.notNull(ids, "ID array");
         if (ids.length == 0) {
             return NONE;
@@ -90,7 +90,7 @@ public interface ChunkingFilter {
      * @return The resulting filter
      */
     @NotNull
-    static ChunkingFilter exclude(@NotNull long... ids) {
+    static ChunkingFilter exclude(long @NotNull ... ids) {
         Checks.notNull(ids, "ID array");
         if (ids.length == 0) {
             return ALL;

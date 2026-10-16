@@ -17,21 +17,19 @@
 package lonter.jfa.api.entities;
 
 import java.time.Duration;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
 
 /**
- * Response to {@link Guild#ban(java.util.Collection, Duration)}
+ * Response to {@link Guild#ban(Collection, Duration)}
  *
  * <p>This response includes a list of successfully banned users and users which could not be banned.
  * Fluxer might fail to ban a user due to permission issues or an internal server error.
  */
-public class BulkBanResponse {
-    private final List<UserSnowflake> bannedUsers;
-    private final List<UserSnowflake> failedUsers;
-
+public record BulkBanResponse(List<UserSnowflake> bannedUsers, List<UserSnowflake> failedUsers) {
     public BulkBanResponse(@NotNull List<UserSnowflake> bannedUsers, @NotNull List<UserSnowflake> failedUsers) {
         this.bannedUsers = Collections.unmodifiableList(bannedUsers);
         this.failedUsers = Collections.unmodifiableList(failedUsers);
@@ -42,8 +40,9 @@ public class BulkBanResponse {
      *
      * @return {@link List} of {@link UserSnowflake}
      */
+    @Override
     @NotNull
-    public List<UserSnowflake> getBannedUsers() {
+    public List<UserSnowflake> bannedUsers() {
         return bannedUsers;
     }
 
@@ -52,8 +51,9 @@ public class BulkBanResponse {
      *
      * @return {@link List} of {@link UserSnowflake}
      */
+    @Override
     @NotNull
-    public List<UserSnowflake> getFailedUsers() {
+    public List<UserSnowflake> failedUsers() {
         return failedUsers;
     }
 }

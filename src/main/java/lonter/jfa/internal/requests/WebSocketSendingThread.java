@@ -197,17 +197,11 @@ class WebSocketSendingThread implements Runnable {
         }
         ConnectionStage stage = audioRequest.getStage();
         AudioManager audioManager = guild.getAudioManager();
-        DataObject packet;
-        switch (stage) {
-            case RECONNECT:
-            case DISCONNECT:
-                packet = newVoiceClose(guildId);
-                break;
-            default:
-            case CONNECT:
-                packet = newVoiceOpen(audioManager, channelId, guild.getIdLong());
-        }
-        LOG.debug("Sending voice request {}", packet);
+        DataObject packet = switch (stage) {
+          case RECONNECT, DISCONNECT -> newVoiceClose(guildId);
+          default -> newVoiceOpen(audioManager, channelId, guild.getIdLong());
+        };
+      LOG.debug("Sending voice request {}", packet);
         if (send(packet)) {
             // If we didn't get RateLimited, Next request attempt will be 10 seconds from now
             // we remove it in VoiceStateUpdateHandler once we hear that it has updated our status

@@ -34,10 +34,8 @@ import lonter.jfa.internal.interactions.MemberInteractionPermissions;
 import lonter.jfa.internal.utils.EntityString;
 import lonter.jfa.internal.utils.Helpers;
 
-import java.awt.*;
 import java.time.OffsetDateTime;
 import java.util.*;
-import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -222,15 +220,15 @@ public class DetachedMemberImpl implements Member, MemberMixin<DetachedMemberImp
     }
 
     private long getRawInteractionPermissions(@NotNull GuildChannel channel) {
-        if (interactionPermissions.getChannelId() == channel.getIdLong()) {
-            return interactionPermissions.getPermissions();
+        if (interactionPermissions.channelId() == channel.getIdLong()) {
+            return interactionPermissions.permissions();
         }
 
         if (channel instanceof IInteractionPermissionMixin<?>) {
             ChannelInteractionPermissions channelInteractionPermissions =
                     ((IInteractionPermissionMixin<?>) channel).getInteractionPermissions();
-            if (channelInteractionPermissions.getMemberId() == this.getIdLong()) {
-                return channelInteractionPermissions.getPermissions();
+            if (channelInteractionPermissions.memberId() == this.getIdLong()) {
+                return channelInteractionPermissions.permissions();
             }
         }
 
@@ -368,12 +366,11 @@ public class DetachedMemberImpl implements Member, MemberMixin<DetachedMemberImp
         if (o == this) {
             return true;
         }
-        if (!(o instanceof DetachedMemberImpl)) {
+        if (!(o instanceof DetachedMemberImpl oMember)) {
             return false;
         }
 
-        DetachedMemberImpl oMember = (DetachedMemberImpl) o;
-        return oMember.user.getIdLong() == user.getIdLong() && oMember.guild.getIdLong() == guild.getIdLong();
+      return oMember.user.getIdLong() == user.getIdLong() && oMember.guild.getIdLong() == guild.getIdLong();
     }
 
     @Override

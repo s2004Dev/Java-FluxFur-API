@@ -160,7 +160,7 @@ public interface MessageChannel extends Channel, Formattable {
      */
     @NotNull
     default List<CompletableFuture<Void>> purgeMessagesById(@NotNull List<String> messageIds) {
-        if (messageIds == null || messageIds.isEmpty()) {
+        if (messageIds.isEmpty()) {
             return Collections.emptyList();
         }
         long[] ids = new long[messageIds.size()];
@@ -252,7 +252,7 @@ public interface MessageChannel extends Channel, Formattable {
      */
     @NotNull
     default List<CompletableFuture<Void>> purgeMessages(@NotNull List<? extends Message> messages) {
-        if (messages == null || messages.isEmpty()) {
+        if (messages.isEmpty()) {
             return Collections.emptyList();
         }
         return purgeMessagesById(messages.stream()
@@ -294,8 +294,8 @@ public interface MessageChannel extends Channel, Formattable {
      * @see    CompletableFuture#allOf(java.util.concurrent.CompletableFuture[])
      */
     @NotNull
-    default List<CompletableFuture<Void>> purgeMessagesById(@NotNull long... messageIds) {
-        if (messageIds == null || messageIds.length == 0) {
+    default List<CompletableFuture<Void>> purgeMessagesById(long @NotNull ... messageIds) {
+        if (messageIds.length == 0) {
             return Collections.emptyList();
         }
         List<CompletableFuture<Void>> list = new ArrayList<>(messageIds.length);
@@ -1814,7 +1814,7 @@ public interface MessageChannel extends Channel, Formattable {
      *     {
      *         if (!history.isEmpty())
      *         {
-     *             Message firstMsg = history.getRetrievedHistory().get(0);
+     *             Message firstMsg = history.getRetrievedHistory().getFirst();
      *             channel.sendMessage(firstMsg).queue();
      *         }
      *         else

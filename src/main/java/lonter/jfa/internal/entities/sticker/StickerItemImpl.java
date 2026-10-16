@@ -71,10 +71,9 @@ public class StickerItemImpl implements StickerItem {
         if (obj == this) {
             return true;
         }
-        if (!(obj instanceof StickerItemImpl)) {
+        if (!(obj instanceof StickerItemImpl other)) {
             return false;
         }
-        StickerItemImpl other = (StickerItemImpl) obj;
-        return id == other.id && format == other.format && Objects.equals(name, other.name);
+      return id == other.id && format == other.format && Objects.equals(name, other.name);
     }
 }

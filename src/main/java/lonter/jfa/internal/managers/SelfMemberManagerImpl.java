@@ -75,7 +75,7 @@ public class SelfMemberManagerImpl extends ManagerBase<SelfMemberManager> implem
     @NotNull
     @Override
     @CheckReturnValue
-    public SelfMemberManagerImpl reset(@NotNull long... fields) {
+    public SelfMemberManagerImpl reset(long @NotNull ... fields) {
         super.reset(fields);
         return this;
     }

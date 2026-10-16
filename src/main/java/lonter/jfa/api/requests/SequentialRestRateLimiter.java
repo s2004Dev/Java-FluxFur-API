@@ -86,7 +86,7 @@ public final class SequentialRestRateLimiter implements RestRateLimiter {
 
     public SequentialRestRateLimiter(@NotNull RateLimitConfig config) {
         this.config = config;
-        this.cleanupWorker = config.getScheduler().scheduleAtFixedRate(this::cleanup, 30, 30, TimeUnit.SECONDS);
+        this.cleanupWorker = config.scheduler().scheduleAtFixedRate(this::cleanup, 30, 30, TimeUnit.SECONDS);
     }
 
     @Override
@@ -136,7 +136,6 @@ public final class SequentialRestRateLimiter implements RestRateLimiter {
                     .map(Bucket::getRequests)
                     .flatMap(Collection::stream)
                     .filter(request -> !request.isPriority() && !request.isCancelled())
-                    .peek(Work::cancel)
                     .count();
 
             if (cancelled == 1) {
@@ -223,8 +222,8 @@ public final class SequentialRestRateLimiter implements RestRateLimiter {
             return;
         }
 
-        ExecutorService elastic = config.getElastic();
-        ScheduledExecutorService scheduler = config.getScheduler();
+        ExecutorService elastic = config.elastic();
+        ScheduledExecutorService scheduler = config.scheduler();
 
         try {
             // Avoid context switch if unnecessary
@@ -252,7 +251,7 @@ public final class SequentialRestRateLimiter implements RestRateLimiter {
         // Schedule a new bucket worker if no worker is running
         MiscUtil.locked(
                 lock,
-                () -> rateLimitQueue.computeIfAbsent(bucket, k -> config.getScheduler()
+                () -> rateLimitQueue.computeIfAbsent(bucket, k -> config.scheduler()
                         .schedule(() -> scheduleElastic(bucket), bucket.getRateLimit(), TimeUnit.MILLISECONDS)));
     }
 
@@ -298,13 +297,13 @@ public final class SequentialRestRateLimiter implements RestRateLimiter {
                     long retryAfter = parseLong(retryAfterHeader) * 1000; // seconds precision
                     // Handle global rate limit if necessary
                     if (global) {
-                        config.getGlobalRateLimit().setClassic(now + retryAfter);
+                        config.globalRateLimit().setClassic(now + retryAfter);
                         log.error("Encountered global rate limit! Retry-After: {} ms Scope: {}", retryAfter, scope);
                     }
                     // Handle cloudflare rate limits,
                     // this applies to all routes and uses seconds for retry-after
                     else if (cloudflare) {
-                        config.getGlobalRateLimit().setCloudflare(now + retryAfter);
+                        config.globalRateLimit().setCloudflare(now + retryAfter);
                         log.error("Encountered cloudflare rate limit! Retry-After: {} s", retryAfter / 1000);
                     }
                     // Handle hard rate limit, pretty much just log that it happened
@@ -548,7 +547,7 @@ public final class SequentialRestRateLimiter implements RestRateLimiter {
 
         @Override
         public long getGlobalRateLimit(long now) {
-            GlobalRateLimit holder = config.getGlobalRateLimit();
+            GlobalRateLimit holder = config.globalRateLimit();
             long global = Math.max(holder.getClassic(), holder.getCloudflare());
             return global - now;
         }
@@ -562,7 +561,7 @@ public final class SequentialRestRateLimiter implements RestRateLimiter {
         @Override
         public long getGlobalRateLimit(long now) {
             // Only cloudflare bans apply to interactions
-            return config.getGlobalRateLimit().getCloudflare() - now;
+            return config.globalRateLimit().getCloudflare() - now;
         }
     }
 }

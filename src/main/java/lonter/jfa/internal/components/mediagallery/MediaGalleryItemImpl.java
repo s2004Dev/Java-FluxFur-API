@@ -119,11 +119,10 @@ public class MediaGalleryItemImpl implements MediaGalleryItem, FileContainerMixi
         if (o == this) {
             return true;
         }
-        if (!(o instanceof MediaGalleryItemImpl)) {
+        if (!(o instanceof MediaGalleryItemImpl that)) {
             return false;
         }
-        MediaGalleryItemImpl that = (MediaGalleryItemImpl) o;
-        return spoiler == that.spoiler
+      return spoiler == that.spoiler
                 && Objects.equals(url, that.url)
                 && Objects.equals(description, that.description);
     }

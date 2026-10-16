@@ -17,14 +17,12 @@
 package lonter.jfa.api.components.buttons;
 
 import lonter.jfa.api.components.ActionComponent;
-import lonter.jfa.api.components.MessageTopLevelComponent;
 import lonter.jfa.api.components.actionrow.ActionRowChildComponent;
 import lonter.jfa.api.components.section.SectionAccessoryComponent;
 import lonter.jfa.api.entities.SkuSnowflake;
 import lonter.jfa.api.entities.emoji.Emoji;
 import lonter.jfa.api.entities.emoji.EmojiUnion;
 import lonter.jfa.api.events.interaction.component.ButtonInteractionEvent;
-import lonter.jfa.api.requests.restaction.interactions.ReplyCallbackAction;
 import lonter.jfa.internal.components.buttons.ButtonImpl;
 import lonter.jfa.internal.utils.Checks;
 
@@ -32,49 +30,6 @@ import javax.annotation.CheckReturnValue;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-/**
- * Represents a Message Button.
- *
- * <p>Each button has either a {@code custom_id} or URL attached.
- * The id has to be provided by the user and can be used to identify the button in the {@link ButtonInteractionEvent ButtonInteractionEvent}.
- *
- * <p><b>Example Usage</b><br>
- * {@snippet lang="java":
- * public class HelloBot extends ListenerAdapter {
- *   public void onSlashCommandInteraction(SlashCommandInteractionEvent event) {
- *       if (event.getName().equals("hello")) {
- *           event.reply("Click the button to say hello")
- *               .addComponents(
- *                 ActionRow.of(
- *                   Button.primary("hello", "Click Me"), // Button with only a label
- *                   Button.success("emoji", Emoji.fromMarkdown("<:minn:245267426227388416>")))) // Button with only an emoji
- *               .queue();
- *       } else if (event.getName().equals("info")) {
- *           event.reply("Click the buttons for more info")
- *               .addComponents(
- *                   ActionRow.of(
- *                     // link buttons don't send events, they just open a link in the browser when clicked
- *                     Button.link("https://github.com/fluxer-jfa/JFA", "GitHub")
- *                       .withEmoji(Emoji.fromMarkdown("<:github:849286315580719104>")), // Link Button with label and emoji
- *                     Button.link("https://docs.jfa.wiki/", "Javadocs"))) // Link Button with only a label
- *               .queue();
- *       }
- *   }
- *
- *   public void onButtonInteraction(ButtonInteractionEvent event) {
- *       if (event.getComponentId().equals("hello")) {
- *           event.reply("Hello :)").queue();
- *       }
- *   }
- * }
- * }
- *
- * To see what each button looks like here is an example cheatsheet:
- * <br>
- * <img alt="ButtonExample" src="https://raw.githubusercontent.com/fluxer-jfa/JFA/52377f69d1f3bfba909c51a449ac6b258f606956/assets/wiki/interactions/ButtonExamples.png">
- *
- * @see ReplyCallbackAction#addComponents(MessageTopLevelComponent...)
- */
 public interface Button extends ActionComponent, ActionRowChildComponent, SectionAccessoryComponent {
     /**
      * The maximum length a button label can have
@@ -710,14 +665,11 @@ public interface Button extends ActionComponent, ActionRowChildComponent, Sectio
             @NotNull ButtonStyle style, @NotNull String idOrUrlOrSku, @Nullable String label, @Nullable Emoji emoji) {
         Checks.notNull(style, "ButtonStyle");
 
-        switch (style) {
-            case LINK:
-                return new ButtonImpl(null, label, style, idOrUrlOrSku, null, false, emoji).checkValid();
-            case PREMIUM:
-                return new ButtonImpl(null, label, style, null, SkuSnowflake.fromId(idOrUrlOrSku), false, emoji)
-                        .checkValid();
-            default:
-                return new ButtonImpl(idOrUrlOrSku, label, style, null, null, false, emoji).checkValid();
-        }
+      return switch (style) {
+        case LINK -> new ButtonImpl(null, label, style, idOrUrlOrSku, null, false, emoji).checkValid();
+        case PREMIUM -> new ButtonImpl(null, label, style, null, SkuSnowflake.fromId(idOrUrlOrSku), false, emoji)
+          .checkValid();
+        default -> new ButtonImpl(idOrUrlOrSku, label, style, null, null, false, emoji).checkValid();
+      };
     }
 }

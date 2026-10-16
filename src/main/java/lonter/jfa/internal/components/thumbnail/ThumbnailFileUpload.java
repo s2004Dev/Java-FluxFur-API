@@ -136,11 +136,10 @@ public class ThumbnailFileUpload extends AbstractComponentImpl
         if (o == this) {
             return true;
         }
-        if (!(o instanceof ThumbnailFileUpload)) {
+        if (!(o instanceof ThumbnailFileUpload thumbnail)) {
             return false;
         }
-        ThumbnailFileUpload thumbnail = (ThumbnailFileUpload) o;
-        return uniqueId == thumbnail.uniqueId
+      return uniqueId == thumbnail.uniqueId
                 && spoiler == thumbnail.spoiler
                 && Objects.equals(file, thumbnail.file)
                 && Objects.equals(description, thumbnail.description);

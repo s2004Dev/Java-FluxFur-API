@@ -308,11 +308,10 @@ public class SelectOption implements SerializableData {
         if (o == this) {
             return true;
         }
-        if (!(o instanceof SelectOption)) {
+        if (!(o instanceof SelectOption that)) {
             return false;
         }
-        SelectOption that = (SelectOption) o;
-        return isDefault == that.isDefault
+      return isDefault == that.isDefault
                 && Objects.equals(label, that.label)
                 && Objects.equals(value, that.value)
                 && Objects.equals(description, that.description)

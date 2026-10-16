@@ -197,12 +197,11 @@ public interface JFA extends IGuildChannelContainer<Channel> {
 
         @Override
         public boolean equals(Object o) {
-            if (!(o instanceof ShardInfo)) {
+            if (!(o instanceof ShardInfo oInfo)) {
                 return false;
             }
 
-            ShardInfo oInfo = (ShardInfo) o;
-            return shardId == oInfo.getShardId() && shardTotal == oInfo.getShardTotal();
+          return shardId == oInfo.getShardId() && shardTotal == oInfo.getShardTotal();
         }
 
         @Override
@@ -592,43 +591,6 @@ public interface JFA extends IGuildChannelContainer<Channel> {
     @NotNull
     List<Object> getRegisteredListeners();
 
-    /**
-     * Returns a reusable builder for a one-time event listener.
-     *
-     * <p>Note that this method only works if the {@link JFABuilder#setEventManager(IEventManager) event manager}
-     * is either the {@link lonter.jfa.api.hooks.InterfacedEventManager InterfacedEventManager}
-     * or {@link lonter.jfa.api.hooks.AnnotatedEventManager AnnotatedEventManager}.
-     * <br>Other implementations can support it as long as they call
-     * {@link lonter.jfa.api.hooks.EventListener#onEvent(GenericEvent) EventListener.onEvent(GenericEvent)}.
-     *
-     * <p><b>Example:</b>
-     *
-     * <p>Listening to a message from a channel and a user, after using a slash command:
-     * {@snippet lang="java":
-     * final Duration timeout = Duration.ofSeconds(5);
-     * event.reply("Reply in " + TimeFormat.RELATIVE.after(timeout) + " if you can!")
-     *         .setEphemeral(true)
-     *         .queue();
-     *
-     * event.getJFA().listenOnce(MessageReceivedEvent.class)
-     *         .filter(messageEvent -> messageEvent.getChannel().getIdLong() == event.getChannel().getIdLong())
-     *         .filter(messageEvent -> messageEvent.getAuthor().getIdLong() == event.getUser().getIdLong())
-     *         .timeout(timeout, () -> {
-     *             event.getHook().editOriginal("Timeout!").queue();
-     *         })
-     *         .subscribe(messageEvent -> {
-     *             event.getHook().editOriginal("You sent: " + messageEvent.getMessage().getContentRaw()).queue();
-     *         });
-     * }
-     *
-     * @param  eventType
-     *         Type of the event to listen to
-     *
-     * @throws IllegalArgumentException
-     *         If the provided event type is {@code null}
-     *
-     * @return The one-time event listener builder
-     */
     @NotNull
     @CheckReturnValue
     <E extends GenericEvent> Once.Builder<E> listenOnce(@NotNull Class<E> eventType);
@@ -1650,7 +1612,7 @@ public interface JFA extends IGuildChannelContainer<Channel> {
      *         The name of the requested {@link RichCustomEmoji Custom Emojis}. Without colons.
      * @param  ignoreCase
      *         Whether to ignore case or not when comparing the provided name to each {@link
-     *         RichCustomEmoji#getName()}.
+     *         RichCustomEmoji#name()}.
      *
      * @return Possibly-empty list of all the {@link RichCustomEmoji Custom Emojis} that all have the same
      *         name as the provided name.

@@ -275,6 +275,5 @@ public interface ComponentTree<E extends Component> {
          * Represents a {@link ModalComponentTree}.
          */
         MODAL,
-        ;
     }
 }

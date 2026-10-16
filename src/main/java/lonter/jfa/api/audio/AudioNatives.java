@@ -85,18 +85,18 @@ public final class AudioNatives {
     }
 
     private static void handleException(Throwable e) {
-        if (e instanceof UnsupportedOperationException) {
-            LOG.error("Sorry, JFA's audio system doesn't support this system.\n{}", e.getMessage());
-        } else if (e instanceof NoClassDefFoundError) {
-            LOG.error("Missing opus dependency, unable to initialize audio!");
-        } else if (e instanceof IOException) {
-            LOG.error("There was an IO Exception when setting up the temp files for audio.", e);
-        } else if (e instanceof UnsatisfiedLinkError) {
-            LOG.error("JFA encountered a problem when attempting to load the Native libraries. Contact a DEV.", e);
-        } else if (e instanceof Error) {
-            throw (Error) e;
-        } else {
-            LOG.error("An unknown exception occurred while attempting to setup JFA's audio system!", e);
-        }
+      switch (e) {
+        case UnsupportedOperationException unsupportedOperationException ->
+          LOG.error("Sorry, JFA's audio system doesn't support this system.\n{}", e.getMessage());
+        case NoClassDefFoundError noClassDefFoundError ->
+          LOG.error("Missing opus dependency, unable to initialize audio!");
+        case IOException ioException ->
+          LOG.error("There was an IO Exception when setting up the temp files for audio.", e);
+        case UnsatisfiedLinkError unsatisfiedLinkError ->
+          LOG.error("JFA encountered a problem when attempting to load the Native libraries. Contact a DEV.", e);
+        case Error error -> throw error;
+        case null, default ->
+          LOG.error("An unknown exception occurred while attempting to setup JFA's audio system!", e);
+      }
     }
 }

@@ -193,7 +193,7 @@ public interface MessageRequest<R extends MessageRequest<R>> extends MessageData
      * <p><b>Example: Set action rows</b><br>
      * {@snippet lang="java":
      * final List<MessageTopLevelComponent> list = new ArrayList<>();
-     * list.add(ActionRow.of(selectMenu); // first row
+     * list.add(ActionRow.of(selectMenu)); // first row
      * list.add(ActionRow.of(button1, button2)); // second row (shows below the first)
      *
      * channel.sendMessage("Content here")
@@ -606,7 +606,7 @@ public interface MessageRequest<R extends MessageRequest<R>> extends MessageData
      */
     @NotNull
     @CheckReturnValue
-    default R mentionUsers(@NotNull long... userIds) {
+    default R mentionUsers(long @NotNull ... userIds) {
         Checks.notNull(userIds, "UserId array");
         String[] stringIds = new String[userIds.length];
         for (int i = 0; i < userIds.length; i++) {
@@ -685,7 +685,7 @@ public interface MessageRequest<R extends MessageRequest<R>> extends MessageData
      */
     @NotNull
     @CheckReturnValue
-    default R mentionRoles(@NotNull long... roleIds) {
+    default R mentionRoles(long @NotNull ... roleIds) {
         Checks.notNull(roleIds, "RoleId array");
         String[] stringIds = new String[roleIds.length];
         for (int i = 0; i < roleIds.length; i++) {

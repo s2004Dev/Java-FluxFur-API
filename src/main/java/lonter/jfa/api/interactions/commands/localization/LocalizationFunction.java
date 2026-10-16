@@ -46,14 +46,14 @@ import org.jetbrains.annotations.NotNull;
  * {@snippet lang="java":
  * public class MyFunction implements LocalizationFunction {
  *   @Override
- *   public Map<FluxerLocale, String> apply(String localizationKey) {
+ *   public @NotNull Map<FluxerLocale, String> apply(@NotNull String localizationKey) {
  *     Map<FluxerLocale, String> map = new HashMap<>();
  *     switch (localizationKey) {
  *       case "ban.name":
  *         map.put(FluxerLocale.SPANISH, "prohibición");
  *         map.put(FluxerLocale.FRENCH, "bannir");
  *         break;
- *       case "ban.description"
+ *       case "ban.description":
  *         map.put(FluxerLocale.SPANISH, "Prohibir a un usuario del servidor");
  *         map.put(FluxerLocale.FRENCH, "Bannir un utilisateur du serveur");
  *         break;
@@ -74,7 +74,7 @@ import org.jetbrains.annotations.NotNull;
  *        map.put(FluxerLocale.SPANISH, "prohibición");
  *        map.put(FluxerLocale.FRENCH, "bannir");
  *        break;
- *      case "ban.description"
+ *      case "ban.description":
  *        map.put(FluxerLocale.SPANISH, "Prohibir a un usuario del servidor");
  *        map.put(FluxerLocale.FRENCH, "Bannir un utilisateur du serveur");
  *        break;

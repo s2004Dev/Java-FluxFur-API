@@ -36,8 +36,6 @@ import lonter.jfa.internal.requests.RestActionImpl;
 import lonter.jfa.internal.requests.restaction.AuditableRestActionImpl;
 import lonter.jfa.internal.utils.EntityString;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -94,12 +92,12 @@ public class RichCustomEmojiImpl implements RichCustomEmoji, EmojiUnion {
     @NotNull
     @Override
     public List<Role> getRoles() {
-        return Collections.unmodifiableList(new ArrayList<>(roles));
+        return List.copyOf(roles);
     }
 
     @NotNull
     @Override
-    public String getName() {
+    public String name() {
         return name;
     }
 
@@ -214,12 +212,11 @@ public class RichCustomEmojiImpl implements RichCustomEmoji, EmojiUnion {
         if (obj == this) {
             return true;
         }
-        if (!(obj instanceof CustomEmoji)) {
+        if (!(obj instanceof CustomEmoji other)) {
             return false;
         }
 
-        CustomEmoji other = (CustomEmoji) obj;
-        return this.id == other.getIdLong();
+      return this.id == other.getIdLong();
     }
 
     @Override

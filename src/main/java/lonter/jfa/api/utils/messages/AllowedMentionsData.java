@@ -109,12 +109,12 @@ class AllowedMentionsData implements SerializableData {
 
     @NotNull
     public Set<String> getMentionedUsers() {
-        return Collections.unmodifiableSet(new HashSet<>(mentionUsers));
+        return Set.copyOf(mentionUsers);
     }
 
     @NotNull
     public Set<String> getMentionedRoles() {
-        return Collections.unmodifiableSet(new HashSet<>(mentionRoles));
+        return Set.copyOf(mentionRoles);
     }
 
     @NotNull

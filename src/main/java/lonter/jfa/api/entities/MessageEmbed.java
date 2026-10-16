@@ -395,14 +395,13 @@ public class MessageEmbed implements SerializableData {
 
     @Override
     public boolean equals(Object obj) {
-        if (!(obj instanceof MessageEmbed)) {
+        if (!(obj instanceof MessageEmbed other)) {
             return false;
         }
         if (obj == this) {
             return true;
         }
-        MessageEmbed other = (MessageEmbed) obj;
-        return Objects.equals(url, other.url)
+      return Objects.equals(url, other.url)
                 && Objects.equals(title, other.title)
                 && Objects.equals(description, other.description)
                 && Objects.equals(type, other.type)
@@ -594,11 +593,10 @@ public class MessageEmbed implements SerializableData {
 
         @Override
         public boolean equals(Object obj) {
-            if (!(obj instanceof Thumbnail)) {
+            if (!(obj instanceof Thumbnail thumbnail)) {
                 return false;
             }
-            Thumbnail thumbnail = (Thumbnail) obj;
-            return thumbnail == this
+          return thumbnail == this
                     || (Objects.equals(thumbnail.url, url)
                             && Objects.equals(thumbnail.proxyUrl, proxyUrl)
                             && thumbnail.width == width
@@ -648,11 +646,10 @@ public class MessageEmbed implements SerializableData {
 
         @Override
         public boolean equals(Object obj) {
-            if (!(obj instanceof Provider)) {
+            if (!(obj instanceof Provider provider)) {
                 return false;
             }
-            Provider provider = (Provider) obj;
-            return provider == this || (Objects.equals(provider.name, name) && Objects.equals(provider.url, url));
+          return provider == this || (Objects.equals(provider.name, name) && Objects.equals(provider.url, url));
         }
 
         @Override
@@ -740,11 +737,10 @@ public class MessageEmbed implements SerializableData {
 
         @Override
         public boolean equals(Object obj) {
-            if (!(obj instanceof VideoInfo)) {
+            if (!(obj instanceof VideoInfo video)) {
                 return false;
             }
-            VideoInfo video = (VideoInfo) obj;
-            return video == this || (Objects.equals(video.url, url) && video.width == width && video.height == height);
+          return video == this || (Objects.equals(video.url, url) && video.width == width && video.height == height);
         }
 
         @Override
@@ -823,11 +819,10 @@ public class MessageEmbed implements SerializableData {
 
         @Override
         public boolean equals(Object obj) {
-            if (!(obj instanceof ImageInfo)) {
+            if (!(obj instanceof ImageInfo image)) {
                 return false;
             }
-            ImageInfo image = (ImageInfo) obj;
-            return image == this
+          return image == this
                     || (Objects.equals(image.url, url)
                             && Objects.equals(image.proxyUrl, proxyUrl)
                             && image.width == width
@@ -913,11 +908,10 @@ public class MessageEmbed implements SerializableData {
 
         @Override
         public boolean equals(Object obj) {
-            if (!(obj instanceof AuthorInfo)) {
+            if (!(obj instanceof AuthorInfo author)) {
                 return false;
             }
-            AuthorInfo author = (AuthorInfo) obj;
-            return author == this
+          return author == this
                     || (Objects.equals(author.name, name)
                             && Objects.equals(author.url, url)
                             && Objects.equals(author.iconUrl, iconUrl)
@@ -989,11 +983,10 @@ public class MessageEmbed implements SerializableData {
 
         @Override
         public boolean equals(Object obj) {
-            if (!(obj instanceof Footer)) {
+            if (!(obj instanceof Footer footer)) {
                 return false;
             }
-            Footer footer = (Footer) obj;
-            return footer == this
+          return footer == this
                     || (Objects.equals(footer.text, text)
                             && Objects.equals(footer.iconUrl, iconUrl)
                             && Objects.equals(footer.proxyIconUrl, proxyIconUrl));
@@ -1083,11 +1076,10 @@ public class MessageEmbed implements SerializableData {
 
         @Override
         public boolean equals(Object obj) {
-            if (!(obj instanceof Field)) {
+            if (!(obj instanceof Field field)) {
                 return false;
             }
-            Field field = (Field) obj;
-            return field == this
+          return field == this
                     || (field.inline == inline
                             && Objects.equals(field.name, name)
                             && Objects.equals(field.value, value));

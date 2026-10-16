@@ -120,17 +120,15 @@ public class CommandInteractionPayloadImpl extends InteractionImpl implements Co
                     resolved.put(optionMember.getIdLong(), optionMember); // This basically upgrades user to member
                 });
             });
-            resolveJson.optObject("roles").ifPresent(roles -> {
-                roles.keys().stream()
-                        .map(roleId -> {
-                            if (!guild.isDetached()) {
-                                return guild.getRoleById(roleId);
-                            }
-                            return interactionEntityBuilder.createRole(guild, roles.getObject(roleId));
-                        })
-                        .filter(Objects::nonNull)
-                        .forEach(role -> resolved.put(role.getIdLong(), role));
-            });
+            resolveJson.optObject("roles").ifPresent(roles -> roles.keys().stream()
+                    .map(roleId -> {
+                        if (!guild.isDetached()) {
+                            return guild.getRoleById(roleId);
+                        }
+                        return interactionEntityBuilder.createRole(guild, roles.getObject(roleId));
+                    })
+                    .filter(Objects::nonNull)
+                    .forEach(role -> resolved.put(role.getIdLong(), role)));
             resolveJson.optObject("channels").ifPresent(channels -> channels.keys()
                     .forEach(id -> {
                         ISnowflake channelObj = jfa.getGuildChannelById(id);

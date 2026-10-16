@@ -36,6 +36,7 @@ import java.nio.file.OpenOption;
 import java.nio.file.Path;
 import java.time.Duration;
 import java.util.Base64;
+import java.util.Objects;
 import java.util.function.Supplier;
 
 import org.jetbrains.annotations.NotNull;
@@ -165,7 +166,7 @@ public class FileUpload implements Closeable, AttachedFile {
      * @return {@link FileUpload}
      */
     @NotNull
-    public static FileUpload fromData(@NotNull byte[] data, @NotNull String name) {
+    public static FileUpload fromData(byte @NotNull [] data, @NotNull String name) {
         Checks.notNull(data, "Data");
         Checks.notNull(name, "Name");
         return fromData(new ByteArrayInputStream(data), name);
@@ -362,7 +363,7 @@ public class FileUpload implements Closeable, AttachedFile {
      */
     @NotNull
     public FileUpload asVoiceMessage(
-            @NotNull MediaType mediaType, @NotNull byte[] waveform, @NotNull Duration duration) {
+      @NotNull MediaType mediaType, byte @NotNull [] waveform, @NotNull Duration duration) {
         Checks.notNull(duration, "Duration");
         return this.asVoiceMessage(mediaType, waveform, duration.toNanos() / 1_000_000_000.0);
     }
@@ -383,7 +384,7 @@ public class FileUpload implements Closeable, AttachedFile {
      * @return The same FileUpload instance configured as a voice message attachment
      */
     @NotNull
-    public FileUpload asVoiceMessage(@NotNull MediaType mediaType, @NotNull byte[] waveform, double durationSeconds) {
+    public FileUpload asVoiceMessage(@NotNull MediaType mediaType, byte @NotNull [] waveform, double durationSeconds) {
         Checks.notNull(mediaType, "Media type");
         Checks.notNull(waveform, "Waveform");
         Checks.check(waveform.length > 0 && waveform.length <= 256, "Waveform must be between 1 and 256 bytes long");
@@ -434,11 +435,7 @@ public class FileUpload implements Closeable, AttachedFile {
      */
     @NotNull
     public InputStream getData() {
-        if (resource != null) {
-            return resource;
-        } else {
-            return Okio.buffer(resourceSupplier.get()).inputStream();
-        }
+      return Objects.requireNonNullElseGet(resource, () -> Okio.buffer(resourceSupplier.get()).inputStream());
     }
 
     /**
@@ -470,7 +467,6 @@ public class FileUpload implements Closeable, AttachedFile {
     }
 
     @Override
-    @SuppressWarnings("ConstantConditions")
     public synchronized void addPart(@NotNull MultipartBody.Builder builder, int index) {
         builder.addFormDataPart("files[" + index + "]", name, getRequestBody(mediaType));
     }
@@ -505,7 +501,6 @@ public class FileUpload implements Closeable, AttachedFile {
     }
 
     @Override
-    @SuppressWarnings("deprecation")
     protected void finalize() {
         if (body == null && resource != null) { // Only close if the resource was never used
             IOUtil.silentClose(resource);

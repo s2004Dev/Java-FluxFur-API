@@ -152,9 +152,9 @@ public class ComponentsUtil {
     }
 
     public static Stream<FileUpload> getFilesFromMedia(@Nullable ResolvedMedia media) {
-        if (media != null && media.getAttachmentId() != null) {
+        if (media != null && media.attachmentId() != null) {
             // Retain or reupload the entire file
-            String fileName = Helpers.getLastPathSegment(media.getUrl());
+            String fileName = Helpers.getLastPathSegment(media.url());
             return Stream.of(media.getProxy().downloadAsFileUpload(fileName));
         } else {
             // External URL or user-managed attachment
@@ -163,9 +163,9 @@ public class ComponentsUtil {
     }
 
     public static String getMediaUrl(@Nullable ResolvedMedia media, @Nullable String url) {
-        if (media != null && media.getAttachmentId() != null) {
+        if (media != null && media.attachmentId() != null) {
             // Retain or reupload the entire file, both cases uses attachment://
-            return "attachment://" + Helpers.getLastPathSegment(media.getUrl());
+            return "attachment://" + Helpers.getLastPathSegment(media.url());
         } else {
             // User-managed attachment
             return url;

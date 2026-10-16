@@ -46,19 +46,13 @@ public enum InteractionType {
     @NotNull
     @CheckReturnValue
     public static InteractionType fromKey(int key) {
-        switch (key) {
-            case 1:
-                return PING;
-            case 2:
-                return COMMAND;
-            case 3:
-                return COMPONENT;
-            case 4:
-                return COMMAND_AUTOCOMPLETE;
-            case 5:
-                return MODAL_SUBMIT;
-            default:
-                return UNKNOWN;
-        }
+      return switch (key) {
+        case 1 -> PING;
+        case 2 -> COMMAND;
+        case 3 -> COMPONENT;
+        case 4 -> COMMAND_AUTOCOMPLETE;
+        case 5 -> MODAL_SUBMIT;
+        default -> UNKNOWN;
+      };
     }
 }

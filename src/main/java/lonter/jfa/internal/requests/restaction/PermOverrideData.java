@@ -65,11 +65,10 @@ public class PermOverrideData implements SerializableData {
         if (obj == this) {
             return true;
         }
-        if (!(obj instanceof PermOverrideData)) {
+        if (!(obj instanceof PermOverrideData other)) {
             return false;
         }
 
-        PermOverrideData other = (PermOverrideData) obj;
-        return other.id == this.id;
+      return other.id == this.id;
     }
 }

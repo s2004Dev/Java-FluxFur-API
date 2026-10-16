@@ -117,8 +117,7 @@ public final class OpusPacket implements Comparable<OpusPacket> {
      *
      * @return The raw opus audio
      */
-    @NotNull
-    public byte[] getOpusAudio() {
+    public byte @NotNull [] getOpusAudio() {
         // prevent write access to backing array
         return Arrays.copyOf(opusAudio, opusAudio.length);
     }
@@ -138,8 +137,7 @@ public final class OpusPacket implements Comparable<OpusPacket> {
      * @see    #canDecode()
      * @see    #getAudioData(double)
      */
-    @Nullable
-    public synchronized short[] decode() {
+    public synchronized short @Nullable [] decode() {
         if (triedDecode) {
             return decoded;
         }
@@ -166,9 +164,8 @@ public final class OpusPacket implements Comparable<OpusPacket> {
      *
      * @return The stereo PCM audio data as specified by {@link lonter.jfa.api.audio.AudioReceiveHandler#OUTPUT_FORMAT}.
      */
-    @NotNull
-    @SuppressWarnings("ConstantConditions") // the null case is handled with an exception
-    public byte[] getAudioData(double volume) {
+    // the null case is handled with an exception
+    public byte @NotNull [] getAudioData(double volume) {
         return getAudioData(decode(), volume); // throws IllegalArgument if decode failed
     }
 
@@ -187,13 +184,9 @@ public final class OpusPacket implements Comparable<OpusPacket> {
      *
      * @return The stereo PCM audio data as specified by {@link lonter.jfa.api.audio.AudioReceiveHandler#OUTPUT_FORMAT}.
      */
-    @NotNull
-    @SuppressWarnings("ConstantConditions") // the null case is handled with an exception
-    public static byte[] getAudioData(@NotNull short[] decoded, double volume) {
-        if (decoded == null) {
-            throw new IllegalArgumentException("Cannot get audio data from null");
-        }
-        int byteIndex = 0;
+    // the null case is handled with an exception
+    public static byte @NotNull [] getAudioData(short @NotNull [] decoded, double volume) {
+      int byteIndex = 0;
         byte[] audio = new byte[decoded.length * 2];
         for (short s : decoded) {
             if (volume != 1.0) {
@@ -216,7 +209,7 @@ public final class OpusPacket implements Comparable<OpusPacket> {
 
     @Override
     public int hashCode() {
-        return Objects.hash(getSequence(), getTimestamp(), getOpusAudio());
+        return Objects.hash(getSequence(), getTimestamp(), Arrays.hashCode(getOpusAudio()));
     }
 
     @Override
@@ -224,11 +217,10 @@ public final class OpusPacket implements Comparable<OpusPacket> {
         if (obj == this) {
             return true;
         }
-        if (!(obj instanceof OpusPacket)) {
+        if (!(obj instanceof OpusPacket other)) {
             return false;
         }
-        OpusPacket other = (OpusPacket) obj;
-        return getSequence() == other.getSequence()
+      return getSequence() == other.getSequence()
                 && getTimestamp() == other.getTimestamp()
                 && getSSRC() == other.getSSRC();
     }

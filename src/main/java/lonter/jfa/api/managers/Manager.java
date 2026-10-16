@@ -84,7 +84,7 @@ public interface Manager<M extends Manager<M>> extends AuditableRestAction<Void>
 
     @NotNull
     @CheckReturnValue
-    M reset(@NotNull long... fields);
+    M reset(long @NotNull ... fields);
 
     /**
      * Resets all fields for this Manager

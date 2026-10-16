@@ -169,7 +169,7 @@ public class EmbedBuilder {
             throw new IllegalStateException(Helpers.format(
                     "Cannot build an embed with more than %d embed fields set!", MessageEmbed.MAX_FIELD_AMOUNT));
         }
-        String description = this.description.length() < 1 ? null : this.description.toString();
+        String description = this.description.isEmpty() ? null : this.description.toString();
 
         return EntityBuilder.createMessageEmbed(
                 url,
@@ -433,7 +433,7 @@ public class EmbedBuilder {
     @NotNull
     public final EmbedBuilder setDescription(@Nullable CharSequence description) {
         this.description.setLength(0);
-        if (description != null && description.length() >= 1) {
+        if (description != null && !description.isEmpty()) {
             appendDescription(description);
         }
         return this;

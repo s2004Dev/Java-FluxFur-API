@@ -315,13 +315,11 @@ public interface ScheduledEvent extends ISnowflake, Comparable<ScheduledEvent> {
      * The amount of users who are interested in attending the event.
      * <p>This method only returns the cached count, and may not be consistent with the live count. Fluxer may additionally not
      * provide an interested user count for some {@link ScheduledEvent} objects returned from the Guild's or JFA's
-     * cache, and this method may return -1 as a result. However, event's retrieved using {@link Guild#retrieveScheduledEventById(long)}
+     * cache, and this method may return -1 as a result. However, event's retrieved using
      * will always contain an interested user count.
      *
      * @return The amount of users who are interested in attending the event
      *
-     * @see    Guild#retrieveScheduledEventById(long)
-     * @see    Guild#retrieveScheduledEventById(String)
      */
     int getInterestedUserCount();
 

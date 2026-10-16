@@ -90,8 +90,8 @@ public class BanPaginationActionImpl extends PaginationActionImpl<Guild.Ban, Ban
         }
 
         if (!bans.isEmpty()) {
-            last = bans.get(bans.size() - 1);
-            lastKey = last.getUser().getIdLong();
+            last = bans.getLast();
+            lastKey = last.user().getIdLong();
         }
 
         request.onSuccess(Collections.unmodifiableList(bans));
@@ -99,6 +99,6 @@ public class BanPaginationActionImpl extends PaginationActionImpl<Guild.Ban, Ban
 
     @Override
     protected long getKey(Guild.Ban it) {
-        return it.getUser().getIdLong();
+        return it.user().getIdLong();
     }
 }

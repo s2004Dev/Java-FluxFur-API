@@ -249,7 +249,7 @@ public class Checks {
                 .filter(c -> !predicate.test(c.getComponent()))
                 .forEach(c -> sb.append(" - ").append(c.getPath()).append("\n"));
 
-        if (sb.length() > 0) {
+        if (!sb.isEmpty()) {
             throw new IllegalArgumentException(
                     errorMessage + "\n" + sb.toString().trim());
         }

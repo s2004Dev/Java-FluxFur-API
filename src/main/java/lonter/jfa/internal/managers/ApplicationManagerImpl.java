@@ -78,7 +78,7 @@ public class ApplicationManagerImpl extends ManagerBase<ApplicationManager> impl
     @NotNull
     @Override
     @CheckReturnValue
-    public ApplicationManagerImpl reset(@NotNull long... fields) {
+    public ApplicationManagerImpl reset(long @NotNull ... fields) {
         super.reset(fields);
         return this;
     }
@@ -170,7 +170,7 @@ public class ApplicationManagerImpl extends ManagerBase<ApplicationManager> impl
             Checks.noneNull(config.keySet(), "IntegrationTypeConfig");
             Checks.noneNull(config.values(), "IntegrationTypeConfig");
             Checks.check(
-                    !config.keySet().contains(IntegrationType.UNKNOWN),
+                    !config.containsKey(IntegrationType.UNKNOWN),
                     "IntegrationTypeConfig must not be set for UNKNOWN");
         }
 

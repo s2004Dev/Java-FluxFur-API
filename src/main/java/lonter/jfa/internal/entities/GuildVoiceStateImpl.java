@@ -216,11 +216,10 @@ public class GuildVoiceStateImpl implements GuildVoiceState {
         if (obj == this) {
             return true;
         }
-        if (!(obj instanceof GuildVoiceState)) {
+        if (!(obj instanceof GuildVoiceState oStatus)) {
             return false;
         }
-        GuildVoiceState oStatus = (GuildVoiceState) obj;
-        return member.equals(oStatus.getMember());
+      return member.equals(oStatus.getMember());
     }
 
     @Override

@@ -125,7 +125,7 @@ public class AttachmentProxy extends FileProxy {
      *         <ul>
      *             <li>The requested width is negative or 0</li>
      *             <li>The requested height is negative or 0</li>
-     *             <li>The URL's scheme is neither http or https</li>
+     *             <li>The URL's scheme is neither http nor https</li>
      *         </ul>
      *
      * @return {@link CompletableFuture} which holds a {@link Path} which corresponds to the location the file has been downloaded.

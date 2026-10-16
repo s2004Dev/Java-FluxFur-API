@@ -60,8 +60,7 @@ public abstract class ComponentInteractionImpl extends DeferrableInteractionImpl
     }
 
     @Override
-    @SuppressWarnings("ConstantConditions")
-    public MessageChannelUnion getChannel() {
+    public @NotNull MessageChannelUnion getChannel() {
         return (MessageChannelUnion) super.getChannel();
     }
 

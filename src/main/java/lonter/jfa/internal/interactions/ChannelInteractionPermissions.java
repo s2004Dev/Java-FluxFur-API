@@ -16,24 +16,11 @@
 
 package lonter.jfa.internal.interactions;
 
+import lonter.jfa.api.entities.channel.middleman.GuildChannel;
+
 /**
  * Represents permissions the interaction's member has been granted
- * in the {@link lonter.jfa.api.entities.channel.middleman.GuildChannel GuildChannel}.
+ * in the {@link GuildChannel GuildChannel}.
  */
-public class ChannelInteractionPermissions {
-    private final long memberId;
-    private final long permissions;
-
-    public ChannelInteractionPermissions(long memberId, long permissions) {
-        this.memberId = memberId;
-        this.permissions = permissions;
-    }
-
-    public long getMemberId() {
-        return memberId;
-    }
-
-    public long getPermissions() {
-        return permissions;
-    }
+public record ChannelInteractionPermissions(long memberId, long permissions) {
 }

@@ -18,12 +18,9 @@ package lonter.jfa.api.components.mediagallery;
 
 import lonter.jfa.api.components.ResolvedMedia;
 import lonter.jfa.api.utils.FileUpload;
-import lonter.jfa.api.utils.messages.MessageCreateBuilder;
 import lonter.jfa.internal.components.mediagallery.MediaGalleryItemFileUpload;
 import lonter.jfa.internal.components.mediagallery.MediaGalleryItemImpl;
 import lonter.jfa.internal.utils.Checks;
-
-import java.io.InputStream;
 
 import javax.annotation.CheckReturnValue;
 import org.jetbrains.annotations.NotNull;
@@ -38,91 +35,12 @@ public interface MediaGalleryItem {
      */
     int MAX_DESCRIPTION_LENGTH = 1024;
 
-    /**
-     * Constructs a new {@link MediaGalleryItem} from the given URL.
-     *
-     * <h4>Re-uploading external images</h4>
-     *
-     * If you instead want to re-upload the content of the URL,
-     * you have two options to reference images to upload:
-     *
-     * <ol>
-     *     <li>Use {@link #fromFile(FileUpload)} instead, it will set a URI similar to {@code attachment://file.ext},
-     *         and automatically adds the attachment to the request.
-     *         <br>This is the easiest, but it may upload unnecessary files when editing,
-     *         as it is not aware if the file already exists on the message,
-     *         wasting bandwidth and potentially slowing down response times.
-     *     </li>
-     *     <li>
-     *         Do the same manually, meaning you need to pass the {@code attachment://file.ext} URI,
-     *         where {@code file.ext} is the name of the file you will upload, then, on the request, add the file,
-     *         using {@link lonter.jfa.api.utils.messages.MessageCreateRequest#addFiles(FileUpload...) MessageCreateRequest#addFiles(FileUpload...)} for example.
-     *         <br>This is more tedious but gives you full control over the uploads.
-     *     </li>
-     * </ol>
-     *
-     * <p><u>Example</u>
-     * {@snippet lang="java":
-     * MessageChannel channel; // = reference of a MessageChannel
-     * MediaGalleryItem item = MediaGalleryItem.fromUrl("attachment://cat.png") // we specify this in sendFile as "cat.png"
-     *     .setDescription("This is a cute car :3");
-     * MediaGallery gallery = MediaGallery.of(item);
-     * // It's recommended to use a more robust HTTP library instead,
-     * // such as Java 11+'s HttpClient, or OkHttp (included with JFA), among many other options.
-     * InputStream file = new URL("https://http.cat/500").openStream();
-     * channel.sendFiles(FileUpload.fromData(file, "cat.png"))
-     *     .setComponents(gallery)
-     *     .useComponentsV2()
-     *     .queue();
-     * }
-     *
-     * @param  url
-     *         The URL of the item to display
-     *
-     * @throws IllegalArgumentException
-     *         If {@code null} is provided
-     *
-     * @return The new {@link MediaGalleryItem}
-     */
     @NotNull
     static MediaGalleryItem fromUrl(@NotNull String url) {
         Checks.notBlank(url, "URL");
         return new MediaGalleryItemImpl(url);
     }
 
-    /**
-     * Constructs a new {@link MediaGalleryItem} from the {@link FileUpload}.
-     *
-     * <p>This method can also be used to upload external resources,
-     * such as by using {@link FileUpload#fromData(InputStream, String)},
-     * in which case it will re-upload the entire file.
-     *
-     * <p>This will automatically add the file when building the message,
-     * as such you do not need to add it manually (with {@link MessageCreateBuilder#addFiles(FileUpload...)} for example).
-     *
-     * <p><u>Example</u>
-     * {@snippet lang="java":
-     * MessageChannel channel; // = reference of a MessageChannel
-     * // It's recommended to use a more robust HTTP library instead,
-     * // such as Java 11+'s HttpClient, or OkHttp (included with JFA), among many other options.
-     * InputStream file = new URL("https://http.cat/500").openStream();
-     * // You can also replace this with a local file
-     * MediaGalleryItem item = MediaGalleryItem.fromFile(FileUpload.fromData(file, "cat.png"))
-     *     .setDescription("This is a cute car :3");
-     * MediaGallery mediaGallery = MediaGallery.of(item);
-     * channel.sendComponents(section)
-     *     .useComponentsV2()
-     *     .queue();
-     * }
-     *
-     * @param  file
-     *         The {@link FileUpload} to display
-     *
-     * @throws IllegalArgumentException
-     *         If {@code null} is provided
-     *
-     * @return The new {@link MediaGalleryItem}
-     */
     @NotNull
     static MediaGalleryItem fromFile(@NotNull FileUpload file) {
         Checks.notNull(file, "FileUpload");

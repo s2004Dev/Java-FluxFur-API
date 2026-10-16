@@ -33,18 +33,18 @@ import org.jetbrains.annotations.NotNull;
  * <br>Maximum - 1000
  *
  * <p><b>Example</b><br>
- * {@snippet lang="java":
+ * {@snippet lang = "java":
  * // Revoke all bans from a guild with a certain reason
  * public static void findBansWithReason(Guild guild, String reason) {
  *     BanPaginationAction bans = guild.retrieveBanList();
  *     bans.forEachAsync((ban) -> {
- *         if (reason.equals(ban.getReason())) {
- *             guild.unban(ban.getUser()).queue();
+ *         if (reason.equals(ban.reason())) {
+ *             guild.unban(ban.user()).queue();
  *         }
  *         return true; // continues iterating if this returns true
  *     });
  * }
- * }
+ *}
  *
  * @see Guild#retrieveBanList()
  * @see Guild#retrieveBan(lonter.jfa.api.entities.UserSnowflake)

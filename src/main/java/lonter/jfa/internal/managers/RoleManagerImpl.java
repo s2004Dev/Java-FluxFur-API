@@ -88,7 +88,7 @@ public class RoleManagerImpl extends ManagerBase<RoleManager> implements RoleMan
     @NotNull
     @Override
     @CheckReturnValue
-    public RoleManagerImpl reset(@NotNull long... fields) {
+    public RoleManagerImpl reset(long @NotNull ... fields) {
         super.reset(fields);
         return this;
     }

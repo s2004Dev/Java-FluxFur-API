@@ -94,7 +94,7 @@ public interface GuildStickerManager extends Manager<GuildStickerManager> {
     @NotNull
     @Override
     @CheckReturnValue
-    GuildStickerManager reset(@NotNull long... fields);
+    GuildStickerManager reset(long @NotNull ... fields);
 
     /**
      * The {@link Guild} this Manager's {@link GuildSticker} is in.

@@ -20,6 +20,7 @@ import lonter.jfa.api.JFA;
 import lonter.jfa.api.entities.emoji.RichCustomEmoji;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Indicates that the name of a {@link RichCustomEmoji Custom Emoji} changed.
@@ -40,7 +41,7 @@ public class EmojiUpdateNameEvent extends GenericEmojiUpdateEvent<String> {
 
     public EmojiUpdateNameEvent(
             @NotNull JFA api, long responseNumber, @NotNull RichCustomEmoji emoji, @NotNull String oldName) {
-        super(api, responseNumber, emoji, oldName, emoji.getName(), IDENTIFIER);
+        super(api, responseNumber, emoji, oldName, emoji.name(), IDENTIFIER);
     }
 
     /**
@@ -48,8 +49,7 @@ public class EmojiUpdateNameEvent extends GenericEmojiUpdateEvent<String> {
      *
      * @return The old name
      */
-    @NotNull
-    public String getOldName() {
+    public @Nullable String getOldName() {
         return getOldValue();
     }
 
@@ -58,20 +58,17 @@ public class EmojiUpdateNameEvent extends GenericEmojiUpdateEvent<String> {
      *
      * @return The new name
      */
-    @NotNull
-    public String getNewName() {
+    public @Nullable String getNewName() {
         return getNewValue();
     }
 
-    @NotNull
     @Override
-    public String getOldValue() {
+    public @Nullable String getOldValue() {
         return super.getOldValue();
     }
 
-    @NotNull
     @Override
-    public String getNewValue() {
+    public @Nullable String getNewValue() {
         return super.getNewValue();
     }
 }

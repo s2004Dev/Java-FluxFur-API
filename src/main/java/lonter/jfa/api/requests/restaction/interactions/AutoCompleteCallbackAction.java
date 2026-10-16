@@ -247,7 +247,7 @@ public interface AutoCompleteCallbackAction
      */
     @NotNull
     @CheckReturnValue
-    default AutoCompleteCallbackAction addChoiceLongs(@NotNull long... choices) {
+    default AutoCompleteCallbackAction addChoiceLongs(long @NotNull ... choices) {
         return addChoices(Arrays.stream(choices)
                 .mapToObj(it -> new Command.Choice(String.valueOf(it), it))
                 .collect(Collectors.toList()));
@@ -301,7 +301,7 @@ public interface AutoCompleteCallbackAction
      */
     @NotNull
     @CheckReturnValue
-    default AutoCompleteCallbackAction addChoiceDoubles(@NotNull double... choices) {
+    default AutoCompleteCallbackAction addChoiceDoubles(double @NotNull ... choices) {
         return addChoices(Arrays.stream(choices)
                 .mapToObj(it -> new Command.Choice(String.valueOf(it), it))
                 .collect(Collectors.toList()));

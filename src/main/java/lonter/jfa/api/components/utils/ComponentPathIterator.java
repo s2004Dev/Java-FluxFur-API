@@ -85,23 +85,19 @@ public class ComponentPathIterator implements Iterator<ComponentPathIterator.Com
         ComponentWithPath componentWithPath = iterator.next();
         Component component = componentWithPath.component;
 
-        if (component instanceof Container) {
-            Container container = (Container) component;
-            stack.push(
+        if (component instanceof Container container) {
+          stack.push(
                     new CollectionAttributeIterator(componentWithPath.path, "components", container.getComponents()));
-        } else if (component instanceof ActionRow) {
-            ActionRow actionRow = (ActionRow) component;
-            stack.push(
+        } else if (component instanceof ActionRow actionRow) {
+          stack.push(
                     new CollectionAttributeIterator(componentWithPath.path, "components", actionRow.getComponents()));
-        } else if (component instanceof Section) {
-            Section section = (Section) component;
+        } else if (component instanceof Section section) {
 
-            stack.push(new CollectionAttributeIterator(
+          stack.push(new CollectionAttributeIterator(
                     componentWithPath.path, "components", section.getContentComponents()));
             stack.push(singleAttributeIterator(componentWithPath.path, "accessory", section.getAccessory()));
-        } else if (component instanceof Label) {
-            Label label = (Label) component;
-            stack.push(singleAttributeIterator(componentWithPath.path, "component", label.getChild()));
+        } else if (component instanceof Label label) {
+          stack.push(singleAttributeIterator(componentWithPath.path, "component", label.getChild()));
         }
 
         return componentWithPath;

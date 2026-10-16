@@ -59,7 +59,7 @@ public class InsufficientPermissionException extends PermissionException {
             @NotNull Guild guild, @Nullable GuildChannel channel, @NotNull Permission permission) {
         super(
                 permission,
-                "Cannot perform action due to a lack of Permission. Missing permission: " + permission.toString());
+                "Cannot perform action due to a lack of Permission. Missing permission: " + permission);
         this.guildId = guild.getIdLong();
         this.channelId = channel == null ? 0 : channel.getIdLong();
         this.channelType = channel == null ? ChannelType.UNKNOWN : channel.getType();

@@ -121,7 +121,7 @@ public class GuildManagerImpl extends ManagerBase<GuildManager> implements Guild
     @NotNull
     @Override
     @CheckReturnValue
-    public GuildManagerImpl reset(@NotNull long... fields) {
+    public GuildManagerImpl reset(long @NotNull ... fields) {
         super.reset(fields);
         return this;
     }

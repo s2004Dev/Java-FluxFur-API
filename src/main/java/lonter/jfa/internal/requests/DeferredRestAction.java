@@ -23,6 +23,7 @@ import lonter.jfa.api.requests.restaction.AuditableRestAction;
 import lonter.jfa.api.requests.restaction.CacheRestAction;
 import lonter.jfa.internal.utils.Checks;
 
+import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.function.BooleanSupplier;
@@ -110,11 +111,7 @@ public class DeferredRestAction<T, R extends RestAction<T>> implements Auditable
     @Override
     public void queue(Consumer<? super T> success, Consumer<? super Throwable> failure) {
         Consumer<? super T> finalSuccess;
-        if (success != null) {
-            finalSuccess = success;
-        } else {
-            finalSuccess = RestAction.getDefaultSuccess();
-        }
+      finalSuccess = Objects.requireNonNullElseGet(success, RestAction::getDefaultSuccess);
 
         if (type == null) {
             BooleanSupplier checks = this.isAction;

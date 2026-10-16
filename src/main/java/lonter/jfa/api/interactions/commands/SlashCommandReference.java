@@ -97,13 +97,11 @@ public class SlashCommandReference implements ICommandReference {
         if (this == o) {
             return true;
         }
-        if (!(o instanceof SlashCommandReference)) {
+        if (!(o instanceof SlashCommandReference that)) {
             return false;
         }
 
-        SlashCommandReference that = (SlashCommandReference) o;
-
-        return id == that.id
+      return id == that.id
                 && name.equals(that.name)
                 && Objects.equals(subcommand, that.subcommand)
                 && Objects.equals(subcommandGroup, that.subcommandGroup);

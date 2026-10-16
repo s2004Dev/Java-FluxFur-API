@@ -67,7 +67,7 @@ public class EntitlementPaginationActionImpl extends PaginationActionImpl<Entitl
 
     @NotNull
     @Override
-    public EntitlementPaginationAction skuIds(@NotNull long... skuIds) {
+    public EntitlementPaginationAction skuIds(long @NotNull ... skuIds) {
         this.skuIds.clear();
         for (long skuId : skuIds) {
             this.skuIds.add(Long.toUnsignedString(skuId));
@@ -159,7 +159,7 @@ public class EntitlementPaginationActionImpl extends PaginationActionImpl<Entitl
             if (useCache) {
                 cached.addAll(entitlements);
             }
-            last = entitlements.get(entitlements.size() - 1);
+            last = entitlements.getLast();
             lastKey = last.getIdLong();
         }
 

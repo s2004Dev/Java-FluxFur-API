@@ -2895,8 +2895,7 @@ public interface Message extends ISnowflake, Formattable {
          *         this to keep the waveform to at most 256 bytes.
          *         The values in this array are <b>unsigned</b>.
          */
-        @Nullable
-        public byte[] getWaveform() {
+        public byte @Nullable [] getWaveform() {
             if (waveform == null) {
                 return null;
             }

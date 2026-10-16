@@ -148,7 +148,7 @@ public class DataArray implements Iterable<Object>, SerializableArray {
      * @return A DataArray instance for the provided payload
      */
     @NotNull
-    public static DataArray fromETF(@NotNull byte[] data) {
+    public static DataArray fromETF(byte @NotNull [] data) {
         Checks.notNull(data, "Data");
         try {
             List<Object> list = ExTermDecoder.unpackList(ByteBuffer.wrap(data));
@@ -663,8 +663,7 @@ public class DataArray implements Iterable<Object>, SerializableArray {
      *
      * @return byte array containing the JSON representation of this object
      */
-    @NotNull
-    public byte[] toJson() {
+    public byte @NotNull [] toJson() {
         return SerializationUtil.toJson(data);
     }
 
@@ -673,8 +672,7 @@ public class DataArray implements Iterable<Object>, SerializableArray {
      *
      * @return byte array containing the encoded ETF term
      */
-    @NotNull
-    public byte[] toETF() {
+    public byte @NotNull [] toETF() {
         ByteBuffer buffer = ExTermEncoder.pack(data);
         return Arrays.copyOfRange(buffer.array(), buffer.arrayOffset(), buffer.arrayOffset() + buffer.limit());
     }
@@ -771,11 +769,10 @@ public class DataArray implements Iterable<Object>, SerializableArray {
         if (this == o) {
             return true;
         }
-        if (!(o instanceof DataArray)) {
+        if (!(o instanceof DataArray objects)) {
             return false;
         }
-        DataArray objects = (DataArray) o;
-        return Objects.equals(data, objects.data);
+      return Objects.equals(data, objects.data);
     }
 
     @Override

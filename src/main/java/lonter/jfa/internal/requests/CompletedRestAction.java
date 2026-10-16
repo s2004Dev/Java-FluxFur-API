@@ -98,16 +98,14 @@ public class CompletedRestAction<T> implements AuditableRestAction<T> {
     @Override
     public T complete(boolean shouldQueue) throws RateLimitedException {
         if (error != null) {
-            if (error instanceof RateLimitedException) {
-                throw (RateLimitedException) error;
+          switch (error) {
+            case RateLimitedException rateLimitedException -> throw rateLimitedException;
+            case RuntimeException runtimeException -> throw runtimeException;
+            case Error error1 -> throw error1;
+            default -> {
             }
-            if (error instanceof RuntimeException) {
-                throw (RuntimeException) error;
-            }
-            if (error instanceof Error) {
-                throw (Error) error;
-            }
-            throw new IllegalStateException(error);
+          }
+          throw new IllegalStateException(error);
         }
         return value;
     }

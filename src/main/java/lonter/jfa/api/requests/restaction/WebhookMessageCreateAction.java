@@ -55,7 +55,7 @@ public interface WebhookMessageCreateAction<T>
      * For a {@link IReplyCallback#deferReply() deferred reply}, this is not supported. When a reply is deferred,
      * the very first message sent through the {@link InteractionHook}, inherits the ephemeral state of the initial reply.
      * To send an ephemeral deferred reply, you must use {@link IReplyCallback#deferReply(boolean) deferReply(true)} instead.
-     *
+     * <p>
      * <b>Note:</b> Your message can appear ephemeral in several cases:
      * <ul>
      *     <li>In guilds the bot is not a member of,

@@ -529,11 +529,10 @@ public interface Command extends ISnowflake, ICommandReference {
             if (obj == this) {
                 return true;
             }
-            if (!(obj instanceof Choice)) {
+            if (!(obj instanceof Choice other)) {
                 return false;
             }
-            Choice other = (Choice) obj;
-            return Objects.equals(other.name, name) && Objects.equals(other.stringValue, stringValue);
+          return Objects.equals(other.name, name) && Objects.equals(other.stringValue, stringValue);
         }
 
         @Override
@@ -807,11 +806,10 @@ public interface Command extends ISnowflake, ICommandReference {
             if (obj == this) {
                 return true;
             }
-            if (!(obj instanceof Option)) {
+            if (!(obj instanceof Option other)) {
                 return false;
             }
-            Option other = (Option) obj;
-            return Objects.equals(other.name, name)
+          return Objects.equals(other.name, name)
                     && Objects.equals(other.description, description)
                     && Objects.equals(other.choices, choices)
                     && Objects.equals(other.channelTypes, channelTypes)
@@ -930,11 +928,10 @@ public interface Command extends ISnowflake, ICommandReference {
             if (obj == this) {
                 return true;
             }
-            if (!(obj instanceof Subcommand)) {
+            if (!(obj instanceof Subcommand other)) {
                 return false;
             }
-            Subcommand other = (Subcommand) obj;
-            return Objects.equals(other.name, name)
+          return Objects.equals(other.name, name)
                     && Objects.equals(other.description, description)
                     && Objects.equals(other.options, options);
         }
@@ -1043,11 +1040,10 @@ public interface Command extends ISnowflake, ICommandReference {
             if (obj == this) {
                 return true;
             }
-            if (!(obj instanceof SubcommandGroup)) {
+            if (!(obj instanceof SubcommandGroup other)) {
                 return false;
             }
-            SubcommandGroup other = (SubcommandGroup) obj;
-            return Objects.equals(other.name, name)
+          return Objects.equals(other.name, name)
                     && Objects.equals(other.description, description)
                     && Objects.equals(other.subcommands, subcommands);
         }

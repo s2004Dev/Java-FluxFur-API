@@ -238,7 +238,7 @@ public interface IAutoCompleteCallback extends Interaction {
      */
     @NotNull
     @CheckReturnValue
-    default AutoCompleteCallbackAction replyChoiceLongs(@NotNull long... choices) {
+    default AutoCompleteCallbackAction replyChoiceLongs(long @NotNull ... choices) {
         return replyChoices(Arrays.stream(choices)
                 .mapToObj(it -> new Command.Choice(String.valueOf(it), it))
                 .collect(Collectors.toList()));
@@ -292,7 +292,7 @@ public interface IAutoCompleteCallback extends Interaction {
      */
     @NotNull
     @CheckReturnValue
-    default AutoCompleteCallbackAction replyChoiceDoubles(@NotNull double... choices) {
+    default AutoCompleteCallbackAction replyChoiceDoubles(double @NotNull ... choices) {
         return replyChoices(Arrays.stream(choices)
                 .mapToObj(it -> new Command.Choice(String.valueOf(it), it))
                 .collect(Collectors.toList()));

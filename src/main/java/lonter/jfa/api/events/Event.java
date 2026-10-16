@@ -92,9 +92,8 @@ public abstract class Event implements GenericEvent {
 
     @Override
     public String toString() {
-        if (this instanceof UpdateEvent<?, ?>) {
-            UpdateEvent<?, ?> event = (UpdateEvent<?, ?>) this;
-            return new EntityString(this)
+        if (this instanceof UpdateEvent<?, ?> event) {
+          return new EntityString(this)
                     .setType(event.getPropertyIdentifier())
                     .addMetadata(null, event.getOldValue() + " -> " + event.getNewValue())
                     .toString();

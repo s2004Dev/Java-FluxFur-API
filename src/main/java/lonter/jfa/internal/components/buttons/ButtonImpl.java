@@ -221,11 +221,10 @@ public class ButtonImpl extends AbstractComponentImpl
         if (obj == this) {
             return true;
         }
-        if (!(obj instanceof ButtonImpl)) {
+        if (!(obj instanceof ButtonImpl other)) {
             return false;
         }
-        ButtonImpl other = (ButtonImpl) obj;
-        return Objects.equals(other.customId, customId)
+      return Objects.equals(other.customId, customId)
                 && Objects.equals(other.label, label)
                 && Objects.equals(other.url, url)
                 && Objects.equals(other.sku, sku)

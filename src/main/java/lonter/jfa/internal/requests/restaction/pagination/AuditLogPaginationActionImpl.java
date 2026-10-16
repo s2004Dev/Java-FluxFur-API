@@ -135,7 +135,7 @@ public class AuditLogPaginationActionImpl extends PaginationActionImpl<AuditLogE
             if (this.useCache) {
                 this.cached.addAll(list);
             }
-            this.last = list.get(list.size() - 1);
+            this.last = list.getLast();
             this.lastKey = last.getIdLong();
         }
 

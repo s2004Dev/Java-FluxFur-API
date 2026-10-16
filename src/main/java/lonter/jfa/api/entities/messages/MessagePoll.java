@@ -64,7 +64,7 @@ public interface MessagePoll {
     /**
      * The poll answers.
      *
-     * <p>Each answer also has the current {@link Answer#getVotes() votes}.
+     * <p>Each answer also has the current {@link Answer#votes() votes}.
      * The votes might not be finalized and might be incorrect before the poll has expired,
      * see {@link #isFinalizedVotes()}.
      *
@@ -148,72 +148,64 @@ public interface MessagePoll {
     /**
      * One of the answers for a poll.
      *
-     * <p>Provides the current {@link #getVotes()} and whether you have voted for it.
+     * <p>Provides the current {@link #votes ()} and whether you have voted for it.
      */
-    class Answer {
-        private final long id;
-        private final String text;
-        private final EmojiUnion emoji;
-        private final int votes;
-        private final boolean selfVoted;
-
-        public Answer(long id, String text, EmojiUnion emoji, int votes, boolean selfVoted) {
-            this.id = id;
-            this.text = text;
-            this.emoji = emoji;
-            this.votes = votes;
-            this.selfVoted = selfVoted;
-        }
+        record Answer(long id, String text, EmojiUnion emoji, int votes, boolean selfVoted) {
 
         /**
          * The id of this answer.
          *
          * @return The answer id.
          */
-        public long getId() {
-            return id;
-        }
+            @Override
+            public long id() {
+                return id;
+            }
 
-        /**
-         * The text content of the answer.
-         *
-         * @return The answer label.
-         */
-        @NotNull
-        public String getText() {
-            return text;
-        }
+            /**
+             * The text content of the answer.
+             *
+             * @return The answer label.
+             */
+            @Override
+            @NotNull
+            public String text() {
+                return text;
+            }
 
-        /**
-         * The emoji assigned to this answer.
-         *
-         * @return {@link EmojiUnion}
-         */
-        @Nullable
-        public EmojiUnion getEmoji() {
-            return emoji;
-        }
+            /**
+             * The emoji assigned to this answer.
+             *
+             * @return {@link EmojiUnion}
+             */
+            @Override
+            @Nullable
+            public EmojiUnion emoji() {
+                return emoji;
+            }
 
-        /**
-         * The number of votes this answer has received so far.
-         *
-         * <p>This might not be {@link #isFinalizedVotes() finalized}.
-         *
-         * @return The current number of votes
-         */
-        public int getVotes() {
-            return votes;
-        }
+            /**
+             * The number of votes this answer has received so far.
+             *
+             * <p>This might not be {@link #isFinalizedVotes() finalized}.
+             *
+             * @return The current number of votes
+             */
+            @Override
+            public int votes() {
+                return votes;
+            }
 
-        /**
-         * Whether the answer was voted for by the currently logged in account.
-         *
-         * @return True, if the bot has voted for this.
-         */
-        public boolean isSelfVoted() {
-            return selfVoted;
+            /**
+             * Whether the answer was voted for by the currently logged in account.
+             *
+             * @return True, if the bot has voted for this.
+             */
+            @Override
+            public boolean selfVoted() {
+                return selfVoted;
+            }
         }
-    }
 
     /**
      * The poll layout.

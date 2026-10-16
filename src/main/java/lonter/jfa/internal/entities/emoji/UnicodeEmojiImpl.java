@@ -21,85 +21,73 @@ import lonter.jfa.api.utils.data.DataObject;
 import lonter.jfa.internal.utils.EncodingUtil;
 import lonter.jfa.internal.utils.EntityString;
 
-import java.util.Objects;
-
 import org.jetbrains.annotations.NotNull;
 
-public class UnicodeEmojiImpl implements UnicodeEmoji, EmojiUnion {
-    private final String name;
+public record UnicodeEmojiImpl(String name) implements UnicodeEmoji, EmojiUnion {
 
-    public UnicodeEmojiImpl(String name) {
-        this.name = name;
-    }
+  @NotNull
+  @Override
+  public String name() {
+    return name;
+  }
 
-    @NotNull
-    @Override
-    public String getName() {
-        return name;
-    }
+  @NotNull
+  @Override
+  public String getAsReactionCode() {
+    return name;
+  }
 
-    @NotNull
-    @Override
-    public String getAsReactionCode() {
-        return name;
-    }
+  @NotNull
+  @Override
+  public String getAsCodepoints() {
+    return EncodingUtil.encodeCodepoints(name);
+  }
 
-    @NotNull
-    @Override
-    public String getAsCodepoints() {
-        return EncodingUtil.encodeCodepoints(name);
-    }
+  @NotNull
+  @Override
+  public DataObject toData() {
+    return DataObject.empty().put("name", name);
+  }
 
-    @NotNull
-    @Override
-    public DataObject toData() {
-        return DataObject.empty().put("name", name);
+  @Override
+  public boolean equals(Object obj) {
+    if (obj == this) {
+      return true;
     }
+    if (!(obj instanceof UnicodeEmoji)) {
+      return false;
+    }
+    return name.equals(((UnicodeEmoji) obj).name());
+  }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(name);
-    }
+  @Override
+  public @NotNull String toString() {
+    return new EntityString(this)
+      .addMetadata("codepoints", getAsCodepoints())
+      .toString();
+  }
 
-    @Override
-    public boolean equals(Object obj) {
-        if (obj == this) {
-            return true;
-        }
-        if (!(obj instanceof UnicodeEmoji)) {
-            return false;
-        }
-        return name.equals(((UnicodeEmoji) obj).getName());
-    }
+  @NotNull
+  @Override
+  public UnicodeEmoji asUnicode() {
+    return this;
+  }
 
-    @Override
-    public String toString() {
-        return new EntityString(this)
-                .addMetadata("codepoints", getAsCodepoints())
-                .toString();
-    }
+  @NotNull
+  @Override
+  public CustomEmoji asCustom() {
+    throw new IllegalStateException("Cannot convert UnicodeEmoji into CustomEmoji!");
+  }
 
-    @NotNull
-    @Override
-    public UnicodeEmoji asUnicode() {
-        return this;
-    }
+  @NotNull
+  @Override
+  public RichCustomEmoji asRich() {
+    throw new IllegalStateException("Cannot convert UnicodeEmoji into RichCustomEmoji!");
+  }
 
-    @NotNull
-    @Override
-    public CustomEmoji asCustom() {
-        throw new IllegalStateException("Cannot convert UnicodeEmoji into CustomEmoji!");
-    }
-
-    @NotNull
-    @Override
-    public RichCustomEmoji asRich() {
-        throw new IllegalStateException("Cannot convert UnicodeEmoji into RichCustomEmoji!");
-    }
-
-    @NotNull
-    @Override
-    public ApplicationEmoji asApplication() {
-        throw new IllegalStateException("Cannot convert UnicodeEmoji to ApplicationEmoji!");
-    }
+  @NotNull
+  @Override
+  public ApplicationEmoji asApplication() {
+    throw new IllegalStateException("Cannot convert UnicodeEmoji to ApplicationEmoji!");
+  }
 }

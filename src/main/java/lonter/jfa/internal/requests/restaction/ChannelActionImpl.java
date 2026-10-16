@@ -448,7 +448,7 @@ public class ChannelActionImpl<T extends GuildChannel> extends AuditableRestActi
                     "default_reaction_emoji",
                     DataObject.empty().put("emoji_id", ((CustomEmoji) defaultReactionEmoji).getId()));
         } else if (defaultReactionEmoji instanceof UnicodeEmoji) {
-            object.put("default_reaction_emoji", DataObject.empty().put("emoji_name", defaultReactionEmoji.getName()));
+            object.put("default_reaction_emoji", DataObject.empty().put("emoji_name", defaultReactionEmoji.name()));
         }
         if (availableTags != null) {
             object.put("available_tags", DataArray.fromCollection(availableTags));

@@ -185,7 +185,7 @@ public abstract class PaginationActionImpl<T, M extends PaginationAction<T, M>> 
         if (cached.isEmpty()) {
             throw new NoSuchElementException("No entities have been retrieved yet.");
         }
-        return cached.get(0);
+        return cached.getFirst();
     }
 
     @NotNull

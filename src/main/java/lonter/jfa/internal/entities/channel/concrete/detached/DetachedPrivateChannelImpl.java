@@ -137,10 +137,9 @@ public class DetachedPrivateChannelImpl extends AbstractChannelImpl<DetachedPriv
         if (obj == this) {
             return true;
         }
-        if (!(obj instanceof DetachedPrivateChannelImpl)) {
+        if (!(obj instanceof DetachedPrivateChannelImpl impl)) {
             return false;
         }
-        DetachedPrivateChannelImpl impl = (DetachedPrivateChannelImpl) obj;
-        return impl.id == this.id;
+      return impl.id == this.id;
     }
 }

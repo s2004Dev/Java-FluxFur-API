@@ -110,11 +110,10 @@ public class SeparatorImpl extends AbstractComponentImpl
         if (o == this) {
             return true;
         }
-        if (!(o instanceof SeparatorImpl)) {
+        if (!(o instanceof SeparatorImpl separator)) {
             return false;
         }
-        SeparatorImpl separator = (SeparatorImpl) o;
-        return uniqueId == separator.uniqueId && isDivider == separator.isDivider && spacing == separator.spacing;
+      return uniqueId == separator.uniqueId && isDivider == separator.isDivider && spacing == separator.spacing;
     }
 
     @Override

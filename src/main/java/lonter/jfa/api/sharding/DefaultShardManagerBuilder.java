@@ -76,8 +76,8 @@ public class DefaultShardManagerBuilder {
     protected int maxReconnectDelay = 900;
     protected int largeThreshold = 250;
     protected int maxBufferSize = 2048;
-    protected int intents = -1;
-    protected String token = null;
+    protected int intents;
+    protected String token;
     protected IntFunction<Boolean> idleProvider = null;
     protected IntFunction<OnlineStatus> statusProvider = null;
     protected IntFunction<? extends Activity> activityProvider = null;
@@ -674,49 +674,9 @@ public class DefaultShardManagerBuilder {
         return disableCache(EnumSet.of(flag, flags));
     }
 
-    /**
-     * Configure the member caching policy.
-     * This will decide whether to cache a member (and its respective user).
-     * <br>All members are cached by default. If a guild is enabled for chunking, all members will be cached for it.
-     *
-     * <p>You can use this to define a custom caching policy that will greatly improve memory usage.
-     * <p>It is not recommended to disable {@link GatewayIntent#GUILD_MEMBERS GatewayIntent.GUILD_MEMBERS} when
-     * using {@link MemberCachePolicy#ALL MemberCachePolicy.ALL} as the members cannot be removed from cache by a leave event without this intent.
-     *
-     * <p><b>Example</b><br>
-     * {@snippet lang="java":
-     * public void configureCache(DefaultShardManagerBuilder builder) {
-     *     // Cache members who are in a voice channel
-     *     MemberCachePolicy policy = MemberCachePolicy.VOICE;
-     *     // Cache members who are in a voice channel
-     *     // AND are also online
-     *     policy = policy.and(MemberCachePolicy.ONLINE);
-     *     // Cache members who are in a voice channel
-     *     // AND are also online
-     *     // OR are the owner of the guild
-     *     policy = policy.or(MemberCachePolicy.OWNER);
-     *     // Cache members who have a role with the name "Moderator"
-     *     policy = (member) -> member.getRoles().stream().map(Role::getName).anyMatch("Moderator"::equals);
-     *
-     *     builder.setMemberCachePolicy(policy);
-     * }
-     * }
-     *
-     * @param  policy
-     *         The {@link MemberCachePolicy} or null to use default {@link MemberCachePolicy#ALL}
-     *
-     * @return The DefaultShardManagerBuilder instance. Useful for chaining.
-     *
-     * @see    MemberCachePolicy
-     * @see    #setEnabledIntents(Collection)
-     */
     @NotNull
     public DefaultShardManagerBuilder setMemberCachePolicy(@Nullable MemberCachePolicy policy) {
-        if (policy == null) {
-            this.memberCachePolicy = MemberCachePolicy.ALL;
-        } else {
-            this.memberCachePolicy = policy;
-        }
+      this.memberCachePolicy = Objects.requireNonNullElse(policy, MemberCachePolicy.ALL);
         return this;
     }
 
@@ -1371,7 +1331,7 @@ public class DefaultShardManagerBuilder {
      * @param  pool
      *         The thread-pool to use for executing http requests
      * @param  automaticShutdown
-     *         Whether {@link lonter.jfa.api.JFA#shutdown()} should automatically shutdown this pool
+     *         Whether {@link lonter.jfa.api.JFA#shutdown()} should automatically shut down this pool
      *
      * @return The DefaultShardManagerBuilder instance. Useful for chaining.
      */
@@ -1733,7 +1693,7 @@ public class DefaultShardManagerBuilder {
      * @return The DefaultShardManagerBuilder instance. Useful for chaining.
      */
     @NotNull
-    public DefaultShardManagerBuilder setShards(@NotNull int... shardIds) {
+    public DefaultShardManagerBuilder setShards(int @NotNull ... shardIds) {
         Checks.notNull(shardIds, "shardIds");
         for (int id : shardIds) {
             Checks.notNegative(id, "minShardId");
@@ -2141,7 +2101,7 @@ public class DefaultShardManagerBuilder {
      */
     @NotNull
     public DefaultShardManagerBuilder setLargeThreshold(int threshold) {
-        this.largeThreshold = Math.max(50, Math.min(250, threshold)); // enforce 50 <= t <= 250
+        this.largeThreshold = Math.clamp(threshold, 50, 250); // enforce 50 <= t <= 250
         return this;
     }
 
@@ -2323,24 +2283,21 @@ public class DefaultShardManagerBuilder {
         }
     }
 
-    // Avoid having multiple anonymous classes
-    private static class ThreadPoolProviderImpl<T extends ExecutorService> implements ThreadPoolProvider<T> {
-        private final boolean autoShutdown;
-        private final T pool;
-
-        public ThreadPoolProviderImpl(T pool, boolean autoShutdown) {
-            this.autoShutdown = autoShutdown;
-            this.pool = pool;
-        }
-
-        @Override
-        public T provide(int shardId) {
-            return pool;
-        }
-
-        @Override
-        public boolean shouldShutdownAutomatically(int shardId) {
-            return autoShutdown;
-        }
+  // Avoid having multiple anonymous classes
+  private record ThreadPoolProviderImpl<T extends ExecutorService>(boolean autoShutdown,
+                                                                   T pool) implements ThreadPoolProvider<T> {
+    public ThreadPoolProviderImpl(T pool, boolean autoShutdown) {
+      this(autoShutdown, pool);
     }
+
+    @Override
+    public T provide(int shardId) {
+      return pool;
+    }
+
+    @Override
+    public boolean shouldShutdownAutomatically(int shardId) {
+      return autoShutdown;
+    }
+  }
 }

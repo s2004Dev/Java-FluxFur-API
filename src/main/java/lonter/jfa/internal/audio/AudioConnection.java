@@ -407,19 +407,15 @@ public class AudioConnection {
                             }
                             if (receiveHandler.canReceiveCombined()
                                     && receiveHandler.includeUserInCombinedAudio(user)) {
-                                Queue<AudioData> queue = combinedQueue.get(user);
-                                if (queue == null) {
-                                    queue = new ConcurrentLinkedQueue<>();
-                                    combinedQueue.put(user, queue);
-                                }
-                                queue.add(new AudioData(decodedAudio));
+                              Queue<AudioData> queue = combinedQueue.computeIfAbsent(user, k -> new ConcurrentLinkedQueue<>());
+                              queue.add(new AudioData(decodedAudio));
                             }
                         } else {
                             couldReceive = false;
                         }
                     } catch (SocketTimeoutException e) {
-                        // Ignore. We set a low timeout so that we wont block forever so we can
-                        // properly shutdown the loop.
+                        // Ignore. We set a low timeout so that we won't block forever so we can
+                        // properly shut down the loop.
                     } catch (SocketException e) {
                         // The socket was closed while we were listening for the next packet.
                         // This is expected. Ignore the exception.
@@ -567,8 +563,7 @@ public class AudioConnection {
         webSocket.send(VoiceCode.USER_SPEAKING_UPDATE, obj);
     }
 
-    @Override
-    @SuppressWarnings("deprecation") /* If this was in JDK9 we would be using java.lang.ref.Cleaner instead! */
+    @Override /* If this was in JDK9 we would be using java.lang.ref.Cleaner instead! */
     protected void finalize() {
         shutdown();
     }

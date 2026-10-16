@@ -44,36 +44,36 @@ public class ClassWalker implements Iterable<Class<?>> {
     @NotNull
     @Override
     public Iterator<Class<?>> iterator() {
-        return new Iterator<Class<?>>() {
-            private final Set<Class<?>> done = new HashSet<>();
-            private final Deque<Class<?>> work = new LinkedList<>();
+        return new Iterator<>() {
+          private final Set<Class<?>> done = new HashSet<>();
+          private final Deque<Class<?>> work = new LinkedList<>();
 
-            {
-                work.addLast(clazz);
-                done.add(end);
+          {
+            work.addLast(clazz);
+            done.add(end);
+          }
+
+          @Override
+          public boolean hasNext() {
+            return !work.isEmpty();
+          }
+
+          @Override
+          public Class<?> next() {
+            Class<?> current = work.removeFirst();
+            done.add(current);
+            for (Class<?> parent : current.getInterfaces()) {
+              if (!done.contains(parent)) {
+                work.addLast(parent);
+              }
             }
 
-            @Override
-            public boolean hasNext() {
-                return !work.isEmpty();
+            Class<?> parent = current.getSuperclass();
+            if (parent != null && !done.contains(parent)) {
+              work.addLast(parent);
             }
-
-            @Override
-            public Class<?> next() {
-                Class<?> current = work.removeFirst();
-                done.add(current);
-                for (Class<?> parent : current.getInterfaces()) {
-                    if (!done.contains(parent)) {
-                        work.addLast(parent);
-                    }
-                }
-
-                Class<?> parent = current.getSuperclass();
-                if (parent != null && !done.contains(parent)) {
-                    work.addLast(parent);
-                }
-                return current;
-            }
+            return current;
+          }
         };
     }
 }

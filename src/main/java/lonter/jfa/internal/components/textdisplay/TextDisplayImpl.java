@@ -98,11 +98,10 @@ public class TextDisplayImpl extends AbstractComponentImpl
         if (o == this) {
             return true;
         }
-        if (!(o instanceof TextDisplayImpl)) {
+        if (!(o instanceof TextDisplayImpl that)) {
             return false;
         }
-        TextDisplayImpl that = (TextDisplayImpl) o;
-        return uniqueId == that.uniqueId && Objects.equals(content, that.content);
+      return uniqueId == that.uniqueId && Objects.equals(content, that.content);
     }
 
     @Override

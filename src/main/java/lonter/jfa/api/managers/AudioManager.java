@@ -86,7 +86,7 @@ public interface AudioManager {
     /**
      * The {@link SpeakingMode} that should be used when sending audio via
      * the provided {@link AudioSendHandler} from {@link #setSendingHandler(AudioSendHandler)}.
-     * By default this will use {@link SpeakingMode#VOICE}.
+     * By default, this will use {@link SpeakingMode#VOICE}.
      * <br>Example: {@code EnumSet.of(SpeakingMode.PRIORITY_SPEAKER, SpeakingMode.VOICE)}
      *
      * @param  mode
@@ -106,7 +106,7 @@ public interface AudioManager {
     /**
      * The {@link SpeakingMode} that should be used when sending audio via
      * the provided {@link AudioSendHandler} from {@link #setSendingHandler(AudioSendHandler)}.
-     * By default this will use {@link SpeakingMode#VOICE}.
+     * By default, this will use {@link SpeakingMode#VOICE}.
      *
      * @param  mode
      *         The speaking modes
@@ -127,7 +127,7 @@ public interface AudioManager {
     /**
      * The {@link SpeakingMode} that should be used when sending audio via
      * the provided {@link AudioSendHandler} from {@link #setSendingHandler(AudioSendHandler)}.
-     * By default this will use {@link SpeakingMode#VOICE}.
+     * By default, this will use {@link SpeakingMode#VOICE}.
      *
      * @return The current speaking mode, represented in an {@link EnumSet}
      *
@@ -178,7 +178,7 @@ public interface AudioManager {
      * Sets the amount of time, in milliseconds, that will be used as the timeout when waiting for the audio connection
      * to successfully connect. The default value is 10 second (10,000 milliseconds).
      * <br><b>Note</b>: If you set this value to 0, you can remove timeout functionality and JFA will wait FOREVER for the connection
-     * to be established. This is no advised as it is possible that the connection may never be established.
+     * to be established. This is not advised as it is possible that the connection may never be established.
      *
      * @param timeout
      *        The amount of time, in milliseconds, that should be waited when waiting for the audio connection
@@ -245,7 +245,7 @@ public interface AudioManager {
 
     /**
      * Sets the {@link lonter.jfa.api.audio.hooks.ConnectionListener ConnectionListener} for this AudioManager.
-     * It will be informed about meta data of any audio connection established through this AudioManager.
+     * It will be informed about metadata of any audio connection established through this AudioManager.
      * Further information can be found in the {@link lonter.jfa.api.audio.hooks.ConnectionListener ConnectionListener} documentation!
      *
      * @param listener

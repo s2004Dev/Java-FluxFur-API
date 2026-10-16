@@ -252,11 +252,10 @@ public class AutoModRuleImpl implements AutoModRule {
         if (obj == this) {
             return true;
         }
-        if (!(obj instanceof AutoModRuleImpl)) {
+        if (!(obj instanceof AutoModRuleImpl oRule)) {
             return false;
         }
-        AutoModRuleImpl oRule = (AutoModRuleImpl) obj;
-        return this.id == oRule.id;
+      return this.id == oRule.id;
     }
 
     @Override

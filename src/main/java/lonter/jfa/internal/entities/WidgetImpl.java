@@ -30,7 +30,6 @@ import lonter.jfa.api.utils.data.DataObject;
 import lonter.jfa.internal.utils.EntityString;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
@@ -89,14 +88,14 @@ public class WidgetImpl implements Widget {
             {
                 VoiceChannelImpl channel = channels.get(memberJson.getLong("channel_id"));
                 member.setVoiceState(new VoiceStateImpl(
-                        channel,
-                        memberJson.getBoolean("mute"),
-                        memberJson.getBoolean("deaf"),
-                        memberJson.getBoolean("suppress"),
-                        memberJson.getBoolean("self_mute"),
-                        memberJson.getBoolean("self_deaf"),
-                        member,
-                        this));
+                  channel,
+                  memberJson.getBoolean("mute"),
+                  memberJson.getBoolean("deaf"),
+                  memberJson.getBoolean("suppress"),
+                  memberJson.getBoolean("self_mute"),
+                  memberJson.getBoolean("self_deaf"),
+                  member,
+                  this));
                 channel.addMember(member);
             }
             members.put(member.getIdLong(), member);
@@ -134,7 +133,7 @@ public class WidgetImpl implements Widget {
     public List<VoiceChannel> getVoiceChannels() {
         checkAvailable();
 
-        return Collections.unmodifiableList(new ArrayList<>(channels.valueCollection()));
+        return List.copyOf(channels.valueCollection());
     }
 
     @Override
@@ -158,7 +157,7 @@ public class WidgetImpl implements Widget {
     public List<Member> getMembers() {
         checkAvailable();
 
-        return Collections.unmodifiableList(new ArrayList<>(members.valueCollection()));
+        return List.copyOf(members.valueCollection());
     }
 
     @Override
@@ -184,11 +183,10 @@ public class WidgetImpl implements Widget {
 
     @Override
     public boolean equals(Object obj) {
-        if (!(obj instanceof WidgetImpl)) {
+        if (!(obj instanceof WidgetImpl oWidget)) {
             return false;
         }
-        WidgetImpl oWidget = (WidgetImpl) obj;
-        return this == oWidget || this.id == oWidget.getIdLong();
+      return this == oWidget || this.id == oWidget.getIdLong();
     }
 
     @Override
@@ -385,11 +383,10 @@ public class WidgetImpl implements Widget {
 
         @Override
         public boolean equals(Object obj) {
-            if (!(obj instanceof Member)) {
+            if (!(obj instanceof Member oMember)) {
                 return false;
             }
-            Member oMember = (Member) obj;
-            return this == oMember
+          return this == oMember
                     || (this.id == oMember.getIdLong()
                             && this.widget.getIdLong() == oMember.getWidget().getIdLong());
         }
@@ -400,7 +397,7 @@ public class WidgetImpl implements Widget {
         }
     }
 
-    public class VoiceChannelImpl implements VoiceChannel {
+    public static class VoiceChannelImpl implements VoiceChannel {
         private final int position;
         private final long id;
         private final String name;
@@ -454,11 +451,10 @@ public class WidgetImpl implements Widget {
 
         @Override
         public boolean equals(Object obj) {
-            if (!(obj instanceof VoiceChannel)) {
+            if (!(obj instanceof VoiceChannel oVChannel)) {
                 return false;
             }
-            VoiceChannel oVChannel = (VoiceChannel) obj;
-            return this == oVChannel || this.id == oVChannel.getIdLong();
+          return this == oVChannel || this.id == oVChannel.getIdLong();
         }
 
         @Override
@@ -467,7 +463,7 @@ public class WidgetImpl implements Widget {
         }
     }
 
-    public class VoiceStateImpl implements VoiceState {
+    public static class VoiceStateImpl implements VoiceState {
         private final VoiceChannel channel;
         private final boolean muted;
         private final boolean deafened;
@@ -565,11 +561,10 @@ public class WidgetImpl implements Widget {
 
         @Override
         public boolean equals(Object obj) {
-            if (!(obj instanceof VoiceState)) {
+            if (!(obj instanceof VoiceState oState)) {
                 return false;
             }
-            VoiceState oState = (VoiceState) obj;
-            return this == oState || (this.member.equals(oState.getMember()) && this.widget.equals(oState.getWidget()));
+          return this == oState || (this.member.equals(oState.getMember()) && this.widget.equals(oState.getWidget()));
         }
 
         @Override

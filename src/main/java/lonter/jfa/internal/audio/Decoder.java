@@ -122,8 +122,7 @@ public class Decoder {
         }
     }
 
-    @Override
-    @SuppressWarnings("deprecation") /* If this was in JDK9 we would be using java.lang.ref.Cleaner instead! */
+    @Override /* If this was in JDK9 we would be using java.lang.ref.Cleaner instead! */
     protected void finalize() throws Throwable {
         super.finalize();
         close();

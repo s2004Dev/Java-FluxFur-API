@@ -83,7 +83,7 @@ public interface TemplateManager extends Manager<TemplateManager> {
     @NotNull
     @Override
     @CheckReturnValue
-    TemplateManager reset(@NotNull long... fields);
+    TemplateManager reset(long @NotNull ... fields);
 
     /**
      * Sets the name of this {@link Template Template}.

@@ -117,11 +117,10 @@ public class IntegrationPrivilege implements ISnowflake {
         if (obj == this) {
             return true;
         }
-        if (!(obj instanceof IntegrationPrivilege)) {
+        if (!(obj instanceof IntegrationPrivilege other)) {
             return false;
         }
-        IntegrationPrivilege other = (IntegrationPrivilege) obj;
-        return other.id == id && other.enabled == enabled;
+      return other.id == id && other.enabled == enabled;
     }
 
     @Override

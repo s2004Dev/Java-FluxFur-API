@@ -73,9 +73,8 @@ public class MessageHistory {
         Checks.notNull(channel, "Channel");
         this.channel = channel;
 
-        if (channel instanceof GuildChannel) {
-            GuildChannel guildChannel = (GuildChannel) channel;
-            Member selfMember = guildChannel.getGuild().getSelfMember();
+        if (channel instanceof GuildChannel guildChannel) {
+          Member selfMember = guildChannel.getGuild().getSelfMember();
             Checks.checkAccess(selfMember, guildChannel);
             if (!selfMember.hasPermission(guildChannel, Permission.MESSAGE_HISTORY)) {
                 throw new InsufficientPermissionException(guildChannel, Permission.MESSAGE_HISTORY);
@@ -313,7 +312,7 @@ public class MessageHistory {
         } else if (size == 1) {
             return Collections.singletonList(history.getValue(0));
         }
-        return Collections.unmodifiableList(new ArrayList<>(history.values()));
+        return List.copyOf(history.values());
     }
 
     /**
@@ -524,9 +523,8 @@ public class MessageHistory {
     private static void checkArguments(MessageChannel channel, String messageId) {
         Checks.isSnowflake(messageId, "Message ID");
         Checks.notNull(channel, "Channel");
-        if (channel instanceof GuildChannel) {
-            GuildChannel guildChannel = (GuildChannel) channel;
-            Member selfMember = guildChannel.getGuild().getSelfMember();
+        if (channel instanceof GuildChannel guildChannel) {
+          Member selfMember = guildChannel.getGuild().getSelfMember();
             Checks.checkAccess(selfMember, guildChannel);
             if (!selfMember.hasPermission(guildChannel, Permission.MESSAGE_HISTORY)) {
                 throw new InsufficientPermissionException(guildChannel, Permission.MESSAGE_HISTORY);

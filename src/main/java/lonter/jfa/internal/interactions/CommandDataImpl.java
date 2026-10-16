@@ -432,7 +432,7 @@ public class CommandDataImpl implements SlashCommandData {
             return;
         }
 
-        SerializableData last = options.get(options.size() - 1);
+        SerializableData last = options.getLast();
         allowOption = last instanceof OptionData;
         allowRequired = allowOption && ((OptionData) last).isRequired();
         allowSubcommands = !allowOption;

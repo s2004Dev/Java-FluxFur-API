@@ -74,7 +74,7 @@ public class SortedChannelCacheViewImpl<T extends Channel & Comparable<? super T
     @NotNull
     @Override
     public List<T> getElementsByName(@NotNull String name) {
-        List<T> elements = super.getElementsByName(name);
+        List<T> elements = new ArrayList<>(super.getElementsByName(name));
         elements.sort(Comparator.naturalOrder());
         return elements;
     }
@@ -85,7 +85,7 @@ public class SortedChannelCacheViewImpl<T extends Channel & Comparable<? super T
         try (UnlockHook hook = readLock()) {
             return caches.values().stream()
                     .flatMap(cache -> cache.valueCollection().stream())
-                    .collect(Collectors.toList())
+                    .toList()
                     .stream();
         }
     }

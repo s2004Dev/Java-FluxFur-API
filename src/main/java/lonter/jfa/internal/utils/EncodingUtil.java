@@ -16,17 +16,13 @@
 
 package lonter.jfa.internal.utils;
 
-import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.stream.Collectors;
 
 public class EncodingUtil {
     public static String encodeUTF8(String chars) {
-        try {
-            return URLEncoder.encode(chars, "UTF-8");
-        } catch (UnsupportedEncodingException e) {
-            throw new AssertionError(e); // thanks JDK 1.4
-        }
+      return URLEncoder.encode(chars, StandardCharsets.UTF_8);
     }
 
     public static String encodeCodepointsUTF8(String input) {

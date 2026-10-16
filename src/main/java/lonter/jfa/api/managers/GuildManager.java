@@ -145,7 +145,7 @@ public interface GuildManager extends Manager<GuildManager> {
     @NotNull
     @Override
     @CheckReturnValue
-    GuildManager reset(@NotNull long... fields);
+    GuildManager reset(long @NotNull ... fields);
 
     /**
      * The {@link lonter.jfa.api.entities.Guild Guild} object of this Manager.

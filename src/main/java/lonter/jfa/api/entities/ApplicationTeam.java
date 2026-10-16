@@ -29,7 +29,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 /**
- * Meta-data for the team of an application.
+ * Metadata for the team of an application.
  *
  * @see ApplicationInfo#getTeam()
  */

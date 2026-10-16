@@ -215,13 +215,14 @@ public class ReceivedMessage implements Message {
                     && !isBotOwnedWebhookMessage) {
                 didContentIntentWarning = true;
                 JFAImpl.LOG.warn(
-                        "Attempting to access message content without GatewayIntent.MESSAGE_CONTENT.\n"
-                                + "Fluxer now requires to explicitly enable access to this using the MESSAGE_CONTENT intent.\n"
-                                + "Useful resources to learn more:\n"
-                                + "\t- https://support-dev.fluxer.com/hc/en-us/articles/4404772028055-Message-Content-Privileged-Intent-FAQ\n"
-                                + "\t- https://jfa.wiki/using-jfa/gateway-intents-and-member-cache-policy/\n"
-                                + "\t- https://jfa.wiki/using-jfa/troubleshooting/#cannot-get-message-content-attempting-to-access-message-content-without-gatewayintent\n"
-                                + "Or suppress this warning if this is intentional with Message.suppressContentIntentWarning()");
+                  """
+                    Attempting to access message content without GatewayIntent.MESSAGE_CONTENT.
+                    Fluxer now requires to explicitly enable access to this using the MESSAGE_CONTENT intent.
+                    Useful resources to learn more:
+                    \t- https://support-dev.fluxer.com/hc/en-us/articles/4404772028055-Message-Content-Privileged-Intent-FAQ
+                    \t- https://jfa.wiki/using-jfa/gateway-intents-and-member-cache-policy/
+                    \t- https://jfa.wiki/using-jfa/troubleshooting/#cannot-get-message-content-attempting-to-access-message-content-without-gatewayintent
+                    Or suppress this warning if this is intentional with Message.suppressContentIntentWarning()""");
             }
         }
     }
@@ -486,10 +487,7 @@ public class ReceivedMessage implements Message {
             return strippedContent;
         }
         synchronized (mutex) {
-            if (strippedContent != null) {
-                return strippedContent;
-            }
-            return strippedContent = MarkdownSanitizer.sanitize(getContentDisplay());
+          return Objects.requireNonNullElseGet(strippedContent, () -> strippedContent = MarkdownSanitizer.sanitize(getContentDisplay()));
         }
     }
 
@@ -515,7 +513,7 @@ public class ReceivedMessage implements Message {
                 tmp = tmp.replaceAll("<@!?" + Pattern.quote(user.getId()) + '>', '@' + Matcher.quoteReplacement(name));
             }
             for (CustomEmoji emoji : mentions.getCustomEmojis()) {
-                tmp = tmp.replace(emoji.getAsMention(), ":" + emoji.getName() + ":");
+                tmp = tmp.replace(emoji.getAsMention(), ":" + emoji.name() + ":");
             }
             for (GuildChannel mentionedChannel : mentions.getChannels()) {
                 tmp = tmp.replace(mentionedChannel.getAsMention(), '#' + mentionedChannel.getName());
@@ -856,9 +854,8 @@ public class ReceivedMessage implements Message {
             throw new IllegalStateException("Cannot delete ephemeral messages.");
         }
 
-        if (channel instanceof GuildMessageChannel && !isSelfAuthored) {
-            GuildMessageChannel gChan = (GuildMessageChannel) channel;
-            Member sMember = getGuild().getSelfMember();
+        if (channel instanceof GuildMessageChannel gChan && !isSelfAuthored) {
+          Member sMember = getGuild().getSelfMember();
             Checks.checkAccess(sMember, gChan);
             if (!sMember.hasPermission(gChan, Permission.MESSAGE_MANAGE)) {
                 throw new InsufficientPermissionException(gChan, Permission.MESSAGE_MANAGE);
@@ -931,11 +928,10 @@ public class ReceivedMessage implements Message {
         }
 
         MessageChannelUnion channel = getChannel();
-        if (!(channel instanceof NewsChannel)) {
+        if (!(channel instanceof NewsChannel newsChannel)) {
             throw new IllegalStateException("This message was not sent in a news channel");
         }
-        NewsChannel newsChannel = (NewsChannel) channel;
-        Checks.checkAccess(getGuild().getSelfMember(), newsChannel);
+      Checks.checkAccess(getGuild().getSelfMember(), newsChannel);
         if (!getAuthor().equals(getJFA().getSelfUser())
                 && !getGuild().getSelfMember().hasPermission(newsChannel, Permission.MESSAGE_MANAGE)) {
             throw new InsufficientPermissionException(newsChannel, Permission.MESSAGE_MANAGE);
@@ -981,7 +977,7 @@ public class ReceivedMessage implements Message {
     }
 
     @Override
-    public ThreadChannelAction createThreadChannel(@NotNull String name) {
+    public @NotNull ThreadChannelAction createThreadChannel(@NotNull String name) {
         return getGuildChannel().asThreadContainer().createThreadChannel(name, this.getIdLong());
     }
 
@@ -990,11 +986,10 @@ public class ReceivedMessage implements Message {
         if (o == this) {
             return true;
         }
-        if (!(o instanceof ReceivedMessage)) {
+        if (!(o instanceof ReceivedMessage oMsg)) {
             return false;
         }
-        ReceivedMessage oMsg = (ReceivedMessage) o;
-        return this.id == oMsg.id;
+      return this.id == oMsg.id;
     }
 
     @Override
@@ -1003,7 +998,6 @@ public class ReceivedMessage implements Message {
     }
 
     @Override
-    @SuppressWarnings("deprecation")
     public String toString() {
         return new EntityString(this)
                 .addMetadata("author", author.getDiscriminator().equals("0000") ? author.getName() : author.getAsTag())

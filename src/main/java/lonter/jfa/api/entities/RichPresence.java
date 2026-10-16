@@ -180,11 +180,10 @@ public interface RichPresence extends Activity {
 
         @Override
         public boolean equals(Object obj) {
-            if (!(obj instanceof Image)) {
+            if (!(obj instanceof Image i)) {
                 return false;
             }
-            Image i = (Image) obj;
-            return Objects.equals(key, i.key) && Objects.equals(text, i.text);
+          return Objects.equals(key, i.key) && Objects.equals(text, i.text);
         }
 
         @Override
@@ -196,66 +195,55 @@ public interface RichPresence extends Activity {
     /**
      * Holds information on a player's party
      */
-    class Party {
-        protected final String id;
-        protected final long size;
-        protected final long max;
-
-        public Party(String id, long size, long max) {
-            this.id = id;
-            this.size = size;
-            this.max = max;
-        }
+        record Party(String id, long size, long max) {
 
         /**
          * ID for this party, relevant to the game.
          *
          * @return The ID for this party, or {@code null} if unset
          */
-        @Nullable
-        public String getId() {
-            return id;
-        }
-
-        /**
-         * The current size of this party, or {@code 0} if unset
-         *
-         * @return The current size of this party, or {@code 0} if unset
-         */
-        public long getSize() {
-            return size;
-        }
-
-        /**
-         * The maximum size of this party, or {@code 0} if unset
-         *
-         * @return The maximum size of this party, or {@code 0} if unset
-         */
-        public long getMax() {
-            return max;
-        }
-
-        @Override
-        public String toString() {
-            return new EntityString(this)
-                    .addMetadata("id", getId())
-                    .addMetadata("size", getSize())
-                    .addMetadata("max", getMax())
-                    .toString();
-        }
-
-        @Override
-        public boolean equals(Object obj) {
-            if (!(obj instanceof Party)) {
-                return false;
+            @Override
+            @Nullable
+            public String id() {
+                return id;
             }
-            Party p = (Party) obj;
-            return size == p.size && max == p.max && Objects.equals(id, p.id);
-        }
 
-        @Override
-        public int hashCode() {
-            return Objects.hash(id, size, max);
-        }
+            /**
+             * The current size of this party, or {@code 0} if unset
+             *
+             * @return The current size of this party, or {@code 0} if unset
+             */
+            @Override
+            public long size() {
+                return size;
+            }
+
+            /**
+             * The maximum size of this party, or {@code 0} if unset
+             *
+             * @return The maximum size of this party, or {@code 0} if unset
+             */
+            @Override
+            public long max() {
+                return max;
+            }
+
+            @Override
+            public @NotNull String toString() {
+                return new EntityString(this)
+                  .addMetadata("id", id())
+                  .addMetadata("size", size())
+                  .addMetadata("max", max())
+                  .toString();
+            }
+
+            @Override
+            public boolean equals(Object obj) {
+                if (!(obj instanceof Party(String id1, long size1, long max1))) {
+                    return false;
+                }
+              return size == size1 && max == max1 && Objects.equals(id, id1);
+            }
+
     }
 }

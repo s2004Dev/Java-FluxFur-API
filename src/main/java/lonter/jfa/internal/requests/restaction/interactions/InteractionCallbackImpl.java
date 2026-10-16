@@ -22,6 +22,7 @@ import lonter.jfa.api.requests.restaction.interactions.InteractionCallbackAction
 import lonter.jfa.internal.interactions.InteractionImpl;
 import lonter.jfa.internal.requests.RestActionImpl;
 
+import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 

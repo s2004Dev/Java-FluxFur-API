@@ -29,7 +29,7 @@ import org.jetbrains.annotations.NotNull;
  * Utility to strategically split strings.
  *
  * <p><b>Example</b>
- *
+ * <p>
  * {@snippet lang="java":
  * // Given some arbitrary input string
  * String input = "Hello World";
@@ -47,7 +47,7 @@ import org.jetbrains.annotations.NotNull;
  * }
  *
  * <p>In a more applied use-case, you can also define a smaller limit so it can fit into codeblocks of a message:
- *
+ * <p>
  * {@snippet lang="java":
  * public List<String> getRoleNames(Guild guild)
  * {

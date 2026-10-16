@@ -225,11 +225,10 @@ public class ModalMapping {
         if (this == o) {
             return true;
         }
-        if (!(o instanceof ModalMapping)) {
+        if (!(o instanceof ModalMapping that)) {
             return false;
         }
-        ModalMapping that = (ModalMapping) o;
-        return type == that.type
+      return type == that.type
                 && Objects.equals(customId, that.customId)
                 && Objects.equals(uniqueId, that.uniqueId)
                 && Objects.equals(value, that.value);

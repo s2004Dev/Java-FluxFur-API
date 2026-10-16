@@ -106,8 +106,7 @@ public interface StringSelectMenu extends SelectMenu {
     @CheckReturnValue
     @Override
     default Builder createCopy() {
-        //noinspection ConstantConditions
-        Builder builder = create(getCustomId());
+      Builder builder = create(getCustomId());
         builder.setRequiredRange(getMinValues(), getMaxValues());
         builder.setPlaceholder(getPlaceholder());
         builder.addOptions(getOptions());

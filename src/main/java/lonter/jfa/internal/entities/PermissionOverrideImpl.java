@@ -169,11 +169,10 @@ public class PermissionOverrideImpl implements PermissionOverride {
         if (o == this) {
             return true;
         }
-        if (!(o instanceof PermissionOverrideImpl)) {
+        if (!(o instanceof PermissionOverrideImpl oPerm)) {
             return false;
         }
-        PermissionOverrideImpl oPerm = (PermissionOverrideImpl) o;
-        return id == oPerm.id && this.channel.getIdLong() == oPerm.channel.getIdLong();
+      return id == oPerm.id && this.channel.getIdLong() == oPerm.channel.getIdLong();
     }
 
     @Override

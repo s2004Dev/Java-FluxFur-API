@@ -158,18 +158,10 @@ public class OptionMapping {
      * @return The long value
      */
     public long getAsLong() {
-        switch (type) {
-            default:
-                throw new IllegalStateException("Cannot convert option of type " + type + " to long");
-            case STRING:
-            case MENTIONABLE:
-            case CHANNEL:
-            case ROLE:
-            case USER:
-            case INTEGER:
-            case ATTACHMENT:
-                return data.getLong("value");
-        }
+      return switch (type) {
+        case STRING, MENTIONABLE, CHANNEL, ROLE, USER, INTEGER, ATTACHMENT -> data.getLong("value");
+        default -> throw new IllegalStateException("Cannot convert option of type " + type + " to long");
+      };
     }
 
     /**
@@ -202,14 +194,10 @@ public class OptionMapping {
      * @return The double value
      */
     public double getAsDouble() {
-        switch (type) {
-            default:
-                throw new IllegalStateException("Cannot convert option of type " + type + " to double");
-            case STRING:
-            case INTEGER:
-            case NUMBER:
-                return data.getDouble("value");
-        }
+      return switch (type) {
+        case STRING, INTEGER, NUMBER -> data.getDouble("value");
+        default -> throw new IllegalStateException("Cannot convert option of type " + type + " to double");
+      };
     }
 
     /**
@@ -351,10 +339,9 @@ public class OptionMapping {
         if (obj == this) {
             return true;
         }
-        if (!(obj instanceof OptionMapping)) {
+        if (!(obj instanceof OptionMapping data)) {
             return false;
         }
-        OptionMapping data = (OptionMapping) obj;
-        return getType() == data.getType() && getName().equals(data.getName());
+      return getType() == data.getType() && getName().equals(data.getName());
     }
 }

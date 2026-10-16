@@ -256,7 +256,6 @@ public class ChannelCacheViewImpl<T extends Channel> extends ReadWriteLockCache<
 
         @NotNull
         @Override
-        @SuppressWarnings("unchecked")
         public ClosableIterator<C> lockedIterator() {
             ReentrantReadWriteLock.ReadLock readLock = lock.readLock();
             MiscUtil.tryLock(readLock);

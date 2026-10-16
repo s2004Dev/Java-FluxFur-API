@@ -140,13 +140,10 @@ public enum ChannelType {
      * @return True, if channels of this type support audio
      */
     public boolean isAudio() {
-        switch (this) {
-            case VOICE:
-            case STAGE:
-                return true;
-            default:
-                return false;
-        }
+      return switch (this) {
+        case VOICE, STAGE -> true;
+        default -> false;
+      };
     }
 
     /**
@@ -155,17 +152,10 @@ public enum ChannelType {
      * @return True, if channels of this type support messages
      */
     public boolean isMessage() {
-        switch (this) {
-            case TEXT:
-            case VOICE:
-            case STAGE:
-            case NEWS:
-            case PRIVATE:
-            case GROUP:
-                return true;
-            default:
-                return isThread();
-        }
+      return switch (this) {
+        case TEXT, VOICE, STAGE, NEWS, PRIVATE, GROUP -> true;
+        default -> isThread();
+      };
     }
 
     /**
@@ -175,14 +165,10 @@ public enum ChannelType {
      * @return True, if channels of this type are {@link ThreadChannel ThreadChannel}
      */
     public boolean isThread() {
-        switch (this) {
-            case GUILD_NEWS_THREAD:
-            case GUILD_PUBLIC_THREAD:
-            case GUILD_PRIVATE_THREAD:
-                return true;
-            default:
-                return false;
-        }
+      return switch (this) {
+        case GUILD_NEWS_THREAD, GUILD_PUBLIC_THREAD, GUILD_PRIVATE_THREAD -> true;
+        default -> false;
+      };
     }
 
     /**

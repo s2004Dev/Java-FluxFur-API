@@ -82,7 +82,7 @@ public abstract class ManagerBase<M extends Manager<M>> extends AuditableRestAct
     @NotNull
     @Override
     @SuppressWarnings("unchecked")
-    public M reset(@NotNull long... fields) {
+    public M reset(long @NotNull ... fields) {
         Checks.notNull(fields, "Fields");
         // trivial case
         if (fields.length == 0) {

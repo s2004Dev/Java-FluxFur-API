@@ -27,7 +27,7 @@ public class UserAudio {
     protected User user;
     protected short[] audioData;
 
-    public UserAudio(@NotNull User user, @NotNull short[] audioData) {
+    public UserAudio(@NotNull User user, short @NotNull [] audioData) {
         this.user = user;
         this.audioData = audioData;
     }
@@ -54,8 +54,7 @@ public class UserAudio {
      *
      * @return Never-null byte array of PCM data defined by {@link lonter.jfa.api.audio.AudioReceiveHandler#OUTPUT_FORMAT AudioReceiveHandler.OUTPUT_FORMAT}
      */
-    @NotNull
-    public byte[] getAudioData(double volume) {
+    public byte @NotNull [] getAudioData(double volume) {
         return OpusPacket.getAudioData(audioData, volume);
     }
 }

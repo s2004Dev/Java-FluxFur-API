@@ -87,7 +87,7 @@ public interface CustomEmojiManager extends Manager<CustomEmojiManager> {
     @NotNull
     @Override
     @CheckReturnValue
-    CustomEmojiManager reset(@NotNull long... fields);
+    CustomEmojiManager reset(long @NotNull ... fields);
 
     /**
      * The {@link lonter.jfa.api.entities.Guild Guild} this Manager's

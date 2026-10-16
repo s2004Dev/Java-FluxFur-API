@@ -201,7 +201,7 @@ public class FileProxy {
         Checks.check(parsedUrl != null, "URL '%s' is invalid", url);
 
         List<String> segments = parsedUrl.pathSegments();
-        String fileName = segments.get(segments.size() - 1);
+        String fileName = segments.getLast();
 
         // Download to a file named the same as the last segment of the URL
         return downloadToPath(Paths.get(fileName));

@@ -86,18 +86,15 @@ public class EntitySelectMenuImpl extends SelectMenuImpl implements EntitySelect
     @NotNull
     @Override
     public EnumSet<SelectTarget> getEntityTypes() {
-        switch (type) {
-            case ROLE_SELECT:
-                return EnumSet.of(SelectTarget.ROLE);
-            case USER_SELECT:
-                return EnumSet.of(SelectTarget.USER);
-            case CHANNEL_SELECT:
-                return EnumSet.of(SelectTarget.CHANNEL);
-            case MENTIONABLE_SELECT:
-                return EnumSet.of(SelectTarget.ROLE, SelectTarget.USER);
-        }
-        // Ideally this never happens, so its undocumented
-        throw new IllegalStateException("Unsupported type: " + type);
+      return switch (type) {
+        case ROLE_SELECT -> EnumSet.of(SelectTarget.ROLE);
+        case USER_SELECT -> EnumSet.of(SelectTarget.USER);
+        case CHANNEL_SELECT -> EnumSet.of(SelectTarget.CHANNEL);
+        case MENTIONABLE_SELECT -> EnumSet.of(SelectTarget.ROLE, SelectTarget.USER);
+        default ->
+          // Ideally this never happens, so its undocumented
+          throw new IllegalStateException("Unsupported type: " + type);
+      };
     }
 
     @NotNull
@@ -138,11 +135,10 @@ public class EntitySelectMenuImpl extends SelectMenuImpl implements EntitySelect
         if (obj == this) {
             return true;
         }
-        if (!(obj instanceof EntitySelectMenu)) {
+        if (!(obj instanceof EntitySelectMenu other)) {
             return false;
         }
-        EntitySelectMenu other = (EntitySelectMenu) obj;
-        return Objects.equals(id, other.getCustomId())
+      return Objects.equals(id, other.getCustomId())
                 && Objects.equals(placeholder, other.getPlaceholder())
                 && minValues == other.getMinValues()
                 && maxValues == other.getMaxValues()

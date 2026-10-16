@@ -109,15 +109,7 @@ public class EntityBuilder extends AbstractEntityBuilder {
     private static final Set<String> richGameFields;
 
     static {
-        Set<String> tmp = new HashSet<>();
-        tmp.add("application_id");
-        tmp.add("assets");
-        tmp.add("details");
-        tmp.add("flags");
-        tmp.add("party");
-        tmp.add("session_id");
-        tmp.add("sync_id");
-        richGameFields = Collections.unmodifiableSet(tmp);
+      richGameFields = Set.of("application_id", "assets", "details", "flags", "party", "session_id", "sync_id");
     }
 
     public EntityBuilder(JFAImpl api) {
@@ -419,22 +411,6 @@ public class EntityBuilder extends AbstractEntityBuilder {
             });
         }
 
-        // Unused function for importing guild threads
-        //        for (int i = 0; i < threadArray.length(); i++) {
-        //            DataObject threadJson = threadArray.getObject(i);
-        //            try {
-        //                createThreadChannel(guildObj, threadJson, guildObj.getIdLong());
-        //            } catch (Exception ex) {
-        //                if (MISSING_CHANNEL.equals(ex.getMessage())) {
-        //                    LOG.debug("Discarding thread without cached parent channel. JSON: {}", threadJson);
-        //                } else {
-        //                    LOG.warn(
-        //                            "Failed to create thread channel for guild with id {}.\nJSON: {}", guildId,
-        // threadJson, ex);
-        //                }
-        //            }
-        //        }
-
         // createScheduledEventPass(guildObj, scheduledEventsArray);
         createGuildEmojiPass(guildObj, emojisArray);
         stickersArray.ifPresent(stickers -> createGuildStickerPass(guildObj, stickers));
@@ -454,25 +430,19 @@ public class EntityBuilder extends AbstractEntityBuilder {
 
     public GuildChannel createGuildChannel(GuildImpl guildObj, DataObject channelData) {
         ChannelType channelType = ChannelType.fromId(channelData.getInt("type"));
-        switch (channelType) {
-            case TEXT:
-                return createTextChannel(guildObj, channelData, guildObj.getIdLong());
-            case NEWS:
-                return createNewsChannel(guildObj, channelData, guildObj.getIdLong());
-            case STAGE:
-                return createStageChannel(guildObj, channelData, guildObj.getIdLong());
-            case VOICE:
-                return createVoiceChannel(guildObj, channelData, guildObj.getIdLong());
-            case CATEGORY:
-                return createCategory(guildObj, channelData, guildObj.getIdLong());
-            case FORUM:
-                return createForumChannel(guildObj, channelData, guildObj.getIdLong());
-            case MEDIA:
-                return createMediaChannel(guildObj, channelData, guildObj.getIdLong());
-            default:
-                LOG.debug("Cannot create channel for type " + channelData.getInt("type"));
-                return null;
+      return switch (channelType) {
+        case TEXT -> createTextChannel(guildObj, channelData, guildObj.getIdLong());
+        case NEWS -> createNewsChannel(guildObj, channelData, guildObj.getIdLong());
+        case STAGE -> createStageChannel(guildObj, channelData, guildObj.getIdLong());
+        case VOICE -> createVoiceChannel(guildObj, channelData, guildObj.getIdLong());
+        case CATEGORY -> createCategory(guildObj, channelData, guildObj.getIdLong());
+        case FORUM -> createForumChannel(guildObj, channelData, guildObj.getIdLong());
+        case MEDIA -> createMediaChannel(guildObj, channelData, guildObj.getIdLong());
+        default -> {
+          LOG.debug("Cannot create channel for type {}", channelData.getInt("type"));
+          yield null;
         }
+      };
     }
 
     public User.PrimaryGuild createPrimaryGuild(DataObject obj) {
@@ -827,17 +797,17 @@ public class EntityBuilder extends AbstractEntityBuilder {
             removedRoles.add(role);
         }
 
-        if (removedRoles.size() > 0) {
-            currentRoles.removeAll(removedRoles);
+        if (!removedRoles.isEmpty()) {
+            removedRoles.forEach(currentRoles::remove);
         }
-        if (newRoles.size() > 0) {
+        if (!newRoles.isEmpty()) {
             currentRoles.addAll(newRoles);
         }
 
-        if (removedRoles.size() > 0) {
+        if (!removedRoles.isEmpty()) {
             getJFA().handleEvent(new GuildMemberRoleRemoveEvent(getJFA(), responseNumber, member, removedRoles));
         }
-        if (newRoles.size() > 0) {
+        if (!newRoles.isEmpty()) {
             getJFA().handleEvent(new GuildMemberRoleAddEvent(getJFA(), responseNumber, member, newRoles));
         }
     }
@@ -948,7 +918,7 @@ public class EntityBuilder extends AbstractEntityBuilder {
             return new ActivityImpl(name, state, url, type, timestamps, emoji);
         }
 
-        // data for spotify
+        // data for Spotify
         long id = gameJson.getLong("application_id", 0L);
         String sessionId = gameJson.getString("session_id", null);
         String syncId = gameJson.getString("sync_id", null);
@@ -961,7 +931,7 @@ public class EntityBuilder extends AbstractEntityBuilder {
             String partyId = obj.isNull("id") ? null : obj.getString("id");
             DataArray sizeArr = obj.isNull("size") ? null : obj.getArray("size");
             long size = 0, max = 0;
-            if (sizeArr != null && sizeArr.length() > 0) {
+            if (sizeArr != null && !sizeArr.isEmpty()) {
                 size = sizeArr.getLong(0);
                 max = sizeArr.length() < 2 ? 0 : sizeArr.getLong(1);
             }
@@ -1551,23 +1521,20 @@ public class EntityBuilder extends AbstractEntityBuilder {
     public ReceivedMessage createMessageWithChannel(
             DataObject json, @NotNull MessageChannel channel, boolean modifyCache) {
         // Use channel directly if message is from a known guild channel
-        if (channel instanceof GuildMessageChannel) {
-            GuildMessageChannel messageChannel = (GuildMessageChannel) channel;
-            return createMessage0(
-                    json,
-                    channel,
-                    messageChannel.isDetached() ? null : (GuildImpl) messageChannel.getGuild(),
-                    modifyCache);
-        }
-        if (channel instanceof GroupChannel) {
-            return createMessage0(json, channel, null, modifyCache);
-        }
+      return switch (channel) {
+        case GuildMessageChannel messageChannel -> createMessage0(
+          json,
+          channel,
+          messageChannel.isDetached() ? null : (GuildImpl) messageChannel.getGuild(),
+          modifyCache);
+        case GroupChannel groupChannel -> createMessage0(json, channel, null, modifyCache);
+
 
         // Try to resolve private channel recipient if needed
-        if (channel instanceof PrivateChannel) {
-            return createMessageWithLookup(json, null, modifyCache);
-        }
-        throw new IllegalArgumentException(MISSING_CHANNEL);
+        case PrivateChannel privateChannel -> createMessageWithLookup(json, null, modifyCache);
+        default -> throw new IllegalArgumentException(MISSING_CHANNEL);
+      };
+
     }
 
     public ReceivedMessage createMessageWithLookup(DataObject json, @Nullable Guild guild, boolean modifyCache) {
@@ -1657,11 +1624,11 @@ public class EntityBuilder extends AbstractEntityBuilder {
         int flags = jsonObject.getInt("flags", 0);
 
         // Message accessories
-        MessageChannel tmpChannel = channel; // because java
-        List<Message.Attachment> attachments = map(jsonObject, "attachments", this::createMessageAttachment);
+      // because java
+      List<Message.Attachment> attachments = map(jsonObject, "attachments", this::createMessageAttachment);
         List<MessageEmbed> embeds = map(jsonObject, "embeds", this::createMessageEmbed);
         List<MessageReaction> reactions =
-                map(jsonObject, "reactions", (obj) -> createMessageReaction(tmpChannel, channelId, id, obj));
+                map(jsonObject, "reactions", (obj) -> createMessageReaction(channel, channelId, id, obj));
         List<StickerItem> stickers = map(jsonObject, "sticker_items", this::createStickerItem);
         // Keep the unknown components so the user can read them if they want
         List<MessageTopLevelComponentUnion> components = map(
@@ -2130,7 +2097,7 @@ public class EntityBuilder extends AbstractEntityBuilder {
         int type = content.getInt("type");
         String name = content.getString("name");
         DataObject userJson = content.getObject("user");
-        User user = null;
+        User user;
         MemberImpl member = null;
         if (!content.isNull("member") && guildImpl != null) {
             DataObject memberJson = content.getObject("member");
@@ -2354,10 +2321,8 @@ public class EntityBuilder extends AbstractEntityBuilder {
             if (guildObject.isNull("features")) {
                 guildFeatures = Collections.emptySet();
             } else {
-                guildFeatures = Collections.unmodifiableSet(
-                        StreamSupport.stream(guildObject.getArray("features").spliterator(), false)
-                                .map(String::valueOf)
-                                .collect(Collectors.toSet()));
+                guildFeatures = StreamSupport.stream(guildObject.getArray("features").spliterator(), false)
+                  .map(String::valueOf).collect(Collectors.toUnmodifiableSet());
             }
 
             GuildWelcomeScreen welcomeScreen = guildObject.isNull("welcome_screen")

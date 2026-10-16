@@ -103,7 +103,7 @@ public final class Helpers {
     // ## StringUtils ##
 
     public static boolean isEmpty(CharSequence seq) {
-        return seq == null || seq.length() == 0;
+        return seq == null || seq.isEmpty();
     }
 
     public static boolean containsWhitespace(CharSequence seq) {
@@ -162,11 +162,7 @@ public final class Helpers {
         if (pads <= 0) {
             return input;
         }
-        StringBuilder out = new StringBuilder(input);
-        for (int i = pads; i > 0; i--) {
-            out.append(' ');
-        }
-        return out.toString();
+        return input + " ".repeat(pads);
     }
 
     public static String leftPad(String input, int size) {
@@ -174,11 +170,7 @@ public final class Helpers {
         if (pads <= 0) {
             return input;
         }
-        StringBuilder out = new StringBuilder();
-        for (int i = pads; i > 0; i--) {
-            out.append(' ');
-        }
-        return out.append(input).toString();
+      return " ".repeat(pads) + input;
     }
 
     public static boolean isNumeric(String input) {
@@ -215,7 +207,7 @@ public final class Helpers {
     }
 
     public static boolean equals(String a, String b, boolean ignoreCase) {
-        return ignoreCase ? a == b || (a != null && b != null && a.equalsIgnoreCase(b)) : Objects.equals(a, b);
+        return ignoreCase ? Objects.equals(a, b) || (a != null && a.equalsIgnoreCase(b)) : Objects.equals(a, b);
     }
 
     // ## CollectionUtils ##
@@ -329,7 +321,7 @@ public final class Helpers {
     public static <E> List<E> copyAsUnmodifiableList(Collection<? extends E> items) {
         return items == null || items.isEmpty()
                 ? Collections.emptyList()
-                : Collections.unmodifiableList(new ArrayList<>(items));
+                : List.copyOf(items);
     }
 
     @NotNull
@@ -380,6 +372,6 @@ public final class Helpers {
         Checks.check(parsedUrl != null, "URL '%s' is invalid", url);
 
         List<String> segments = parsedUrl.pathSegments();
-        return segments.get(segments.size() - 1);
+        return segments.getLast();
     }
 }
