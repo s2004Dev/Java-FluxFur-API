@@ -1,23 +1,23 @@
 ### Installation
 
-Paste this inside of your console (you need to have [GIT](https://git-scm.com/) and
-[Maven](https://maven.apache.org/) installed).
-
-```bash
-git clone https://github.com/s2004Dev/Java-FluxFur-API.git
-cd ./JFA
-mvn clean install
-```
-
-After this you should be able to open the project inside your chosen IDE or add it as a dependency in any Maven
-project with the following markup:
+If you want to use JFA inside your Maven project as a dependency, you need to paste the following markup inside your
+`pom.xml`:
 
 ```xml
 <dependency>
   <groupId> it.lonter </groupId>
   <artifactId> jfa </artifactId>
-  <version> 0.1 </version>
+  <version> 0.1.0 </version>
 </dependency>
+```
+
+If you want to compile it from the source you can by pasting these commands inside your terminal emulator (you'll
+need to have [GIT](https://git-scm.com/) and [Maven](https://maven.apache.org/) installed).
+
+```bash
+git clone https://github.com/s2004Dev/Java-FluxFur-API.git
+cd ./JFA
+mvn clean install
 ```
 
 ### JFA - Java-FluxFur-API
