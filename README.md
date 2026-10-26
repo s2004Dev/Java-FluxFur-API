@@ -14,7 +14,7 @@ project with the following markup:
 
 ```xml
 <dependency>
-  <groupId> lonter </groupId>
+  <groupId> it.lonter </groupId>
   <artifactId> jfa </artifactId>
   <version> 0.1 </version>
 </dependency>
