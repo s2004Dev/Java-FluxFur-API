@@ -46,7 +46,7 @@ public class GuildMemberAddHandler extends SocketHandler {
         // Update memberCount
         guild.onMemberAdd();
         MemberImpl member = getJFA().getEntityBuilder().createMember(guild, content);
-        getJFA().getEntityBuilder().updateMemberCache(member);
+        getJFA().getEntityBuilder().updateMemberCache(member, false, true);
         getJFA().handleEvent(new GuildMemberJoinEvent(getJFA(), responseNumber, member));
         return null;
     }

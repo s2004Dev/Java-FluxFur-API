@@ -570,10 +570,15 @@ public class EntityBuilder extends AbstractEntityBuilder {
     }
 
     public boolean updateMemberCache(MemberImpl member, boolean forceRemove) {
+        return updateMemberCache(member, forceRemove, false);
+    }
+
+    public boolean updateMemberCache(MemberImpl member, boolean forceRemove, boolean forceAdd) {
         GuildImpl guild = member.getGuild();
         UserImpl user = (UserImpl) member.getUser();
         MemberCacheViewImpl membersView = guild.getMembersView();
-        if (forceRemove || !getJFA().cacheMember(member)) {
+
+        if (forceRemove || (!forceAdd && !getJFA().cacheMember(member))) {
             if (membersView.remove(member.getIdLong()) == null) {
                 return false;
             }
@@ -583,7 +588,7 @@ public class EntityBuilder extends AbstractEntityBuilder {
                 getJFA().getUsersView().remove(user.getIdLong());
             }
             return false;
-        } else if (guild.getMemberById(member.getIdLong()) != null) {
+        } else if (!forceAdd && guild.getMemberById(member.getIdLong()) != null) {
             // Member should be added to cache but already is cached -> do nothing
             return true;
         }
