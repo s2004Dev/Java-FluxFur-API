@@ -56,7 +56,22 @@ public class GuildRoleUpdateHandler extends SocketHandler {
         }
 
         String name = rolejson.getString("name");
-        RoleColors colors = AbstractEntityBuilder.createRoleColors(rolejson.getObject("colors"));
+
+        RoleColors colors;
+
+        if(rolejson.hasKey("colors") && !rolejson.isNull("colors")) {
+            colors = AbstractEntityBuilder.createRoleColors(rolejson.getObject("colors"));
+        }
+
+        else {
+            DataObject colorData = DataObject.empty();
+
+            if(rolejson.hasKey("color") && !rolejson.isNull("color")) {
+                colorData.put("primary", rolejson.getInt("color"));
+            }
+
+            colors = AbstractEntityBuilder.createRoleColors(colorData);
+        }
 
         int position = rolejson.getInt("position");
         long permissions = rolejson.getLong("permissions");
