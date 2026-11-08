@@ -67,7 +67,7 @@ public class GuildRoleUpdateHandler extends SocketHandler {
             DataObject colorData = DataObject.empty();
 
             if(rolejson.hasKey("color") && !rolejson.isNull("color")) {
-                colorData.put("primary", rolejson.getInt("color"));
+                colorData.put("primary_color", rolejson.getInt("color"));
             }
 
             colors = AbstractEntityBuilder.createRoleColors(colorData);
