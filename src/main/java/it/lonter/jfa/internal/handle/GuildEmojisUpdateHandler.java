@@ -83,7 +83,7 @@ public class GuildEmojisUpdateHandler extends SocketHandler {
                         .setAnimated(current.getBoolean("animated"))
                         .setManaged(current.getBoolean("managed"));
                 // update roles
-                DataArray roles = current.getArray("roles");
+                final var roles = current.optArray("roles").orElse(DataArray.empty());
                 Set<Role> newRoles = emoji.getRoleSet();
                 Set<Role> oldRoles = new HashSet<>(newRoles); // snapshot of cached roles
                 for (int j = 0; j < roles.length(); j++) {
